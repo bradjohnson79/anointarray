@@ -18,6 +18,7 @@ interface UserProfile {
   first_name?: string
   last_name?: string
   display_name?: string
+  avatar_url?: string
   role: 'user' | 'admin' | 'moderator' | 'vip'
   is_active: boolean
   is_verified: boolean

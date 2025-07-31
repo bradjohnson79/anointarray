@@ -18,6 +18,7 @@ const Disclaimer = lazy(() => import('./pages/public/Disclaimer'));
 const EnvTest = lazy(() => import('./pages/public/EnvTest'));
 const TestUserCreation = lazy(() => import('./pages/public/TestUserCreation'));
 const Dashboard = lazy(() => import('./pages/private/Dashboard'));
+const Profile = lazy(() => import('./pages/private/Profile'));
 const AdminUsers = lazy(() => import('./pages/admin/Users'));
 const AdminProducts = lazy(() => import('./pages/admin/Products'));
 const AdminShipping = lazy(() => import('./pages/admin/Shipping'));
@@ -58,6 +59,7 @@ function App() {
             
             {/* Private Routes */}
             <Route path="/dashboard" element={<Dashboard />} />
+            <Route path="/profile" element={<Profile />} />
             
             {/* Admin Routes */}
             <Route path="/admin/users" element={<AdminUsers />} />
