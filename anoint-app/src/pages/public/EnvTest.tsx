@@ -64,9 +64,9 @@ const EnvTest = () => {
               <div className="bg-gray-900 p-3 rounded space-y-2">
                 <p className="text-sm">First 50 chars: <code>{supabaseKey.substring(0, 50)}...</code></p>
                 <p className="text-sm">Key length: <span className={supabaseKey.length > 200 ? 'text-green-400' : 'text-red-400'}>{supabaseKey.length} characters</span></p>
-                <p className="text-sm">Expected length: ~251 characters</p>
-                {supabaseKey.length >= 251 && (
-                  <p className="text-green-400 font-semibold">✅ Full key reconstructed successfully!</p>
+                <p className="text-sm">Expected length: ~208 characters (correct for this project)</p>
+                {supabaseKey.length >= 208 && (
+                  <p className="text-green-400 font-semibold">✅ Full key loaded successfully!</p>
                 )}
               </div>
             </div>
