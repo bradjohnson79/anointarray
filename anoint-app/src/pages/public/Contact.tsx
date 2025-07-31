@@ -300,7 +300,7 @@ const Contact = () => {
       </section>
       
       {/* Add CSS for animations */}
-      <style jsx>{`
+      <style>{`
         @keyframes fadeIn {
           from {
             opacity: 0;

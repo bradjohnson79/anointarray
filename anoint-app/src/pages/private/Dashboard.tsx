@@ -28,7 +28,7 @@ const mockArrays = [
 
 const Dashboard = () => {
   const { user } = useAuth()
-  const [arrays, setArrays] = useState(mockArrays)
+  const [arrays] = useState(mockArrays)
 
   const handleDownload = (arrayId: string) => {
     // Implement download from Supabase Storage

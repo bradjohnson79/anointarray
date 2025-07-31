@@ -51,7 +51,8 @@ const AdminProducts = () => {
     category: '',
     tags: ''
   })
-  const [imageFile, setImageFile] = useState<File | null>(null)
+  // TODO: Add image upload functionality
+  // const [imageFile, setImageFile] = useState<File | null>(null)
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
@@ -119,7 +120,8 @@ const AdminProducts = () => {
     })
     setEditingProduct(null)
     setShowProductModal(false)
-    setImageFile(null)
+    // TODO: Reset image file when implemented
+    // setImageFile(null)
   }
 
   return (
@@ -299,7 +301,10 @@ const AdminProducts = () => {
                       <input
                         type="file"
                         accept="image/*"
-                        onChange={(e) => setImageFile(e.target.files?.[0] || null)}
+                        onChange={(e) => {
+                          // TODO: Handle image file selection
+                          console.log('Image selected:', e.target.files?.[0])
+                        }}
                         className="w-full px-4 py-2 bg-gray-700 text-white rounded-lg focus:outline-none focus:ring-2 focus:ring-purple-600"
                       />
                     </div>

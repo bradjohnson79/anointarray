@@ -35,7 +35,7 @@ const Cart = () => {
     setSelectedShipping
   } = useCart()
 
-  const { isAuthenticated, getUserEmail } = useAuth()
+  const { getUserEmail } = useAuth()
 
   const [couponInput, setCouponInput] = useState('')
   const [couponError, setCouponError] = useState('')

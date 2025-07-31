@@ -8,7 +8,7 @@
     "build": "tsc -b && vite build",
     "lint": "eslint .",
     "preview": "vite preview",
-    "seed-admin": "node ../scripts/seed-admin.js"
+    "seed-admin": "node scripts/seed-admin.js"
   },
   "dependencies": {
     "@supabase/supabase-js": "^2.53.0",
