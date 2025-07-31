@@ -22,7 +22,7 @@ export const getSupabaseConfig = () => {
   console.log('  Key from env length:', supabaseKey?.length || 0)
   
   // If key is truncated or missing, use our reconstructed key
-  if (!supabaseKey || supabaseKey.length < 250) {
+  if (!supabaseKey || supabaseKey.length < 200) {
     console.warn('⚠️ Using reconstructed key due to truncation/missing env var')
     supabaseKey = FULL_ANON_KEY
   }
