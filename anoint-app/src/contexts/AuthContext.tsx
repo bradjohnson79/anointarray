@@ -1,15 +1,6 @@
 import { createContext, useContext, useEffect, useState } from 'react'
-import { createClient, type User, type Session } from '@supabase/supabase-js'
-import { debugEnv } from '../utils/debug-env'
-import { getSupabaseConfig } from '../utils/supabase-config'
-
-// Debug environment on load
-debugEnv()
-
-// Get properly configured Supabase settings
-const { url: supabaseUrl, anonKey: supabaseKey } = getSupabaseConfig()
-
-const supabase = createClient(supabaseUrl, supabaseKey)
+import { type User, type Session } from '@supabase/supabase-js'
+import { supabase } from '../lib/supabaseClient'
 
 interface UserProfile {
   id: string

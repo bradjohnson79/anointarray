@@ -3,11 +3,7 @@ import Layout from '../../components/layout/Layout'
 import ProtectedRoute from '../../components/layout/ProtectedRoute'
 import { useAuth } from '../../contexts/AuthContext'
 import { Camera, User, Mail, Calendar, Shield, Save, Upload } from 'lucide-react'
-import { getSupabaseConfig } from '../../utils/supabase-config'
-import { createClient } from '@supabase/supabase-js'
-
-const { url: supabaseUrl, anonKey: supabaseKey } = getSupabaseConfig()
-const supabase = createClient(supabaseUrl, supabaseKey)
+import { supabase } from '../../lib/supabaseClient'
 
 const Profile = () => {
   const { user, profile, refreshProfile } = useAuth()

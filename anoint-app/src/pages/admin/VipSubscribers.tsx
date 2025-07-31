@@ -3,12 +3,7 @@ import { Link, useLocation } from 'react-router-dom'
 import Layout from '../../components/layout/Layout'
 import ProtectedRoute from '../../components/layout/ProtectedRoute'
 import { Users, Download, Calendar, Mail, TrendingUp, Copy, Check, AlertCircle, Loader2, Crown, Users as UsersIcon } from 'lucide-react'
-import { createClient } from '@supabase/supabase-js'
-
-const supabase = createClient(
-  import.meta.env.VITE_SUPABASE_URL || 'https://placeholder.supabase.co',
-  import.meta.env.VITE_SUPABASE_ANON_KEY || 'placeholder-key'
-)
+import { supabase } from '../../lib/supabaseClient'
 
 interface VipSubscriber {
   id: number
