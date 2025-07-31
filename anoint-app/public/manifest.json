@@ -13,83 +13,9 @@
   "categories": ["health", "wellness", "shopping"],
   "icons": [
     {
-      "src": "/favicon.ico",
-      "sizes": "16x16 32x32 48x48",
-      "type": "image/x-icon"
-    },
-    {
-      "src": "/icon-192x192.png",
-      "sizes": "192x192",
-      "type": "image/png",
-      "purpose": "maskable any"
-    },
-    {
-      "src": "/icon-512x512.png", 
-      "sizes": "512x512",
-      "type": "image/png",
-      "purpose": "maskable any"
-    },
-    {
-      "src": "/apple-touch-icon.png",
-      "sizes": "180x180",
-      "type": "image/png"
-    }
-  ],
-  "screenshots": [
-    {
-      "src": "/screenshot-desktop.png",
-      "sizes": "1280x720",
-      "type": "image/png",
-      "platform": "wide",
-      "label": "ANOINT Array Desktop Homepage"
-    },
-    {
-      "src": "/screenshot-mobile.png", 
-      "sizes": "390x844",
-      "type": "image/png",
-      "platform": "narrow",
-      "label": "ANOINT Array Mobile Homepage"
-    }
-  ],
-  "shortcuts": [
-    {
-      "name": "Product Catalog",
-      "short_name": "Products",
-      "description": "Browse our scalar energy products",
-      "url": "/products",
-      "icons": [
-        {
-          "src": "/shortcut-products.png",
-          "sizes": "96x96",
-          "type": "image/png"
-        }
-      ]
-    },
-    {
-      "name": "Shopping Cart",
-      "short_name": "Cart", 
-      "description": "View your cart and checkout",
-      "url": "/cart",
-      "icons": [
-        {
-          "src": "/shortcut-cart.png",
-          "sizes": "96x96",
-          "type": "image/png"
-        }
-      ]
-    },
-    {
-      "name": "About ANOINT Array",
-      "short_name": "About",
-      "description": "Learn about our scalar technology",
-      "url": "/about",
-      "icons": [
-        {
-          "src": "/shortcut-about.png",
-          "sizes": "96x96", 
-          "type": "image/png"
-        }
-      ]
+      "src": "/vite.svg",
+      "sizes": "any",
+      "type": "image/svg+xml"
     }
   ],
   "share_target": {
