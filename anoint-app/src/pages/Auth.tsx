@@ -21,6 +21,8 @@ const Auth = () => {
     e.preventDefault()
     setLoading(true)
     setError('')
+    
+    console.log(`🔐 Attempting ${isLogin ? 'login' : 'signup'} for:`, email)
 
     try {
       const { error } = isLogin 
@@ -28,10 +30,26 @@ const Auth = () => {
         : await signUp(email, password)
 
       if (error) {
-        setError(error.message)
+        console.error('❌ Auth error:', error)
+        
+        // Provide user-friendly error messages
+        if (error.message.includes('Email address') && error.message.includes('invalid')) {
+          setError('Please use a valid email format (e.g., user@example.com)')
+        } else if (error.message.includes('rate limit')) {
+          setError('Too many attempts. Please wait a moment and try again.')
+        } else if (error.message.includes('Invalid login credentials')) {
+          setError('Invalid email or password. Please check and try again.')
+        } else if (error.message.includes('User already registered')) {
+          setError('This email is already registered. Please login instead.')
+        } else {
+          setError(error.message)
+        }
+      } else {
+        console.log('✅ Auth successful, redirecting...')
       }
     } catch (err: any) {
-      setError(err.message || 'An error occurred')
+      console.error('❌ Unexpected error:', err)
+      setError(err.message || 'An unexpected error occurred. Please try again.')
     } finally {
       setLoading(false)
     }
