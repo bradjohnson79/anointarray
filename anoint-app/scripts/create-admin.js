@@ -1,6 +1,6 @@
 #!/usr/bin/env node
 
-// Simple admin account creation using signup flow
+// Create admin account script
 import { createClient } from '@supabase/supabase-js'
 
 const SUPABASE_URL = 'https://xmnghciitiefbwxzhgrw.supabase.co'
@@ -9,11 +9,10 @@ const SUPABASE_SERVICE_ROLE_KEY = process.env.SUPABASE_SERVICE_ROLE_KEY
 
 if (!SUPABASE_SERVICE_ROLE_KEY) {
   console.error('❌ SUPABASE_SERVICE_ROLE_KEY environment variable is required')
+  console.error('   Get it from: https://supabase.com/dashboard/project/xmnghciitiefbwxzhgrw/settings/api')
   process.exit(1)
 }
 
-// Create both clients
-const supabaseAnon = createClient(SUPABASE_URL, SUPABASE_ANON_KEY)
 const supabaseAdmin = createClient(SUPABASE_URL, SUPABASE_SERVICE_ROLE_KEY, {
   auth: {
     autoRefreshToken: false,
@@ -21,46 +20,44 @@ const supabaseAdmin = createClient(SUPABASE_URL, SUPABASE_SERVICE_ROLE_KEY, {
   }
 })
 
+const supabaseAnon = createClient(SUPABASE_URL, SUPABASE_ANON_KEY)
+
 async function createAdminAccount() {
   const email = 'info@anoint.me'
   const password = 'Admin123'
   
-  console.log('🚀 Creating admin account via signup...')
+  console.log('🚀 Creating admin account...')
   console.log(`📧 Email: ${email}`)
   
   try {
-    // First, try to sign up the user
+    // First try regular signup
     const { data: signupData, error: signupError } = await supabaseAnon.auth.signUp({
       email: email,
       password: password
     })
     
-    if (signupError && !signupError.message.includes('already registered')) {
-      throw signupError
-    }
-    
     let userId
-    if (signupData?.user) {
-      userId = signupData.user.id
-      console.log('✅ User created via signup')
-    } else {
-      // User might already exist, get their ID
-      console.log('⚠️ User might already exist, looking up...')
-      const { data: { users }, error: listError } = await supabaseAdmin.auth.admin.listUsers()
-      if (listError) throw listError
-      
-      const existingUser = users.find(u => u.email === email)
-      if (!existingUser) {
-        throw new Error('Could not create or find user')
+    if (signupError) {
+      if (signupError.message.includes('already registered')) {
+        console.log('⚠️  User already exists, getting user ID...')
+        const { data: { users }, error: listError } = await supabaseAdmin.auth.admin.listUsers()
+        if (listError) throw listError
+        
+        const existingUser = users.find(u => u.email === email)
+        if (!existingUser) throw new Error('User not found')
+        userId = existingUser.id
+      } else {
+        throw signupError
       }
-      userId = existingUser.id
-      console.log('✅ Found existing user')
+    } else {
+      userId = signupData.user.id
+      console.log('✅ User created successfully!')
     }
     
     console.log(`👤 User ID: ${userId}`)
     
-    // Create or update the profile with admin role using service role
-    const { data: profileData, error: profileError } = await supabaseAdmin
+    // Create/update profile with admin role
+    const { error: profileError } = await supabaseAdmin
       .from('user_profiles')
       .upsert({
         user_id: userId,
@@ -72,21 +69,17 @@ async function createAdminAccount() {
       }, {
         onConflict: 'user_id'
       })
-      .select()
     
-    if (profileError) {
-      console.error('❌ Profile error:', profileError)
-      throw profileError
-    }
+    if (profileError) throw profileError
     
     console.log('✅ Admin profile created/updated!')
     console.log('')
-    console.log('🎉 Admin account setup complete!')
+    console.log('🎉 SUCCESS! Admin account ready:')
     console.log(`📧 Email: ${email}`)
     console.log(`🔑 Password: ${password}`)
     console.log(`👑 Role: admin`)
     console.log('')
-    console.log('You can now login at: https://anointarray.com/auth')
+    console.log('✅ You can now login at: https://anointarray.com/auth')
     
   } catch (error) {
     console.error('❌ Error:', error.message)
