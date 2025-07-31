@@ -1,8 +1,12 @@
 import Layout from '../../components/layout/Layout'
+import { getSupabaseConfig } from '../../utils/supabase-config'
 
 const EnvTest = () => {
-  const supabaseUrl = import.meta.env.VITE_SUPABASE_URL || 'NOT SET'
-  const supabaseKey = import.meta.env.VITE_SUPABASE_ANON_KEY || 'NOT SET'
+  const rawUrl = import.meta.env.VITE_SUPABASE_URL || 'NOT SET'
+  const rawKey = import.meta.env.VITE_SUPABASE_ANON_KEY || 'NOT SET'
+  
+  // Get the actual config being used by the app
+  const { url: supabaseUrl, anonKey: supabaseKey } = getSupabaseConfig()
   const hasTypo = supabaseUrl.includes('xmnghciitifbwxzhgorw')
   const isCorrect = supabaseUrl.includes('xmnghciitiefbwxzhgrw')
   
@@ -14,7 +18,14 @@ const EnvTest = () => {
           
           <div className="bg-gray-800 rounded-lg p-6 space-y-4">
             <div>
-              <h2 className="text-xl font-semibold mb-2">VITE_SUPABASE_URL:</h2>
+              <h2 className="text-xl font-semibold mb-2">Raw Environment URL:</h2>
+              <code className="block bg-gray-900 p-3 rounded text-sm break-all">
+                {rawUrl}
+              </code>
+            </div>
+            
+            <div>
+              <h2 className="text-xl font-semibold mb-2">Actual Config URL (used by app):</h2>
               <code className="block bg-gray-900 p-3 rounded text-sm break-all">
                 {supabaseUrl}
               </code>
@@ -38,13 +49,24 @@ const EnvTest = () => {
             </div>
             
             <div className="mt-6">
-              <h2 className="text-xl font-semibold mb-2">VITE_SUPABASE_ANON_KEY:</h2>
+              <h2 className="text-xl font-semibold mb-2">Raw Environment Key:</h2>
+              <div className="bg-gray-900 p-3 rounded space-y-2">
+                <p className="text-sm">First 50 chars: <code>{rawKey.substring(0, 50)}...</code></p>
+                <p className="text-sm">Key length: <span className={rawKey.length > 200 ? 'text-green-400' : 'text-red-400'}>{rawKey.length} characters</span></p>
+                {rawKey.length < 200 && (
+                  <p className="text-red-400 font-semibold">⚠️ Raw key is truncated!</p>
+                )}
+              </div>
+            </div>
+            
+            <div className="mt-4">
+              <h2 className="text-xl font-semibold mb-2">Actual Config Key (used by app):</h2>
               <div className="bg-gray-900 p-3 rounded space-y-2">
                 <p className="text-sm">First 50 chars: <code>{supabaseKey.substring(0, 50)}...</code></p>
                 <p className="text-sm">Key length: <span className={supabaseKey.length > 200 ? 'text-green-400' : 'text-red-400'}>{supabaseKey.length} characters</span></p>
                 <p className="text-sm">Expected length: ~251 characters</p>
-                {supabaseKey.length < 200 && (
-                  <p className="text-red-400 font-semibold">⚠️ API key appears to be truncated!</p>
+                {supabaseKey.length >= 251 && (
+                  <p className="text-green-400 font-semibold">✅ Full key reconstructed successfully!</p>
                 )}
               </div>
             </div>
