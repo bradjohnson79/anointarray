@@ -1,12 +1,12 @@
 [build]
-  # Build command
-  command = "cd anoint-app && npm run build"
-  
-  # Directory to publish (relative to repo root)
-  publish = "anoint-app/dist"
-  
-  # Base directory for build
+  # Base directory for build (where package.json is located)
   base = "anoint-app"
+  
+  # Build command (runs from base directory)
+  command = "npm install && npm run build"
+  
+  # Directory to publish (relative to base directory)
+  publish = "dist"
 
 [build.environment]
   # Node version
