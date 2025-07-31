@@ -3,11 +3,7 @@ import { Link, useLocation } from 'react-router-dom'
 import Layout from '../../components/layout/Layout'
 import ProtectedRoute from '../../components/layout/ProtectedRoute'
 import { Search, UserPlus, Trash2, Mail, Users as UsersIcon, Crown } from 'lucide-react'
-import { getSupabaseConfig } from '../../utils/supabase-config'
-import { createClient } from '@supabase/supabase-js'
-
-const { url: supabaseUrl, anonKey: supabaseKey } = getSupabaseConfig()
-const supabase = createClient(supabaseUrl, supabaseKey)
+import { supabase } from '../../lib/supabaseClient'
 
 interface UserProfile {
   id: string
