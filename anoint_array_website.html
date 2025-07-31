@@ -1,0 +1,2487 @@
+    <script>
+        // Define modal functions globally first
+        window.openModal = function(modalId) {
+            document.getElementById(modalId).style.display = 'block';
+        };
+
+        window.closeModal = function(modalId) {
+            document.getElementById(modalId).style.display = 'none';
+        };
+
+        // Click outside modal to close
+        window.onclick = function(event) {
+            const modals = document.querySelectorAll('.modal');
+            modals.forEach(modal => {
+                if (event.target === modal) {
+                    modal.style.display = 'none';
+                }
+            });
+        };
+
+        // User authentication state
+        let currentUser = null;
+        let isAdmin = false;
+
+        // Sample data - in production, this would come from your backend
+        const users = [
+            { name: 'Sarah Johnson', email: 'sarah@email.com', joinDate: 'Jan 15, 2025', arraysCreated: 3, isActive: true },
+            { name: 'Michael Chen', email: 'michael@email.com', joinDate: 'Jan 20, 2025', arraysCreated: 7, isActive: true },
+            { name: 'Jennifer Martinez', email: 'jennifer@email.com', joinDate: 'Jan 10, 2025', arraysCreated: 2, isActive: true }
+        ];
+
+        const affiliates = [
+            { name: 'Jennifer Martinez', email: 'jennifer@email.com', referrals: 12, commissions: 120.00, lastPayout: 'Jan 1, 2025' },
+            { name: 'David Wilson', email: 'david@email.com', referrals: 8, commissions: 80.00, lastPayout: 'Jan 1, 2025' }
+        ];
+
+        // Modal functionality
+        function openModal(modalId) {
+            document.getElementById(modalId).style.display = 'block';
+        }
+
+        function closeModal(modalId) {
+            document.getElementById(modalId).style.display = 'none';
+        }
+
+        // Click outside modal to close
+        window.onclick = function(event) {
+            const modals = document.querySelectorAll('.modal');
+            modals.forEach(modal => {
+                if (event.target === modal) {
+                    modal.style.display = 'none';
+                }
+            });
+        }
+
+        // Authentication functions
+        function login(email, password, isAdminLogin = false) {
+            // Simple demo authentication - replace with real authentication
+            if (isAdminLogin && email === 'admin@anoint.com') {
+                currentUser = { name: 'Admin', email: email };
+                isAdmin = true;
+                showDashboard('admin');
+                return true;
+            } else if (!isAdminLogin) {
+                // Regular user login
+                const user = users.find(u => u.email === email);
+                if (user) {
+                    currentUser = user;
+                    isAdmin = false;
+                    document.getElementById('memberName').textContent = user.name;
+                    showDashboard('member');
+                    return true;
+                }
+            }
+            return false;
+        }
+
+        function logout() {
+            currentUser = null;
+            isAdmin = false;
+            showMainSite();
+        }
+
+        function showDashboard(type) {
+            // Hide main site
+            document.querySelector('.navbar').style.display = 'none';
+            document.querySelectorAll('section').forEach(section => {
+                section.style.display = 'none';
+            });
+            document.querySelector('.footer').style.display = 'none';
+
+            // Show appropriate dashboard
+            if (type === 'admin') {
+                document.getElementById('adminDashboard').classList.add('active');
+            } else {
+                document.getElementById('memberDashboard').classList.add('active');
+            }
+        }
+
+        function showMainSite() {
+            // Hide dashboards
+            document.getElementById('adminDashboard').classList.remove('active');
+            document.getElementById('memberDashboard').classList.remove('active');
+
+            // Show main site
+            document.querySelector('.navbar').style.display = 'block';
+            document.querySelectorAll('section').forEach(section => {
+                section.style.display = 'block';
+            });
+            document.querySelector('.footer').style.display = 'block';
+        }
+
+        // Admin dashboard functions
+        function showAdminSection(sectionId) {
+            // Hide all sections
+            document.querySelectorAll('#adminDashboard .dashboard-section').forEach(section => {
+                section.classList.remove('active');
+            });
+            // Update nav buttons
+            document.querySelectorAll('#adminDashboard .dashboard-nav button').forEach(btn => {
+                btn.classList.remove('active');
+            });
+            
+            // Show selected section
+            document.getElementById(sectionId).classList.add('active');
+            event.target.classList.add('active');
+        }
+
+        function sendPasswordReset(email) {
+            alert(`Password reset email sent to ${email}`);
+            // In production, this would trigger an actual password reset email
+        }
+
+        function deleteUser(email) {
+            if (confirm(`Are you sure you want to delete user ${email}?`)) {
+                alert(`User ${email} has been deleted`);
+                // In production, this would delete the user from the database
+                loadUsers(); // Refresh the user list
+            }
+        }
+
+        function processAffiliatePayout(email) {
+            const affiliate = affiliates.find(a => a.email === email);
+            if (affiliate) {
+                alert(`Processing payout of ${affiliate.commissions} to ${email}`);
+                // In production, this would process the actual payment
+            }
+        }
+
+        function loadUsers() {
+            const tbody = document.getElementById('usersTableBody');
+            tbody.innerHTML = '';
+            
+            users.forEach(user => {
+                const row = document.createElement('tr');
+                row.innerHTML = `
+                    <td>${user.name}</td>
+                    <td>${user.email}</td>
+                    <td>${user.joinDate}</td>
+                    <td>${user.arraysCreated}</td>
+                    <td>
+                        <button class="action-btn btn-edit" onclick="sendPasswordReset('${user.email}')">Reset Password</button>
+                        <button class="action-btn btn-delete" onclick="deleteUser('${user.email}')">Delete</button>
+                    </td>
+                `;
+                tbody.appendChild(row);
+            });
+        }
+
+        // Member dashboard functions
+        function showMemberSection(sectionId) {
+            // Hide all sections
+            document.querySelectorAll('#memberDashboard .dashboard-section').forEach(section => {
+                section.classList.remove('active');
+            });
+            // Update nav buttons
+            document.querySelectorAll('#memberDashboard .dashboard-nav button').forEach(btn => {
+                btn.classList.remove('active');
+            });
+            
+            // Show selected section
+            document.getElementById(sectionId).classList.add('active');
+            event.target.classList.add('active');
+        }
+
+        function downloadArray(arrayId) {
+            alert(`Downloading ${arrayId} as PNG...`);
+            // In production, this would download the actual PNG file
+        }
+
+        // Form submissions
+        document.addEventListener('DOMContentLoaded', function() {
+            // Login form submission
+            document.getElementById('loginForm').addEventListener('submit', function(e) {
+                e.preventDefault();
+                const email = document.getElementById('loginEmail').value;
+                const password = document.getElementById('loginPassword').value;
+                
+                const isAdminEmail = email === 'admin@anoint.com';
+                
+                if (login(email, password, isAdminEmail)) {
+                    closeModal('loginModal');
+                    document.getElementById('loginForm').reset();
+                } else {
+                    alert('Invalid credentials. Please try again.');
+                }
+            });
+
+        document.getElementById('signupForm').addEventListener('submit', function(e) {
+            e.preventDefault();
+            const name = document.getElementById('signupName').value;
+            const email = document.getElementById('signupEmail').value;
+            const password = document.getElementById('signupPassword').value;
+            const confirmPassword = document.getElementById('signupConfirmPassword').value;
+            
+            if (password !== confirmPassword) {
+                alert('Passwords do not match');
+                return;
+            }
+            
+            // Add new user
+            const newUser = {
+                name: name,
+                email: email,
+                joinDate: new Date().toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' }),
+                arraysCreated: 0,
+                isActive: true
+            };
+            
+            users.push(newUser);
+            
+            // Auto-login the new user
+            if (login(email, password)) {
+                closeModal('signupModal');
+                document.getElementById('signupForm').reset();
+                alert('Account created successfully! Welcome to ANOINT: Array');
+            }
+        });
+
+        document.getElementById('vipForm').addEventListener('submit', function(e) {
+            e.preventDefault();
+            alert('Thank you for joining the VIP waiting list! We will contact you soon.');
+            closeModal('vipModal');
+            document.getElementById('vipForm').reset();
+        });
+
+        document.getElementById('addUserForm').addEventListener('submit', function(e) {
+            e.preventDefault();
+            const name = document.getElementById('addUserName').value;
+            const email = document.getElementById('addUserEmail').value;
+            
+            const newUser = {
+                name: name,
+                email: email,
+                joinDate: new Date().toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' }),
+                arraysCreated: 0,
+                isActive: true
+            };
+            
+            users.push(newUser);
+            loadUsers();
+            
+            alert(`User ${name} has been added successfully!`);
+            closeModal('addUserModal');
+            <!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ANOINT: Array - Energy Healing Technology</title>
+    <link href="https://fonts.googleapis.com/css2?family=EB+Garamond:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'EB Garamond', serif;
+            background: #0a0a0a;
+            color: #ffffff;
+            overflow-x: hidden;
+        }
+
+        /* Aurora Animation Keyframes */
+        @keyframes aurora {
+            0% { transform: translateX(-100%) rotate(0deg); }
+            50% { transform: translateX(100vw) rotate(180deg); }
+            100% { transform: translateX(-100%) rotate(360deg); }
+        }
+
+        @keyframes pulse {
+            0%, 100% { opacity: 0.7; }
+            50% { opacity: 1; }
+        }
+
+        @keyframes float {
+            0%, 100% { transform: translateY(0px) rotate(0deg); }
+            50% { transform: translateY(-20px) rotate(180deg); }
+        }
+
+        @keyframes fadeInOut {
+            0%, 100% { opacity: 0; transform: scale(0.5); }
+            50% { opacity: 0.8; transform: scale(1); }
+        }
+
+        @keyframes numericalFlash {
+            0%, 90%, 100% { opacity: 0; text-shadow: none; }
+            5%, 85% { 
+                opacity: 1; 
+                text-shadow: 0 0 20px #9333ea, 0 0 40px #06b6d4, 0 0 60px #10b981;
+            }
+        }
+
+        @keyframes glyphPulse {
+            0%, 100% { 
+                opacity: 0.3; 
+                transform: scale(1) rotate(0deg); 
+                filter: blur(1px);
+            }
+            50% { 
+                opacity: 0.9; 
+                transform: scale(1.2) rotate(180deg); 
+                filter: blur(0px);
+                text-shadow: 0 0 30px currentColor;
+            }
+        }
+
+        @keyframes breathingAurora {
+            0%, 100% { 
+                opacity: 0.2; 
+                transform: scale(0.8); 
+                filter: blur(20px);
+            }
+            50% { 
+                opacity: 0.6; 
+                transform: scale(1.3); 
+                filter: blur(5px);
+            }
+        }
+
+        @keyframes cardAurora {
+            0%, 100% { 
+                opacity: 0.3; 
+                transform: scale(0.9) rotate(0deg); 
+                filter: blur(15px);
+            }
+            50% { 
+                opacity: 0.7; 
+                transform: scale(1.1) rotate(180deg); 
+                filter: blur(8px);
+            }
+        }
+
+        @keyframes luminaryGlow {
+            0%, 100% { 
+                box-shadow: 0 0 20px rgba(147, 51, 234, 0.2), 
+                           0 0 40px rgba(6, 182, 212, 0.1),
+                           inset 0 0 30px rgba(147, 51, 234, 0.1);
+            }
+            50% { 
+                box-shadow: 0 0 40px rgba(147, 51, 234, 0.4), 
+                           0 0 80px rgba(6, 182, 212, 0.3),
+                           inset 0 0 50px rgba(147, 51, 234, 0.2);
+            }
+        }
+
+        @keyframes energyRibbon {
+            0% { 
+                transform: translateX(-100%) scaleY(0.5) rotate(-5deg);
+                opacity: 0;
+            }
+            20% { 
+                opacity: 0.6;
+                transform: translateX(-50%) scaleY(1) rotate(0deg);
+            }
+            80% { 
+                opacity: 0.4;
+                transform: translateX(50%) scaleY(0.8) rotate(5deg);
+            }
+            100% { 
+                transform: translateX(200%) scaleY(0.3) rotate(10deg);
+                opacity: 0;
+            }
+        }
+
+        @keyframes multicolorRadiance {
+            0%, 100% { 
+                background: radial-gradient(ellipse at center, 
+                    rgba(147, 51, 234, 0.3) 0%, 
+                    rgba(6, 182, 212, 0.2) 40%, 
+                    transparent 70%);
+                transform: scale(0.8) rotate(0deg);
+                opacity: 0.4;
+            }
+            33% { 
+                background: radial-gradient(ellipse at center, 
+                    rgba(6, 182, 212, 0.4) 0%, 
+                    rgba(16, 185, 129, 0.3) 40%, 
+                    transparent 70%);
+                transform: scale(1.2) rotate(120deg);
+                opacity: 0.7;
+            }
+            66% { 
+                background: radial-gradient(ellipse at center, 
+                    rgba(16, 185, 129, 0.3) 0%, 
+                    rgba(147, 51, 234, 0.2) 40%, 
+                    transparent 70%);
+                transform: scale(1) rotate(240deg);
+                opacity: 0.5;
+            }
+        }
+
+        @keyframes vipCardGlow {
+            0%, 100% { 
+                box-shadow: 0 0 30px rgba(16, 185, 129, 0.3), 
+                           0 0 60px rgba(147, 51, 234, 0.2),
+                           inset 0 0 40px rgba(6, 182, 212, 0.1);
+                border-color: rgba(16, 185, 129, 0.5);
+            }
+            50% { 
+                box-shadow: 0 0 50px rgba(16, 185, 129, 0.5), 
+                           0 0 100px rgba(147, 51, 234, 0.4),
+                           inset 0 0 60px rgba(6, 182, 212, 0.3);
+                border-color: rgba(16, 185, 129, 0.8);
+            }
+        }
+
+        /* Navigation */
+        .navbar {
+            position: fixed;
+            top: 0;
+            width: 100%;
+            background: rgba(10, 10, 30, 0.95);
+            backdrop-filter: blur(10px);
+            border-bottom: 1px solid rgba(147, 51, 234, 0.3);
+            z-index: 1000;
+            padding: 1rem 0;
+        }
+
+        .nav-container {
+            max-width: 1200px;
+            margin: 0 auto;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 0 2rem;
+        }
+
+        .logo {
+            height: 40px;
+            max-width: 200px;
+            object-fit: contain;
+            transition: all 0.3s ease;
+        }
+
+        .logo:hover {
+            transform: scale(1.05);
+            filter: drop-shadow(0 0 10px rgba(147, 51, 234, 0.5));
+        }
+
+        .nav-links {
+            display: flex;
+            list-style: none;
+            gap: 2rem;
+        }
+
+        .nav-links a {
+            color: #ffffff;
+            text-decoration: none;
+            font-weight: 500;
+            transition: all 0.3s ease;
+            position: relative;
+        }
+
+        .nav-links a:hover {
+            background: linear-gradient(45deg, #9333ea, #06b6d4);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .auth-buttons {
+            display: flex;
+            gap: 1rem;
+        }
+
+        .btn {
+            padding: 0.75rem 1.5rem;
+            border: none;
+            border-radius: 50px;
+            font-family: 'EB Garamond', serif;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            text-decoration: none;
+            display: inline-block;
+        }
+
+        .btn-primary {
+            background: linear-gradient(45deg, #9333ea, #06b6d4);
+            color: white;
+        }
+
+        .btn-primary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 25px rgba(147, 51, 234, 0.3);
+        }
+
+        .btn-secondary {
+            background: transparent;
+            color: white;
+            border: 2px solid rgba(147, 51, 234, 0.5);
+        }
+
+        .btn-secondary:hover {
+            border-color: #9333ea;
+            background: rgba(147, 51, 234, 0.1);
+        }
+
+        /* Hero Section */
+        .hero {
+            height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .aurora-bg {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: radial-gradient(ellipse at center, rgba(147, 51, 234, 0.3) 0%, transparent 70%);
+            animation: pulse 4s ease-in-out infinite;
+        }
+
+        .aurora-layer {
+            position: absolute;
+            top: -50%;
+            left: -50%;
+            width: 200%;
+            height: 200%;
+            background: linear-gradient(45deg, 
+                transparent 20%, 
+                rgba(147, 51, 234, 0.1) 40%, 
+                rgba(6, 182, 212, 0.1) 50%, 
+                rgba(16, 185, 129, 0.1) 60%, 
+                transparent 80%);
+            animation: aurora 15s linear infinite;
+        }
+
+        .breathing-aurora {
+            position: absolute;
+            width: 300px;
+            height: 300px;
+            border-radius: 50%;
+            background: radial-gradient(circle, rgba(147, 51, 234, 0.4) 0%, rgba(6, 182, 212, 0.2) 50%, transparent 70%);
+            animation: breathingAurora 6s ease-in-out infinite;
+        }
+
+        .breathing-aurora:nth-child(1) { top: 10%; left: 15%; animation-delay: 0s; }
+        .breathing-aurora:nth-child(2) { top: 70%; right: 20%; animation-delay: 2s; }
+        .breathing-aurora:nth-child(3) { bottom: 20%; left: 60%; animation-delay: 4s; }
+
+        .ancient-symbols {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+            overflow: hidden;
+        }
+
+        .symbol {
+            position: absolute;
+            font-size: 3rem;
+            color: rgba(147, 51, 234, 0.6);
+            animation: float 8s ease-in-out infinite;
+        }
+
+        .symbol:nth-child(1) { top: 15%; left: 10%; animation-delay: 0s; }
+        .symbol:nth-child(2) { top: 25%; right: 15%; animation-delay: 1s; }
+        .symbol:nth-child(3) { bottom: 30%; left: 20%; animation-delay: 2s; }
+        .symbol:nth-child(4) { top: 60%; right: 25%; animation-delay: 3s; }
+        .symbol:nth-child(5) { bottom: 15%; right: 10%; animation-delay: 4s; }
+        .symbol:nth-child(6) { top: 40%; left: 5%; animation-delay: 5s; }
+
+        .glyph {
+            position: absolute;
+            font-size: 2.5rem;
+            color: rgba(6, 182, 212, 0.7);
+            animation: glyphPulse 6s ease-in-out infinite;
+        }
+
+        .glyph:nth-child(1) { top: 20%; left: 80%; animation-delay: 0.5s; }
+        .glyph:nth-child(2) { top: 70%; left: 15%; animation-delay: 2.5s; }
+        .glyph:nth-child(3) { bottom: 40%; right: 30%; animation-delay: 4.5s; }
+        .glyph:nth-child(4) { top: 45%; left: 85%; animation-delay: 1.5s; }
+
+        .numerical-flash {
+            position: absolute;
+            font-size: 1.5rem;
+            font-weight: 700;
+            color: #10b981;
+            animation: numericalFlash 4s ease-in-out infinite;
+        }
+
+        .numerical-flash:nth-child(1) { top: 25%; left: 25%; animation-delay: 0s; }
+        .numerical-flash:nth-child(2) { top: 55%; right: 40%; animation-delay: 1s; }
+        .numerical-flash:nth-child(3) { bottom: 25%; left: 40%; animation-delay: 2s; }
+        .numerical-flash:nth-child(4) { top: 35%; right: 15%; animation-delay: 3s; }
+        .numerical-flash:nth-child(5) { bottom: 45%; right: 60%; animation-delay: 1.5s; }
+        .numerical-flash:nth-child(6) { top: 65%; left: 70%; animation-delay: 2.5s; }
+
+        .sacred-geometry {
+            position: absolute;
+            width: 100px;
+            height: 100px;
+            border: 2px solid rgba(16, 185, 129, 0.3);
+            animation: fadeInOut 10s ease-in-out infinite;
+        }
+
+        .sacred-geometry.triangle {
+            width: 0;
+            height: 0;
+            border-left: 50px solid transparent;
+            border-right: 50px solid transparent;
+            border-bottom: 87px solid rgba(147, 51, 234, 0.3);
+            border-radius: 0;
+        }
+
+        .sacred-geometry.circle {
+            border-radius: 50%;
+        }
+
+        .sacred-geometry.hexagon {
+            width: 80px;
+            height: 69px;
+            background: transparent;
+            border: 2px solid rgba(6, 182, 212, 0.3);
+            border-radius: 0;
+            position: relative;
+            transform: rotate(30deg);
+        }
+
+        .sacred-geometry:nth-child(1) { top: 10%; right: 5%; animation-delay: 0s; }
+        .sacred-geometry:nth-child(2) { bottom: 10%; left: 5%; animation-delay: 3s; }
+        .sacred-geometry:nth-child(3) { top: 50%; left: 10%; animation-delay: 6s; }
+
+        .hero-content {
+            text-align: center;
+            z-index: 10;
+            max-width: 800px;
+            padding: 0 2rem;
+        }
+
+        .hero h1 {
+            font-size: 4rem;
+            font-weight: 700;
+            margin-bottom: 1rem;
+            background: linear-gradient(45deg, #9333ea, #06b6d4, #10b981);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            animation: pulse 3s ease-in-out infinite;
+        }
+
+        .hero p {
+            font-size: 1.5rem;
+            margin-bottom: 2rem;
+            color: #e2e8f0;
+        }
+
+        /* Product Catalogue Section */
+        .product-catalogue {
+            padding: 100px 0;
+            background: linear-gradient(180deg, rgba(15, 15, 35, 0.9) 0%, rgba(10, 10, 30, 0.9) 100%);
+        }
+
+        .product-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
+            gap: 2rem;
+        }
+
+        .product-card {
+            background: rgba(30, 30, 60, 0.5);
+            border: 1px solid rgba(147, 51, 234, 0.3);
+            border-radius: 20px;
+            padding: 0;
+            transition: all 0.3s ease;
+            backdrop-filter: blur(10px);
+            position: relative;
+            overflow: hidden;
+            animation: luminaryGlow 4s ease-in-out infinite;
+        }
+
+        .product-card::before {
+            content: '';
+            position: absolute;
+            top: -50%;
+            left: -50%;
+            width: 200%;
+            height: 200%;
+            background: radial-gradient(circle, 
+                rgba(147, 51, 234, 0.2) 0%, 
+                rgba(6, 182, 212, 0.1) 30%, 
+                transparent 70%);
+            animation: cardAurora 6s ease-in-out infinite;
+            pointer-events: none;
+            z-index: 1;
+        }
+
+        .product-card::after {
+            content: '';
+            position: absolute;
+            top: 20%;
+            right: 15%;
+            width: 60px;
+            height: 60px;
+            background: radial-gradient(circle, 
+                rgba(16, 185, 129, 0.3) 0%, 
+                transparent 70%);
+            border-radius: 50%;
+            animation: cardAurora 8s ease-in-out infinite reverse;
+            pointer-events: none;
+            z-index: 1;
+        }
+
+        .product-card > * {
+            position: relative;
+            z-index: 2;
+        }
+
+        .product-card:hover {
+            transform: translateY(-10px);
+            border-color: #9333ea;
+            box-shadow: 0 20px 40px rgba(147, 51, 234, 0.3),
+                       0 0 60px rgba(6, 182, 212, 0.2);
+            animation-duration: 2s;
+        }
+
+        .product-card:nth-child(1)::before { animation-delay: 0s; }
+        .product-card:nth-child(2)::before { animation-delay: 1s; }
+        .product-card:nth-child(3)::before { animation-delay: 2s; }
+        .product-card:nth-child(4)::before { animation-delay: 3s; }
+        .product-card:nth-child(5)::before { animation-delay: 4s; }
+        .product-card:nth-child(6)::before { animation-delay: 5s; }
+
+        .product-card:nth-child(1)::after { animation-delay: 2s; }
+        .product-card:nth-child(2)::after { animation-delay: 3s; }
+        .product-card:nth-child(3)::after { animation-delay: 4s; }
+        .product-card:nth-child(4)::after { animation-delay: 5s; }
+        .product-card:nth-child(5)::after { animation-delay: 0s; }
+        .product-card:nth-child(6)::after { animation-delay: 1s; }
+
+        .product-image {
+            width: 100%;
+            height: 200px;
+            overflow: hidden;
+            border-radius: 20px 20px 0 0;
+            position: relative;
+        }
+
+        .product-image img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            transition: transform 0.3s ease;
+        }
+
+        .product-card:hover .product-image img {
+            transform: scale(1.05);
+        }
+
+        .product-content {
+            padding: 1.5rem;
+        }
+
+        .product-content h3 {
+            font-size: 1.4rem;
+            font-weight: 600;
+            margin-bottom: 0.75rem;
+            color: #06b6d4;
+        }
+
+        .product-content p {
+            color: #e2e8f0;
+            line-height: 1.5;
+            margin-bottom: 1rem;
+            font-size: 0.95rem;
+        }
+
+        .product-price {
+            font-size: 1.25rem;
+            font-weight: 700;
+            color: #10b981;
+            margin-bottom: 1rem;
+        }
+
+        .product-btn {
+            width: 100%;
+            padding: 0.75rem;
+            font-size: 0.9rem;
+            border-radius: 10px;
+        }
+        .features {
+            padding: 100px 0;
+            background: linear-gradient(180deg, rgba(10, 10, 30, 0.9) 0%, rgba(20, 20, 40, 0.9) 100%);
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 2rem;
+        }
+
+        .section-title {
+            text-align: center;
+            font-size: 3rem;
+            font-weight: 700;
+            margin-bottom: 3rem;
+            background: linear-gradient(45deg, #9333ea, #06b6d4);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .features-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
+            gap: 2rem;
+        }
+
+        .feature-card {
+            background: rgba(30, 30, 60, 0.5);
+            border: 1px solid rgba(147, 51, 234, 0.3);
+            border-radius: 20px;
+            padding: 2rem;
+            text-align: center;
+            transition: all 0.3s ease;
+            backdrop-filter: blur(10px);
+            position: relative;
+            overflow: hidden;
+            animation: luminaryGlow 4s ease-in-out infinite;
+        }
+
+        .feature-card::before {
+            content: '';
+            position: absolute;
+            top: -50%;
+            left: -50%;
+            width: 200%;
+            height: 200%;
+            background: radial-gradient(circle, 
+                rgba(147, 51, 234, 0.2) 0%, 
+                rgba(6, 182, 212, 0.1) 30%, 
+                transparent 70%);
+            animation: cardAurora 6s ease-in-out infinite;
+            pointer-events: none;
+            z-index: 1;
+        }
+
+        .feature-card::after {
+            content: '';
+            position: absolute;
+            top: 20%;
+            right: 15%;
+            width: 60px;
+            height: 60px;
+            background: radial-gradient(circle, 
+                rgba(16, 185, 129, 0.3) 0%, 
+                transparent 70%);
+            border-radius: 50%;
+            animation: cardAurora 8s ease-in-out infinite reverse;
+            pointer-events: none;
+            z-index: 1;
+        }
+
+        .feature-card > * {
+            position: relative;
+            z-index: 2;
+        }
+
+        .feature-card:hover {
+            transform: translateY(-10px);
+            border-color: #9333ea;
+            box-shadow: 0 20px 40px rgba(147, 51, 234, 0.3),
+                       0 0 60px rgba(6, 182, 212, 0.2);
+            animation-duration: 2s;
+        }
+
+        .feature-card:nth-child(1)::before { animation-delay: 0s; }
+        .feature-card:nth-child(2)::before { animation-delay: 1s; }
+        .feature-card:nth-child(3)::before { animation-delay: 2s; }
+        .feature-card:nth-child(4)::before { animation-delay: 3s; }
+        .feature-card:nth-child(5)::before { animation-delay: 4s; }
+        .feature-card:nth-child(6)::before { animation-delay: 5s; }
+
+        .feature-card:nth-child(1)::after { animation-delay: 2s; }
+        .feature-card:nth-child(2)::after { animation-delay: 3s; }
+        .feature-card:nth-child(3)::after { animation-delay: 4s; }
+        .feature-card:nth-child(4)::after { animation-delay: 5s; }
+        .feature-card:nth-child(5)::after { animation-delay: 0s; }
+        .feature-card:nth-child(6)::after { animation-delay: 1s; }
+
+        .feature-icon {
+            width: 80px;
+            height: 80px;
+            margin: 0 auto 1rem;
+            background: linear-gradient(45deg, #9333ea, #06b6d4);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 2rem;
+            animation: iconPulse 3s ease-in-out infinite;
+            position: relative;
+            z-index: 3;
+        }
+
+        .feature-icon:nth-child(1) { animation-delay: 0.5s; }
+        .feature-icon:nth-child(2) { animation-delay: 1.5s; }
+        .feature-icon:nth-child(3) { animation-delay: 2.5s; }
+        .feature-icon:nth-child(4) { animation-delay: 3.5s; }
+        .feature-icon:nth-child(5) { animation-delay: 4.5s; }
+        .feature-icon:nth-child(6) { animation-delay: 5.5s; }
+
+        .feature-card h3 {
+            font-size: 1.5rem;
+            font-weight: 600;
+            margin-bottom: 1rem;
+            color: #06b6d4;
+        }
+
+        /* How It Works Section */
+        .how-it-works {
+            padding: 100px 0;
+            background: rgba(20, 20, 40, 0.5);
+        }
+
+        .how-it-works-content {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
+            gap: 3rem;
+            align-items: center;
+        }
+
+        .process-card {
+            background: rgba(30, 30, 60, 0.7);
+            border: 1px solid rgba(6, 182, 212, 0.3);
+            border-radius: 20px;
+            padding: 2rem;
+            backdrop-filter: blur(10px);
+        }
+
+        .process-card h3 {
+            color: #06b6d4;
+            font-size: 1.8rem;
+            font-weight: 600;
+            margin-bottom: 1rem;
+        }
+
+        .process-card p {
+            color: #e2e8f0;
+            line-height: 1.6;
+            font-size: 1.1rem;
+        }
+
+        /* VIP Products Section */
+        .vip-products {
+            padding: 100px 0;
+            background: linear-gradient(180deg, rgba(20, 20, 40, 0.9) 0%, rgba(30, 30, 60, 0.9) 100%);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .vip-products::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: radial-gradient(ellipse at top left, 
+                rgba(147, 51, 234, 0.2) 0%, 
+                transparent 50%),
+                radial-gradient(ellipse at bottom right, 
+                rgba(6, 182, 212, 0.2) 0%, 
+                transparent 50%);
+            animation: multicolorRadiance 12s ease-in-out infinite;
+            pointer-events: none;
+        }
+
+        .vip-products::after {
+            content: '';
+            position: absolute;
+            top: 30%;
+            right: 10%;
+            width: 200px;
+            height: 200px;
+            background: radial-gradient(circle, 
+                rgba(16, 185, 129, 0.3) 0%, 
+                transparent 70%);
+            border-radius: 50%;
+            animation: multicolorRadiance 8s ease-in-out infinite reverse;
+            pointer-events: none;
+        }
+
+        .energy-ribbon {
+            position: absolute;
+            height: 2px;
+            width: 100%;
+            background: linear-gradient(90deg, 
+                transparent 0%, 
+                rgba(147, 51, 234, 0.8) 20%, 
+                rgba(6, 182, 212, 0.9) 50%, 
+                rgba(16, 185, 129, 0.8) 80%, 
+                transparent 100%);
+            animation: energyRibbon 8s ease-in-out infinite;
+        }
+
+        .energy-ribbon:nth-child(1) { top: 20%; animation-delay: 0s; }
+        .energy-ribbon:nth-child(2) { top: 45%; animation-delay: 2s; transform: scaleX(-1); }
+        .energy-ribbon:nth-child(3) { top: 70%; animation-delay: 4s; }
+        .energy-ribbon:nth-child(4) { top: 85%; animation-delay: 6s; transform: scaleX(-1); }
+
+        .vip-content {
+            text-align: center;
+            max-width: 800px;
+            margin: 0 auto;
+            position: relative;
+            z-index: 10;
+        }
+
+        .vip-card {
+            background: rgba(40, 40, 80, 0.8);
+            border: 2px solid rgba(16, 185, 129, 0.5);
+            border-radius: 25px;
+            padding: 3rem;
+            margin-top: 2rem;
+            backdrop-filter: blur(15px);
+            position: relative;
+            overflow: hidden;
+            animation: vipCardGlow 5s ease-in-out infinite;
+        }
+
+        .vip-card::before {
+            content: '';
+            position: absolute;
+            top: -50%;
+            left: -50%;
+            width: 200%;
+            height: 200%;
+            background: conic-gradient(from 0deg, 
+                rgba(147, 51, 234, 0.1) 0deg, 
+                rgba(6, 182, 212, 0.2) 120deg, 
+                rgba(16, 185, 129, 0.1) 240deg, 
+                rgba(147, 51, 234, 0.1) 360deg);
+            animation: cardAurora 15s linear infinite;
+            pointer-events: none;
+            z-index: 1;
+        }
+
+        .vip-card > * {
+            position: relative;
+            z-index: 2;
+        }
+
+        .vip-card h3 {
+            color: #10b981;
+            font-size: 2rem;
+            font-weight: 700;
+            margin-bottom: 1rem;
+        }
+
+        .founder-name {
+            background: linear-gradient(45deg, #9333ea, #06b6d4);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            font-weight: 700;
+        }
+
+        /* Testimonials Section */
+        .testimonials {
+            padding: 100px 0;
+            background: rgba(10, 10, 30, 0.8);
+        }
+
+        .testimonials-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 2rem;
+        }
+
+        .testimonial-card {
+            background: rgba(30, 30, 60, 0.6);
+            border: 1px solid rgba(147, 51, 234, 0.2);
+            border-radius: 15px;
+            padding: 2rem;
+            backdrop-filter: blur(10px);
+        }
+
+        .testimonial-text {
+            font-style: italic;
+            font-size: 1.1rem;
+            line-height: 1.6;
+            margin-bottom: 1rem;
+            color: #e2e8f0;
+        }
+
+        .testimonial-author {
+            color: #06b6d4;
+            font-weight: 600;
+        }
+
+        /* Footer */
+        .footer {
+            background: rgba(10, 10, 30, 0.95);
+            border-top: 1px solid rgba(147, 51, 234, 0.3);
+            padding: 3rem 0 1rem;
+        }
+
+        .footer-content {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 2rem;
+            margin-bottom: 2rem;
+        }
+
+        .footer-section h4 {
+            color: #06b6d4;
+            font-size: 1.3rem;
+            font-weight: 600;
+            margin-bottom: 1rem;
+        }
+
+        .footer-links {
+            list-style: none;
+        }
+
+        .footer-links a {
+            color: #e2e8f0;
+            text-decoration: none;
+            transition: color 0.3s ease;
+            display: block;
+            padding: 0.25rem 0;
+        }
+
+        .footer-links a:hover {
+            color: #9333ea;
+        }
+
+        .footer-bottom {
+            text-align: center;
+            padding-top: 2rem;
+            border-top: 1px solid rgba(147, 51, 234, 0.2);
+            color: #94a3b8;
+        }
+
+        /* Login Modal */
+        .modal {
+            display: none;
+            position: fixed;
+            z-index: 2000;
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.8);
+            backdrop-filter: blur(5px);
+        }
+
+        .modal-content {
+            background: rgba(30, 30, 60, 0.95);
+            margin: 10% auto;
+            padding: 2rem;
+            border: 1px solid rgba(147, 51, 234, 0.5);
+            border-radius: 25px;
+            width: 90%;
+            max-width: 400px;
+            backdrop-filter: blur(15px);
+        }
+
+        .close {
+            color: #aaa;
+            float: right;
+            font-size: 28px;
+            font-weight: bold;
+            cursor: pointer;
+        }
+
+        .close:hover {
+            color: #9333ea;
+        }
+
+        .form-group {
+            margin-bottom: 1rem;
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 0.5rem;
+            color: #06b6d4;
+            font-weight: 600;
+        }
+
+        .form-group input {
+            width: 100%;
+            padding: 0.75rem;
+            border: 1px solid rgba(147, 51, 234, 0.3);
+            border-radius: 10px;
+            background: rgba(40, 40, 80, 0.5);
+            color: white;
+            font-family: 'EB Garamond', serif;
+        }
+
+        .form-group input:focus {
+            outline: none;
+            border-color: #9333ea;
+            box-shadow: 0 0 10px rgba(147, 51, 234, 0.3);
+        }
+
+        /* Admin & Member Dashboard Styles */
+        .dashboard {
+            display: none;
+            min-height: 100vh;
+            background: linear-gradient(180deg, rgba(10, 10, 30, 0.95) 0%, rgba(20, 20, 40, 0.95) 100%);
+            padding-top: 80px;
+        }
+
+        .dashboard.active {
+            display: block;
+        }
+
+        .dashboard-header {
+            background: rgba(30, 30, 60, 0.8);
+            border-bottom: 1px solid rgba(147, 51, 234, 0.3);
+            padding: 2rem 0;
+            margin-bottom: 2rem;
+            backdrop-filter: blur(10px);
+        }
+
+        .dashboard-nav {
+            display: flex;
+            gap: 2rem;
+            margin-bottom: 2rem;
+            border-bottom: 1px solid rgba(147, 51, 234, 0.2);
+            padding-bottom: 1rem;
+        }
+
+        .dashboard-nav button {
+            background: transparent;
+            border: 1px solid rgba(147, 51, 234, 0.3);
+            color: #e2e8f0;
+            padding: 0.75rem 1.5rem;
+            border-radius: 10px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .dashboard-nav button.active,
+        .dashboard-nav button:hover {
+            background: rgba(147, 51, 234, 0.3);
+            border-color: #9333ea;
+            color: white;
+        }
+
+        .dashboard-section {
+            display: none;
+        }
+
+        .dashboard-section.active {
+            display: block;
+        }
+
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 1.5rem;
+            margin-bottom: 2rem;
+        }
+
+        .stat-card {
+            background: rgba(30, 30, 60, 0.7);
+            border: 1px solid rgba(147, 51, 234, 0.3);
+            border-radius: 15px;
+            padding: 1.5rem;
+            text-align: center;
+            backdrop-filter: blur(10px);
+        }
+
+        .stat-number {
+            font-size: 2rem;
+            font-weight: 700;
+            background: linear-gradient(45deg, #9333ea, #06b6d4);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .stat-label {
+            color: #94a3b8;
+            margin-top: 0.5rem;
+        }
+
+        .data-table {
+            background: rgba(30, 30, 60, 0.7);
+            border: 1px solid rgba(147, 51, 234, 0.3);
+            border-radius: 15px;
+            overflow: hidden;
+            backdrop-filter: blur(10px);
+        }
+
+        .data-table table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+
+        .data-table th,
+        .data-table td {
+            padding: 1rem;
+            text-align: left;
+            border-bottom: 1px solid rgba(147, 51, 234, 0.2);
+        }
+
+        .data-table th {
+            background: rgba(147, 51, 234, 0.2);
+            color: #06b6d4;
+            font-weight: 600;
+        }
+
+        .action-btn {
+            padding: 0.5rem 1rem;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            margin: 0 0.25rem;
+            font-size: 0.875rem;
+        }
+
+        .btn-edit {
+            background: rgba(6, 182, 212, 0.3);
+            color: #06b6d4;
+        }
+
+        .btn-delete {
+            background: rgba(239, 68, 68, 0.3);
+            color: #ef4444;
+        }
+
+        .array-gallery {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+            gap: 1.5rem;
+        }
+
+        .array-item {
+            background: rgba(30, 30, 60, 0.7);
+            border: 1px solid rgba(147, 51, 234, 0.3);
+            border-radius: 15px;
+            padding: 1rem;
+            text-align: center;
+            backdrop-filter: blur(10px);
+            transition: all 0.3s ease;
+        }
+
+        .array-item:hover {
+            border-color: #9333ea;
+            transform: translateY(-5px);
+        }
+
+        .array-preview {
+            width: 100%;
+            height: 150px;
+            background: linear-gradient(45deg, rgba(147, 51, 234, 0.2), rgba(6, 182, 212, 0.2));
+            border-radius: 10px;
+            margin-bottom: 1rem;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: #94a3b8;
+        }
+
+        .update-card {
+            background: rgba(30, 30, 60, 0.7);
+            border: 1px solid rgba(147, 51, 234, 0.3);
+            border-radius: 15px;
+            padding: 1.5rem;
+            margin-bottom: 1rem;
+            backdrop-filter: blur(10px);
+        }
+
+        .update-date {
+            color: #06b6d4;
+            font-size: 0.875rem;
+            margin-bottom: 0.5rem;
+        }
+
+        .update-title {
+            color: white;
+            font-size: 1.2rem;
+            font-weight: 600;
+            margin-bottom: 0.5rem;
+        }
+
+        .logout-btn {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            z-index: 1001;
+        }
+    </style>
+</head>
+<body>
+    <!-- Navigation -->
+    <nav class="navbar">
+        <div class="nav-container">
+            <!-- Logo with enhanced debugging -->
+            <img src="https://anointarray.com/images/anoint-array-desktop-logo.png" 
+                 alt="ANOINT: Array Logo" 
+                 class="logo"
+                 crossorigin="anonymous"
+                 onerror="console.log('Logo error details:', this.src, 'Status:', this.naturalWidth, this.naturalHeight); console.log('Trying with cache bust...'); this.src='https://anointarray.com/images/anoint-array-desktop-logo.png?v=' + Date.now(); this.onerror=function(){console.log('Cache bust failed too'); this.style.display='none'; this.nextElementSibling.style.display='block';};"
+                 onload="console.log('Logo loaded successfully!', 'Dimensions:', this.naturalWidth + 'x' + this.naturalHeight); this.nextElementSibling.style.display='none';">
+            <div class="logo-fallback" style="display: none; font-size: 1.8rem; font-weight: 700; background: linear-gradient(45deg, #9333ea, #06b6d4, #10b981); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text;">ANOINT: Array</div>
+            <ul class="nav-links">
+                <li><a href="#home">Home</a></li>
+                <li><a href="#array-generator">Array Generator</a></li>
+                <li><a href="#custom-products">Custom Products</a></li>
+                <li><a href="#vip-products">VIP Products</a></li>
+                <li><a href="#about">About</a></li>
+                <li><a href="#contact">Contact</a></li>
+            </ul>
+            <div class="auth-buttons">
+                <button class="btn btn-secondary" onclick="openModal('loginModal')">Login</button>
+                <button class="btn btn-primary" onclick="openModal('signupModal')">Sign Up</button>
+            </div>
+
+    <!-- Add Product Modal -->
+    <div id="addProductModal" class="modal">
+        <div class="modal-content" style="max-width: 600px;">
+            <span class="close" onclick="closeModal('addProductModal')">&times;</span>
+            <h2 style="color: #06b6d4; margin-bottom: 1rem;">Add New Product</h2>
+            <form id="addProductForm">
+                <div class="form-group">
+                    <label for="productName">Product Name:</label>
+                    <input type="text" id="productName" name="name" required placeholder="e.g., ANOINT Healing Crystal Set">
+                </div>
+                <div class="form-group">
+                    <label for="productDescription">Product Description:</label>
+                    <textarea id="productDescription" name="description" rows="3" style="width: 100%; padding: 0.75rem; border: 1px solid rgba(147, 51, 234, 0.3); border-radius: 10px; background: rgba(40, 40, 80, 0.5); color: white; font-family: 'EB Garamond', serif; resize: vertical;" placeholder="Enter detailed product description..."></textarea>
+                </div>
+                <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1rem;">
+                    <div class="form-group">
+                        <label for="productPrice">Price (USD):</label>
+                        <input type="text" id="productPrice" name="price" required placeholder="e.g., $99.99 or Starting @ $49.99">
+                    </div>
+                    <div class="form-group">
+                        <label for="productStatus">Status:</label>
+                        <select id="productStatus" name="status" style="width: 100%; padding: 0.75rem; border: 1px solid rgba(147, 51, 234, 0.3); border-radius: 10px; background: rgba(40, 40, 80, 0.5); color: white; font-family: 'EB Garamond', serif;">
+                            <option value="active">Active</option>
+                            <option value="inactive">Inactive</option>
+                            <option value="coming-soon">Coming Soon</option>
+                        </select>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label for="productImage">Product Image URL:</label>
+                    <input type="url" id="productImage" name="image" placeholder="https://anointarray.com/images/product.jpg">
+                    <small style="color: #94a3b8; font-size: 0.8rem;">Upload images to your server first, then paste the URL here</small>
+                </div>
+                <div class="form-group">
+                    <label for="productSEOTitle">SEO Title:</label>
+                    <input type="text" id="productSEOTitle" name="seoTitle" placeholder="Product Name | ANOINT Array - Energy Healing">
+                </div>
+                <div class="form-group">
+                    <label for="productSEODescription">SEO Meta Description:</label>
+                    <textarea id="productSEODescription" name="seoDescription" rows="2" style="width: 100%; padding: 0.75rem; border: 1px solid rgba(147, 51, 234, 0.3); border-radius: 10px; background: rgba(40, 40, 80, 0.5); color: white; font-family: 'EB Garamond', serif; resize: vertical;" placeholder="Brief description for search engines (150-160 characters)"></textarea>
+                </div>
+                <div class="form-group">
+                    <label for="productSEOKeywords">SEO Keywords:</label>
+                    <input type="text" id="productSEOKeywords" name="seoKeywords" placeholder="energy healing, scalar technology, ANOINT, healing arrays">
+                    <small style="color: #94a3b8; font-size: 0.8rem;">Separate keywords with commas</small>
+                </div>
+                <button type="submit" class="btn btn-primary" style="width: 100%; margin-top: 1rem;">Add Product</button>
+            </form>
+        </div>
+    </div>
+
+    <!-- Edit Product Modal -->
+    <div id="editProductModal" class="modal">
+        <div class="modal-content" style="max-width: 600px;">
+            <span class="close" onclick="closeModal('editProductModal')">&times;</span>
+            <h2 style="color: #06b6d4; margin-bottom: 1rem;">Edit Product</h2>
+            <form id="editProductForm">
+                <input type="hidden" id="editProductId" name="productId">
+                <div class="form-group">
+                    <label for="editProductName">Product Name:</label>
+                    <input type="text" id="editProductName" name="name" required>
+                </div>
+                <div class="form-group">
+                    <label for="editProductDescription">Product Description:</label>
+                    <textarea id="editProductDescription" name="description" rows="3" style="width: 100%; padding: 0.75rem; border: 1px solid rgba(147, 51, 234, 0.3); border-radius: 10px; background: rgba(40, 40, 80, 0.5); color: white; font-family: 'EB Garamond', serif; resize: vertical;"></textarea>
+                </div>
+                <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1rem;">
+                    <div class="form-group">
+                        <label for="editProductPrice">Price (USD):</label>
+                        <input type="text" id="editProductPrice" name="price" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="editProductStatus">Status:</label>
+                        <select id="editProductStatus" name="status" style="width: 100%; padding: 0.75rem; border: 1px solid rgba(147, 51, 234, 0.3); border-radius: 10px; background: rgba(40, 40, 80, 0.5); color: white; font-family: 'EB Garamond', serif;">
+                            <option value="active">Active</option>
+                            <option value="inactive">Inactive</option>
+                            <option value="coming-soon">Coming Soon</option>
+                        </select>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label for="editProductImage">Product Image URL:</label>
+                    <input type="url" id="editProductImage" name="image">
+                </div>
+                <div class="form-group">
+                    <label for="editProductSEOTitle">SEO Title:</label>
+                    <input type="text" id="editProductSEOTitle" name="seoTitle">
+                </div>
+                <div class="form-group">
+                    <label for="editProductSEODescription">SEO Meta Description:</label>
+                    <textarea id="editProductSEODescription" name="seoDescription" rows="2" style="width: 100%; padding: 0.75rem; border: 1px solid rgba(147, 51, 234, 0.3); border-radius: 10px; background: rgba(40, 40, 80, 0.5); color: white; font-family: 'EB Garamond', serif; resize: vertical;"></textarea>
+                </div>
+                <div class="form-group">
+                    <label for="editProductSEOKeywords">SEO Keywords:</label>
+                    <input type="text" id="editProductSEOKeywords" name="seoKeywords">
+                </div>
+                <button type="submit" class="btn btn-primary" style="width: 100%; margin-top: 1rem;">Update Product</button>
+            </form>
+        </div>
+    </div>
+        </div>
+    </nav>
+
+    <!-- Hero Section -->
+    <section class="hero" id="home">
+        <div class="aurora-bg"></div>
+        <div class="aurora-layer"></div>
+        
+        <!-- Breathing Aurora Effects -->
+        <div class="breathing-aurora"></div>
+        <div class="breathing-aurora"></div>
+        <div class="breathing-aurora"></div>
+        
+        <!-- Ancient Symbols Layer -->
+        <div class="ancient-symbols">
+            <div class="symbol">☥</div>
+            <div class="symbol">⚛</div>
+            <div class="symbol">☯</div>
+            <div class="symbol">🜏</div>
+            <div class="symbol">⚹</div>
+            <div class="symbol">⟐</div>
+        </div>
+        
+        <!-- Mystical Glyphs -->
+        <div class="ancient-symbols">
+            <div class="glyph">⧨</div>
+            <div class="glyph">⬟</div>
+            <div class="glyph">◈</div>
+            <div class="glyph">⬢</div>
+        </div>
+        
+        <!-- Numerical Flashes -->
+        <div class="ancient-symbols">
+            <div class="numerical-flash">111</div>
+            <div class="numerical-flash">333</div>
+            <div class="numerical-flash">777</div>
+            <div class="numerical-flash">888</div>
+            <div class="numerical-flash">1111</div>
+            <div class="numerical-flash">369</div>
+        </div>
+        
+        <!-- Sacred Geometry -->
+        <div class="ancient-symbols">
+            <div class="sacred-geometry triangle"></div>
+            <div class="sacred-geometry circle"></div>
+            <div class="sacred-geometry hexagon"></div>
+        </div>
+        
+        <div class="hero-content">
+            <h1>ANOINT: Array</h1>
+            <p>Build Your Own Energy Healing Technology using our Array Generator!</p>
+            <button class="btn btn-primary" style="font-size: 1.2rem; padding: 1rem 2rem; margin-top: 1rem;" onclick="openModal('signupModal')">Start Your Journey</button>
+        </div>
+    </section>
+
+    <!-- Product Catalogue Section -->
+    <section class="product-catalogue" id="product-catalogue">
+        <div class="container">
+            <h2 class="section-title">Product Catalogue</h2>
+            <p style="text-align: center; color: #e2e8f0; font-size: 1.2rem; margin-bottom: 3rem; max-width: 600px; margin-left: auto; margin-right: auto;">
+                Discover our exclusive collection of energy-infused products, handcrafted and shipped directly from our facility to amplify your healing journey.
+            </p>
+            <div class="product-grid">
+                <div class="product-card">
+                    <div class="product-image">
+                        <img src="https://via.placeholder.com/300x200/9333ea/ffffff?text=AetherX+Card+Decks" alt="AetherX Card Decks" />
+                    </div>
+                    <div class="product-content">
+                        <h3>AetherX Card Decks: Body, Mind, Energy</h3>
+                        <p>Premium organic cotton t-shirt featuring your personalized healing array design. Comfort meets energy healing in everyday wear.</p>
+                        <div class="product-price">Starting @ $21.68</div>
+                        <button class="btn btn-primary product-btn">View More & Buy</button>
+                    </div>
+                </div>
+                
+                <div class="product-card">
+                    <div class="product-image">
+                        <img src="https://via.placeholder.com/300x200/06b6d4/ffffff?text=ANOINT+Manifestation+Sphere" alt="ANOINT Manifestation Sphere" />
+                    </div>
+                    <div class="product-content">
+                        <h3>ANOINT Manifestation Sphere</h3>
+                        <p>High-quality meditation mat infused with your healing array pattern. Creates a sacred space for your daily practice and energy work.</p>
+                        <div class="product-price">$99.44</div>
+                        <button class="btn btn-primary product-btn">View More & Buy</button>
+                    </div>
+                </div>
+                
+                <div class="product-card">
+                    <div class="product-image">
+                        <img src="https://via.placeholder.com/300x200/10b981/ffffff?text=Wooden+Rejuvenation+Arrays" alt="Wooden Rejuvenation Arrays" />
+                    </div>
+                    <div class="product-content">
+                        <h3>Wooden Rejuvenation Arrays</h3>
+                        <p>Luxurious fleece blanket embedded with your custom array design. Perfect for meditation, relaxation, and restorative healing sessions.</p>
+                        <div class="product-price">$22.22</div>
+                        <button class="btn btn-primary product-btn">View More & Buy</button>
+                    </div>
+                </div>
+                
+                <div class="product-card">
+                    <div class="product-image">
+                        <img src="https://via.placeholder.com/300x200/8b5cf6/ffffff?text=ANOINT+Crystal+Scalar+Bracelets" alt="ANOINT Crystal Scalar-Charged Bracelets" />
+                    </div>
+                    <div class="product-content">
+                        <h3>ANOINT Crystal Scalar-Charged Bracelets</h3>
+                        <p>Handpicked crystal collection arranged in sacred geometry patterns. Each set is attuned to your personal healing array frequencies.</p>
+                        <div class="product-price">$17.36</div>
+                        <button class="btn btn-primary product-btn">View More & Buy</button>
+                    </div>
+                </div>
+                
+                <div class="product-card">
+                    <div class="product-image">
+                        <img src="https://via.placeholder.com/300x200/f59e0b/ffffff?text=ANOINT+Torus+Donut+Necklaces" alt="ANOINT Torus Donut Scalar Necklaces" />
+                    </div>
+                    <div class="product-content">
+                        <h3>ANOINT Torus Donut Scalar Necklaces</h3>
+                        <p>Stylish embroidered cap featuring your personalized array symbol. Carry your healing energy with you wherever you go.</p>
+                        <div class="product-price">$17.36</div>
+                        <button class="btn btn-primary product-btn">View More & Buy</button>
+                    </div>
+                </div>
+                
+                <div class="product-card">
+                    <div class="product-image">
+                        <img src="https://via.placeholder.com/300x200/ef4444/ffffff?text=ANOINT+Pet+Scalar+Collars" alt="ANOINT Pet Scalar Collars" />
+                    </div>
+                    <div class="product-content">
+                        <h3>ANOINT Pet Scalar Collars</h3>
+                        <p>Premium bedding collection with your healing array pattern. Transform your sleep space into a sanctuary of restorative energy.</p>
+                        <div class="product-price">$18.44</div>
+                        <button class="btn btn-primary product-btn">View More & Buy</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Features Section -->
+    <section class="features" id="features">
+        <div class="container">
+            <h2 class="section-title">Healing Array Benefits</h2>
+            <div class="features-grid">
+                <div class="feature-card">
+                    <div class="feature-icon">🎨</div>
+                    <h3>Color Healing Technology</h3>
+                    <p>Harness the power of chromotherapy through precisely calibrated color frequencies that resonate with your chakras and energy field for optimal healing.</p>
+                </div>
+                <div class="feature-card">
+                    <div class="feature-icon">⚡</div>
+                    <h3>Sacred Glyph Symbols</h3>
+                    <p>Ancient symbols and modern energy patterns combine to create powerful healing glyphs that activate specific energy centers in your body.</p>
+                </div>
+                <div class="feature-card">
+                    <div class="feature-icon">🔢</div>
+                    <h3>Numerological Resonance</h3>
+                    <p>Your personal numbers and birth data are integrated into the array design, creating a unique resonance pattern that amplifies healing energy.</p>
+                </div>
+                <div class="feature-card">
+                    <div class="feature-icon">⬟</div>
+                    <h3>Sacred Geometry</h3>
+                    <p>Mathematical perfection meets spiritual healing through geometric patterns that naturally occur in nature and promote energetic balance.</p>
+                </div>
+                <div class="feature-card">
+                    <div class="feature-icon">🌟</div>
+                    <h3>Personalized Arrays</h3>
+                    <p>Each healing array is uniquely generated based on your individual energy signature, ensuring maximum effectiveness for your specific needs.</p>
+                </div>
+                <div class="feature-card">
+                    <div class="feature-icon">♾️</div>
+                    <h3>Continuous Evolution</h3>
+                    <p>Your arrays evolve with you, adapting to your changing energy patterns and life circumstances for ongoing healing support.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- How It Works Section -->
+    <section class="how-it-works" id="how-it-works">
+        <div class="container">
+            <h2 class="section-title">How ANOINT Array Works</h2>
+            <div class="how-it-works-content">
+                <div class="process-card">
+                    <h3>1. Array Generator</h3>
+                    <p>Our sophisticated AI-powered Array Generator analyzes your personal data, energy patterns, and healing intentions to create custom healing seal arrays. Using advanced algorithms, it combines color therapy, sacred geometry, numerology, and ancient symbols into a powerful healing tool designed specifically for you.</p>
+                </div>
+                <div class="process-card">
+                    <h3>2. Custom Array Creation</h3>
+                    <p>Can't access the generator? No problem! Request our expert team to build a personalized Healing Array Seal for you. Our practitioners, trained in metaphysical sciences, will hand-craft your array using traditional methods combined with modern energy techniques for maximum potency.</p>
+                </div>
+                <div class="process-card">
+                    <h3>3. Product Integration</h3>
+                    <p>Transform your Healing Array Seal into powerful, wearable technology. Add your custom design to t-shirts, hats, blankets, bedding, meditation mats, and more. Each product becomes an energetic tool that works with you throughout your day, amplifying healing energy wherever you go.</p>
+                </div>
+                <div class="process-card">
+                    <h3>4. Saving Your Array</h3>
+                    <p>By signing up and using our ANOINT Array Generator, your custom-built array will be permanently saved in your member's backend until you personally remove it. You never have to worry about losing it, as it will always be available for you.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- VIP Products Section -->
+    <section class="vip-products" id="vip-products">
+        <!-- Energy Ribbons -->
+        <div class="energy-ribbon"></div>
+        <div class="energy-ribbon"></div>
+        <div class="energy-ribbon"></div>
+        <div class="energy-ribbon"></div>
+        
+        <div class="container">
+            <div class="vip-content">
+                <h2 class="section-title">VIP Scalar Technology</h2>
+                <div class="vip-card">
+                    <h3>Exclusive Bio-Scalar Technology</h3>
+                    <p>Experience cutting-edge healing technology not available anywhere else. Our VIP collection features custom-made bio-scalar devices personally crafted by <span class="founder-name">Brad Johnson</span>, founder of ANOINT.</p>
+                    <p>These high-quality, industrial-grade wearable scalar technology devices represent the pinnacle of energy healing innovation, combining ancient wisdom with quantum physics principles.</p>
+                    <p><strong>Join the exclusive waiting list for access to these revolutionary healing tools.</strong></p>
+                    <button class="btn btn-primary" style="margin-top: 1rem;" onclick="openModal('vipModal')">Join VIP Waiting List</button>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Testimonials Section -->
+    <section class="testimonials" id="testimonials">
+        <div class="container">
+            <h2 class="section-title">Healing Transformations</h2>
+            <div class="testimonials-grid">
+                <div class="testimonial-card">
+                    <p class="testimonial-text">"The ANOINT Array Generator created a healing seal that completely transformed my energy. I wear it on my meditation mat daily and feel the healing vibrations throughout my practice."</p>
+                    <p class="testimonial-author">- Sarah M.</p>
+                </div>
+                <div class="testimonial-card">
+                    <p class="testimonial-text">"Brad's VIP scalar technology device has been life-changing. The quality and craftsmanship are unlike anything I've experienced. The healing energy is palpable."</p>
+                    <p class="testimonial-author">- Michael R.</p>
+                </div>
+                <div class="testimonial-card">
+                    <p class="testimonial-text">"Having my personal healing array on my bedding has improved my sleep quality dramatically. I wake up feeling energized and balanced every morning."</p>
+                    <p class="testimonial-author">- Jennifer L.</p>
+                </div>
+                <div class="testimonial-card">
+                    <p class="testimonial-text">"The combination of sacred geometry and my personal numerology in the array design creates such a powerful resonance. I feel more aligned than ever before."</p>
+                    <p class="testimonial-author">- David K.</p>
+                </div>
+                <div class="testimonial-card">
+                    <p class="testimonial-text">"The custom products with my healing array have become essential parts of my daily routine. The energy work happens effortlessly throughout the day."</p>
+                    <p class="testimonial-author">- Lisa T.</p>
+                </div>
+                <div class="testimonial-card">
+                    <p class="testimonial-text">"As a practitioner myself, I'm amazed by the sophistication of the ANOINT system. The integration of multiple healing modalities is brilliant."</p>
+                    <p class="testimonial-author">- Dr. Amanda H.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer class="footer" id="contact">
+        <div class="container">
+            <div class="footer-content">
+                <div class="footer-section">
+                    <h4>ANOINT: Array</h4>
+                    <p>Empowering your healing journey through advanced energy technology and ancient wisdom.</p>
+                </div>
+                <div class="footer-section">
+                    <h4>Quick Links</h4>
+                    <ul class="footer-links">
+                        <li><a href="#home">Home</a></li>
+                        <li><a href="#array-generator">Array Generator</a></li>
+                        <li><a href="#custom-products">Custom Products</a></li>
+                        <li><a href="#vip-products">VIP Products</a></li>
+                        <li><a href="#about">About</a></li>
+                        <li><a href="#contact">Contact</a></li>
+                    </ul>
+                </div>
+                <div class="footer-section">
+                    <h4>Legal</h4>
+                    <ul class="footer-links">
+                        <li><a href="#privacy">Privacy Policy</a></li>
+                        <li><a href="#terms">Terms & Conditions</a></li>
+                    </ul>
+                </div>
+                <div class="footer-section">
+                    <h4>Connect</h4>
+                    <p>Email: info@anointarray.com</p>
+                    <p>Support: support@anointarray.com</p>
+                </div>
+            </div>
+            <div class="footer-bottom">
+                <p>&copy; 2025 ANOINT: Array. All rights reserved.</p>
+            </div>
+        </div>
+    </footer>
+
+    <!-- Admin Dashboard -->
+    <div id="adminDashboard" class="dashboard">
+        <div class="logout-btn">
+            <button class="btn btn-secondary" onclick="logout()">Logout</button>
+        </div>
+        <div class="dashboard-header">
+            <div class="container">
+                <h1 style="color: #06b6d4; margin-bottom: 0.5rem;">Admin Dashboard</h1>
+                <p style="color: #94a3b8;">Welcome back, Admin</p>
+            </div>
+        </div>
+        <div class="container">
+            <div class="dashboard-nav">
+                <button onclick="showAdminSection('userManagement')" class="active">User Management</button>
+                <button onclick="showAdminSection('productManagement')">Product Management</button>
+                <button onclick="showAdminSection('siteManagement')">Site Management</button>
+                <button onclick="showAdminSection('affiliateManagement')">Affiliate Management</button>
+            </div>
+
+            <!-- User Management Section -->
+            <div id="userManagement" class="dashboard-section active">
+                <h2 style="color: #9333ea; margin-bottom: 1rem;">User Management</h2>
+                <div class="stats-grid">
+                    <div class="stat-card">
+                        <div class="stat-number" id="totalUsers">0</div>
+                        <div class="stat-label">Total Users</div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-number" id="activeUsers">0</div>
+                        <div class="stat-label">Active Users</div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-number" id="newUsersToday">0</div>
+                        <div class="stat-label">New Today</div>
+                    </div>
+                </div>
+                
+                <div style="margin-bottom: 1rem;">
+                    <button class="btn btn-primary" onclick="openModal('addUserModal')">Add New User</button>
+                </div>
+
+                <div class="data-table">
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>Name</th>
+                                <th>Email</th>
+                                <th>Join Date</th>
+                                <th>Arrays Created</th>
+                                <th>Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody id="usersTableBody">
+                            <!-- Users will be loaded here -->
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+
+            <!-- Product Management Section -->
+            <div id="productManagement" class="dashboard-section">
+                <h2 style="color: #9333ea; margin-bottom: 1rem;">Product Management</h2>
+                <div class="stats-grid">
+                    <div class="stat-card">
+                        <div class="stat-number" id="totalProducts">6</div>
+                        <div class="stat-label">Total Products</div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-number" id="activeProducts">6</div>
+                        <div class="stat-label">Active Products</div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-number" id="avgPrice">$33.05</div>
+                        <div class="stat-label">Average Price</div>
+                    </div>
+                </div>
+                
+                <div style="margin-bottom: 1rem;">
+                    <button class="btn btn-primary" onclick="openModal('addProductModal')">Add New Product</button>
+                    <button class="btn btn-secondary" style="margin-left: 1rem;" onclick="refreshProductCatalogue()">Refresh Catalogue</button>
+                </div>
+
+                <div class="data-table">
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>Product Name</th>
+                                <th>Price</th>
+                                <th>Status</th>
+                                <th>SEO Score</th>
+                                <th>Last Updated</th>
+                                <th>Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody id="productsTableBody">
+                            <tr>
+                                <td>AetherX Card Decks: Body, Mind, Energy</td>
+                                <td>Starting @ $21.68</td>
+                                <td><span style="color: #10b981;">Active</span></td>
+                                <td><span style="color: #06b6d4;">85%</span></td>
+                                <td>Jan 28, 2025</td>
+                                <td>
+                                    <button class="action-btn btn-edit" onclick="editProduct('aetherx-cards')">Edit</button>
+                                    <button class="action-btn btn-delete" onclick="toggleProductStatus('aetherx-cards')">Disable</button>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>ANOINT Manifestation Sphere</td>
+                                <td>$99.44</td>
+                                <td><span style="color: #10b981;">Active</span></td>
+                                <td><span style="color: #06b6d4;">92%</span></td>
+                                <td>Jan 28, 2025</td>
+                                <td>
+                                    <button class="action-btn btn-edit" onclick="editProduct('manifestation-sphere')">Edit</button>
+                                    <button class="action-btn btn-delete" onclick="toggleProductStatus('manifestation-sphere')">Disable</button>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>Wooden Rejuvenation Arrays</td>
+                                <td>$22.22</td>
+                                <td><span style="color: #10b981;">Active</span></td>
+                                <td><span style="color: #06b6d4;">88%</span></td>
+                                <td>Jan 28, 2025</td>
+                                <td>
+                                    <button class="action-btn btn-edit" onclick="editProduct('wooden-arrays')">Edit</button>
+                                    <button class="action-btn btn-delete" onclick="toggleProductStatus('wooden-arrays')">Disable</button>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>ANOINT Crystal Scalar-Charged Bracelets</td>
+                                <td>$17.36</td>
+                                <td><span style="color: #10b981;">Active</span></td>
+                                <td><span style="color: #06b6d4;">90%</span></td>
+                                <td>Jan 28, 2025</td>
+                                <td>
+                                    <button class="action-btn btn-edit" onclick="editProduct('crystal-bracelets')">Edit</button>
+                                    <button class="action-btn btn-delete" onclick="toggleProductStatus('crystal-bracelets')">Disable</button>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>ANOINT Torus Donut Scalar Necklaces</td>
+                                <td>$17.36</td>
+                                <td><span style="color: #10b981;">Active</span></td>
+                                <td><span style="color: #06b6d4;">91%</span></td>
+                                <td>Jan 28, 2025</td>
+                                <td>
+                                    <button class="action-btn btn-edit" onclick="editProduct('torus-necklaces')">Edit</button>
+                                    <button class="action-btn btn-delete" onclick="toggleProductStatus('torus-necklaces')">Disable</button>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>ANOINT Pet Scalar Collars</td>
+                                <td>$18.44</td>
+                                <td><span style="color: #10b981;">Active</span></td>
+                                <td><span style="color: #06b6d4;">87%</span></td>
+                                <td>Jan 28, 2025</td>
+                                <td>
+                                    <button class="action-btn btn-edit" onclick="editProduct('pet-collars')">Edit</button>
+                                    <button class="action-btn btn-delete" onclick="toggleProductStatus('pet-collars')">Disable</button>
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+
+            <!-- Site Management Section -->
+            <div id="siteManagement" class="dashboard-section">
+                <h2 style="color: #9333ea; margin-bottom: 1rem;">Site Management</h2>
+                <div class="stats-grid">
+                    <div class="stat-card">
+                        <div class="stat-number" id="monthlyVisitors">15,247</div>
+                        <div class="stat-label">Monthly Visitors</div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-number" id="pageViews">48,392</div>
+                        <div class="stat-label">Page Views</div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-number" id="conversionRate">3.2%</div>
+                        <div class="stat-label">Conversion Rate</div>
+                    </div>
+                </div>
+
+                <div class="update-card">
+                    <h3 style="color: #06b6d4;">SEO Settings</h3>
+                    <div class="form-group">
+                        <label>Meta Description:</label>
+                        <textarea style="width: 100%; padding: 0.75rem; border: 1px solid rgba(147, 51, 234, 0.3); border-radius: 10px; background: rgba(40, 40, 80, 0.5); color: white; font-family: 'EB Garamond', serif;" rows="3">Create powerful healing arrays with ANOINT's AI-powered Array Generator. Personalized energy healing technology combining ancient wisdom with modern innovation.</textarea>
+                    </div>
+                    <div class="form-group">
+                        <label>Google Analytics Tracking ID:</label>
+                        <input type="text" style="width: 100%; padding: 0.75rem; border: 1px solid rgba(147, 51, 234, 0.3); border-radius: 10px; background: rgba(40, 40, 80, 0.5); color: white; font-family: 'EB Garamond', serif;" placeholder="G-XXXXXXXXXX">
+                    </div>
+                    <button class="btn btn-primary">Save Settings</button>
+                </div>
+            </div>
+
+            <!-- Affiliate Management Section -->
+            <div id="affiliateManagement" class="dashboard-section">
+                <h2 style="color: #9333ea; margin-bottom: 1rem;">Affiliate Management</h2>
+                <div class="stats-grid">
+                    <div class="stat-card">
+                        <div class="stat-number" id="totalAffiliates">0</div>
+                        <div class="stat-label">Total Affiliates</div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-number" id="monthlyCommissions">$0</div>
+                        <div class="stat-label">Monthly Commissions</div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-number" id="pendingPayouts">$0</div>
+                        <div class="stat-label">Pending Payouts</div>
+                    </div>
+                </div>
+
+                <div class="data-table">
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>Affiliate Name</th>
+                                <th>Email</th>
+                                <th>Referrals</th>
+                                <th>Commissions</th>
+                                <th>Last Payout</th>
+                                <th>Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody id="affiliatesTableBody">
+                            <!-- Affiliates will be loaded here -->
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Member Dashboard -->
+    <div id="memberDashboard" class="dashboard">
+        <div class="logout-btn">
+            <button class="btn btn-secondary" onclick="logout()">Logout</button>
+        </div>
+        <div class="dashboard-header">
+            <div class="container">
+                <h1 style="color: #06b6d4; margin-bottom: 0.5rem;">Member Dashboard</h1>
+                <p style="color: #94a3b8;">Welcome back, <span id="memberName">User</span></p>
+            </div>
+        </div>
+        <div class="container">
+            <div class="dashboard-nav">
+                <button onclick="showMemberSection('myArrays')" class="active">My Arrays</button>
+                <button onclick="showMemberSection('updates')">Updates</button>
+                <button onclick="showMemberSection('arrayGenerator')">Array Generator</button>
+            </div>
+
+            <!-- My Arrays Section -->
+            <div id="myArrays" class="dashboard-section active">
+                <h2 style="color: #9333ea; margin-bottom: 1rem;">My Saved Arrays</h2>
+                <div class="array-gallery" id="arraysGallery">
+                    <!-- Arrays will be loaded here -->
+                    <div class="array-item">
+                        <div class="array-preview">
+                            <span>No arrays yet</span>
+                        </div>
+                        <h4 style="color: #06b6d4; margin-bottom: 0.5rem;">Create Your First Array</h4>
+                        <p style="color: #94a3b8; font-size: 0.875rem; margin-bottom: 1rem;">Use the Array Generator to create your personalized healing array</p>
+                        <button class="btn btn-primary" style="font-size: 0.875rem; padding: 0.5rem 1rem;" onclick="showMemberSection('arrayGenerator')">Get Started</button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Updates Section -->
+            <div id="updates" class="dashboard-section">
+                <h2 style="color: #9333ea; margin-bottom: 1rem;">Latest Updates</h2>
+                <div id="updatesContainer">
+                    <div class="update-card">
+                        <div class="update-date">January 25, 2025</div>
+                        <div class="update-title">Welcome to ANOINT Array!</div>
+                        <p style="color: #e2e8f0;">Thank you for joining our community of energy healers. Your journey to personalized healing technology begins now!</p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Array Generator Section -->
+            <div id="arrayGenerator" class="dashboard-section">
+                <h2 style="color: #9333ea; margin-bottom: 1rem;">Array Generator</h2>
+                <div class="update-card">
+                    <h3 style="color: #06b6d4;">Create Your Healing Array</h3>
+                    <p style="margin-bottom: 1.5rem; color: #e2e8f0;">Generate a personalized healing array based on your energy signature and intentions.</p>
+                    <button class="btn btn-primary" onclick="alert('Array Generator coming soon! This will be a sophisticated tool for creating personalized healing arrays.')">Launch Array Generator</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Login Modal -->
+    <div id="loginModal" class="modal">
+        <div class="modal-content">
+            <span class="close" onclick="closeModal('loginModal')">&times;</span>
+            <h2 style="color: #06b6d4; margin-bottom: 1rem;">Login to Your Account</h2>
+            <form id="loginForm">
+                <div class="form-group">
+                    <label for="loginEmail">Email:</label>
+                    <input type="email" id="loginEmail" name="email" required>
+                </div>
+                <div class="form-group">
+                    <label for="loginPassword">Password:</label>
+                    <input type="password" id="loginPassword" name="password" required>
+                </div>
+                <button type="submit" class="btn btn-primary" style="width: 100%; margin-top: 1rem;">Login</button>
+            </form>
+            <p style="text-align: center; margin-top: 1rem; color: #94a3b8;">
+                Don't have an account? 
+                <a href="#" onclick="closeModal('loginModal'); openModal('signupModal')" style="color: #9333ea; text-decoration: none; font-weight: 600;">Sign up here</a>
+            </p>
+        </div>
+    </div>
+
+    <!-- Signup Modal -->
+    <div id="signupModal" class="modal">
+        <div class="modal-content">
+            <span class="close" onclick="closeModal('signupModal')">&times;</span>
+            <h2 style="color: #06b6d4; margin-bottom: 1rem;">Create Your Account</h2>
+            <form id="signupForm">
+                <div class="form-group">
+                    <label for="signupName">Full Name:</label>
+                    <input type="text" id="signupName" name="name" required>
+                </div>
+                <div class="form-group">
+                    <label for="signupEmail">Email:</label>
+                    <input type="email" id="signupEmail" name="email" required>
+                </div>
+                <div class="form-group">
+                    <label for="signupPassword">Password:</label>
+                    <input type="password" id="signupPassword" name="password" required>
+                </div>
+                <div class="form-group">
+                    <label for="signupConfirmPassword">Confirm Password:</label>
+                    <input type="password" id="signupConfirmPassword" name="confirmPassword" required>
+                </div>
+                <button type="submit" class="btn btn-primary" style="width: 100%; margin-top: 1rem;">Create Account</button>
+            </form>
+            <p style="text-align: center; margin-top: 1rem; color: #94a3b8;">
+                Already have an account? 
+                <a href="#" onclick="closeModal('signupModal'); openModal('loginModal')" style="color: #9333ea; text-decoration: none; font-weight: 600;">Login here</a>
+            </p>
+        </div>
+    </div>
+
+    <!-- VIP Modal -->
+    <div id="vipModal" class="modal">
+        <div class="modal-content">
+            <span class="close" onclick="closeModal('vipModal')">&times;</span>
+            <h2 style="color: #10b981; margin-bottom: 1rem;">Join VIP Waiting List</h2>
+            <form id="vipForm">
+                <div class="form-group">
+                    <label for="vipName">Full Name:</label>
+                    <input type="text" id="vipName" name="name" required>
+                </div>
+                <div class="form-group">
+                    <label for="vipEmail">Email:</label>
+                    <input type="email" id="vipEmail" name="email" required>
+                </div>
+                <div class="form-group">
+                    <label for="vipPhone">Phone (Optional):</label>
+                    <input type="tel" id="vipPhone" name="phone">
+                </div>
+                <div class="form-group">
+                    <label for="vipInterest">Areas of Interest:</label>
+                    <textarea id="vipInterest" name="interest" rows="3" style="width: 100%; padding: 0.75rem; border: 1px solid rgba(147, 51, 234, 0.3); border-radius: 10px; background: rgba(40, 40, 80, 0.5); color: white; font-family: 'EB Garamond', serif; resize: vertical;" placeholder="Tell us about your healing goals and interests..."></textarea>
+                </div>
+                <button type="submit" class="btn btn-primary" style="width: 100%; margin-top: 1rem;">Join Waiting List</button>
+            </form>
+        </div>
+    </div>
+
+    <!-- Admin Dashboard -->
+    <div id="adminDashboard" class="dashboard">
+        <div class="logout-btn">
+            <button class="btn btn-secondary" onclick="logout()">Logout</button>
+        </div>
+        <div class="dashboard-header">
+            <div class="container">
+                <h1 style="color: #06b6d4; margin-bottom: 0.5rem;">Admin Dashboard</h1>
+                <p style="color: #94a3b8;">Welcome back, Admin</p>
+            </div>
+        </div>
+        <div class="container">
+            <div class="dashboard-nav">
+                <button onclick="showAdminSection('userManagement')" class="active">User Management</button>
+                <button onclick="showAdminSection('siteManagement')">Site Management</button>
+                <button onclick="showAdminSection('affiliateManagement')">Affiliate Management</button>
+            </div>
+
+            <!-- User Management Section -->
+            <div id="userManagement" class="dashboard-section active">
+                <h2 style="color: #9333ea; margin-bottom: 1rem;">User Management</h2>
+                <div class="stats-grid">
+                    <div class="stat-card">
+                        <div class="stat-number" id="totalUsers">247</div>
+                        <div class="stat-label">Total Users</div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-number" id="activeUsers">198</div>
+                        <div class="stat-label">Active Users</div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-number" id="newUsersToday">12</div>
+                        <div class="stat-label">New Today</div>
+                    </div>
+                </div>
+                
+                <div style="margin-bottom: 1rem;">
+                    <button class="btn btn-primary" onclick="openModal('addUserModal')">Add New User</button>
+                </div>
+
+                <div class="data-table">
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>Name</th>
+                                <th>Email</th>
+                                <th>Join Date</th>
+                                <th>Arrays Created</th>
+                                <th>Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody id="usersTableBody">
+                            <tr>
+                                <td>Sarah Johnson</td>
+                                <td>sarah@email.com</td>
+                                <td>Jan 15, 2025</td>
+                                <td>3</td>
+                                <td>
+                                    <button class="action-btn btn-edit" onclick="sendPasswordReset('sarah@email.com')">Reset Password</button>
+                                    <button class="action-btn btn-delete" onclick="deleteUser('sarah@email.com')">Delete</button>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>Michael Chen</td>
+                                <td>michael@email.com</td>
+                                <td>Jan 20, 2025</td>
+                                <td>7</td>
+                                <td>
+                                    <button class="action-btn btn-edit" onclick="sendPasswordReset('michael@email.com')">Reset Password</button>
+                                    <button class="action-btn btn-delete" onclick="deleteUser('michael@email.com')">Delete</button>
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+
+            <!-- Site Management Section -->
+            <div id="siteManagement" class="dashboard-section">
+                <h2 style="color: #9333ea; margin-bottom: 1rem;">Site Management</h2>
+                <div class="stats-grid">
+                    <div class="stat-card">
+                        <div class="stat-number" id="monthlyVisitors">15,247</div>
+                        <div class="stat-label">Monthly Visitors</div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-number" id="pageViews">48,392</div>
+                        <div class="stat-label">Page Views</div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-number" id="conversionRate">3.2%</div>
+                        <div class="stat-label">Conversion Rate</div>
+                    </div>
+                </div>
+
+                <div class="update-card">
+                    <h3 style="color: #06b6d4;">SEO Settings</h3>
+                    <div class="form-group">
+                        <label>Meta Description:</label>
+                        <textarea style="width: 100%; padding: 0.75rem; border: 1px solid rgba(147, 51, 234, 0.3); border-radius: 10px; background: rgba(40, 40, 80, 0.5); color: white; font-family: 'EB Garamond', serif;" rows="3">Create powerful healing arrays with ANOINT's AI-powered Array Generator. Personalized energy healing technology combining ancient wisdom with modern innovation.</textarea>
+                    </div>
+                    <div class="form-group">
+                        <label>Google Analytics Tracking ID:</label>
+                        <input type="text" style="width: 100%; padding: 0.75rem; border: 1px solid rgba(147, 51, 234, 0.3); border-radius: 10px; background: rgba(40, 40, 80, 0.5); color: white; font-family: 'EB Garamond', serif;" placeholder="G-XXXXXXXXXX">
+                    </div>
+                    <button class="btn btn-primary">Save Settings</button>
+                </div>
+            </div>
+
+            <!-- Affiliate Management Section -->
+            <div id="affiliateManagement" class="dashboard-section">
+                <h2 style="color: #9333ea; margin-bottom: 1rem;">Affiliate Management</h2>
+                <div class="stats-grid">
+                    <div class="stat-card">
+                        <div class="stat-number" id="totalAffiliates">43</div>
+                        <div class="stat-label">Total Affiliates</div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-number" id="monthlyCommissions">$1,240</div>
+                        <div class="stat-label">Monthly Commissions</div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-number" id="pendingPayouts">$890</div>
+                        <div class="stat-label">Pending Payouts</div>
+                    </div>
+                </div>
+
+                <div class="data-table">
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>Affiliate Name</th>
+                                <th>Email</th>
+                                <th>Referrals</th>
+                                <th>Commissions</th>
+                                <th>Last Payout</th>
+                                <th>Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td>Jennifer Martinez</td>
+                                <td>jennifer@email.com</td>
+                                <td>12</td>
+                                <td>$120.00</td>
+                                <td>Jan 1, 2025</td>
+                                <td>
+                                    <button class="action-btn btn-edit" onclick="processAffiliatePayout('jennifer@email.com')">Process Payout</button>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>David Wilson</td>
+                                <td>david@email.com</td>
+                                <td>8</td>
+                                <td>$80.00</td>
+                                <td>Jan 1, 2025</td>
+                                <td>
+                                    <button class="action-btn btn-edit" onclick="processAffiliatePayout('david@email.com')">Process Payout</button>
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Member Dashboard -->
+    <div id="memberDashboard" class="dashboard">
+        <div class="logout-btn">
+            <button class="btn btn-secondary" onclick="logout()">Logout</button>
+        </div>
+        <div class="dashboard-header">
+            <div class="container">
+                <h1 style="color: #06b6d4; margin-bottom: 0.5rem;">Member Dashboard</h1>
+                <p style="color: #94a3b8;">Welcome back, <span id="memberName">User</span></p>
+            </div>
+        </div>
+        <div class="container">
+            <div class="dashboard-nav">
+                <button onclick="showMemberSection('myArrays')" class="active">My Arrays</button>
+                <button onclick="showMemberSection('updates')">Updates</button>
+                <button onclick="showMemberSection('arrayGenerator')">Array Generator</button>
+            </div>
+
+            <!-- My Arrays Section -->
+            <div id="myArrays" class="dashboard-section active">
+                <h2 style="color: #9333ea; margin-bottom: 1rem;">My Saved Arrays</h2>
+                <div class="array-gallery">
+                    <div class="array-item">
+                        <div class="array-preview">
+                            <span>Healing Array #1</span>
+                        </div>
+                        <h4 style="color: #06b6d4; margin-bottom: 0.5rem;">Personal Chakra Array</h4>
+                        <p style="color: #94a3b8; font-size: 0.875rem; margin-bottom: 1rem;">Created: Jan 20, 2025</p>
+                        <button class="btn btn-primary" style="font-size: 0.875rem; padding: 0.5rem 1rem;" onclick="downloadArray('array1')">Download PNG</button>
+                    </div>
+                    <div class="array-item">
+                        <div class="array-preview">
+                            <span>Healing Array #2</span>
+                        </div>
+                        <h4 style="color: #06b6d4; margin-bottom: 0.5rem;">Abundance Manifestation</h4>
+                        <p style="color: #94a3b8; font-size: 0.875rem; margin-bottom: 1rem;">Created: Jan 18, 2025</p>
+                        <button class="btn btn-primary" style="font-size: 0.875rem; padding: 0.5rem 1rem;" onclick="downloadArray('array2')">Download PNG</button>
+                    </div>
+                    <div class="array-item">
+                        <div class="array-preview">
+                            <span>Healing Array #3</span>
+                        </div>
+                        <h4 style="color: #06b6d4; margin-bottom: 0.5rem;">Protection & Grounding</h4>
+                        <p style="color: #94a3b8; font-size: 0.875rem; margin-bottom: 1rem;">Created: Jan 15, 2025</p>
+                        <button class="btn btn-primary" style="font-size: 0.875rem; padding: 0.5rem 1rem;" onclick="downloadArray('array3')">Download PNG</button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Updates Section -->
+            <div id="updates" class="dashboard-section">
+                <h2 style="color: #9333ea; margin-bottom: 1rem;">Latest Updates</h2>
+                <div class="update-card">
+                    <div class="update-date">January 25, 2025</div>
+                    <div class="update-title">New Array Generator Features</div>
+                    <p style="color: #e2e8f0;">We've added new sacred geometry patterns and enhanced color healing algorithms to create even more powerful arrays.</p>
+                </div>
+                <div class="update-card">
+                    <div class="update-date">January 20, 2025</div>
+                    <div class="update-title">VIP Scalar Technology Update</div>
+                    <p style="color: #e2e8f0;">Brad Johnson has completed the first batch of bio-scalar devices. VIP waiting list members will be contacted soon.</p>
+                </div>
+                <div class="update-card">
+                    <div class="update-date">January 15, 2025</div>
+                    <div class="update-title">Custom Product Line Expansion</div>
+                    <p style="color: #e2e8f0;">New products available: healing crystal sets, meditation mats, and energy-infused jewelry with your custom arrays.</p>
+                </div>
+            </div>
+
+            <!-- Array Generator Section -->
+            <div id="arrayGenerator" class="dashboard-section">
+                <h2 style="color: #9333ea; margin-bottom: 1rem;">Array Generator</h2>
+                <div class="update-card">
+                    <h3 style="color: #06b6d4;">Create Your Healing Array</h3>
+                    <p style="margin-bottom: 1.5rem; color: #e2e8f0;">Generate a personalized healing array based on your energy signature and intentions.</p>
+                    <button class="btn btn-primary" onclick="alert('Array Generator coming soon!')">Launch Array Generator</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Add User Modal -->
+    <div id="addUserModal" class="modal">
+        <div class="modal-content">
+            <span class="close" onclick="closeModal('addUserModal')">&times;</span>
+            <h2 style="color: #06b6d4; margin-bottom: 1rem;">Add New User</h2>
+            <form id="addUserForm">
+                <div class="form-group">
+                    <label for="addUserName">Full Name:</label>
+                    <input type="text" id="addUserName" name="name" required>
+                </div>
+                <div class="form-group">
+                    <label for="addUserEmail">Email:</label>
+                    <input type="email" id="addUserEmail" name="email" required>
+                </div>
+                <div class="form-group">
+                    <label for="addUserPassword">Temporary Password:</label>
+                    <input type="password" id="addUserPassword" name="password" required>
+                </div>
+                <button type="submit" class="btn btn-primary" style="width: 100%; margin-top: 1rem;">Add User</button>
+            </form>
+        </div>
+    </div>

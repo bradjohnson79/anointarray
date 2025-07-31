@@ -1,0 +1,16 @@
+# Prevent secrets and environment variables from being tracked
+.env
+
+# Node.js dependencies
+node_modules/
+
+# Build outputs
+dist/
+build/
+
+# Vite cache
+.vite/
+
+# VS Code workspace settings
+.vscode/
+.config/

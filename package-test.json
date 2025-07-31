@@ -1,0 +1,46 @@
+{
+  "name": "anoint-array-api-tests",
+  "version": "1.0.0",
+  "description": "Comprehensive API integration testing suite for ANOINT Array e-commerce platform",
+  "main": "run-all-tests.js",
+  "scripts": {
+    "test": "node run-all-tests.js",
+    "test:all": "node run-all-tests.js",
+    "test:api": "node api-test-suite.js",
+    "test:webhooks": "node payment-webhook-tester.js",
+    "test:email": "node email-delivery-tester.js",
+    "test:flows": "node integration-flow-tester.js", 
+    "test:performance": "node performance-load-tester.js",
+    "test:shipping": "node api-test-suite.js shipping",
+    "test:payments": "node api-test-suite.js payments",
+    "test:quick": "node api-test-suite.js",
+    "clean": "rm -f *-report.json *-report.md",
+    "help": "echo '\n📋 Available test commands:\n  npm test - Run all tests\n  npm run test:api - Basic API tests\n  npm run test:webhooks - Payment webhook tests\n  npm run test:email - Email delivery tests\n  npm run test:flows - End-to-end flow tests\n  npm run test:performance - Performance tests\n  npm run test:shipping - Shipping API only\n  npm run test:payments - Payment API only\n  npm run test:quick - Quick API validation\n  npm run clean - Remove test reports\n'"
+  },
+  "keywords": [
+    "api-testing",
+    "integration-testing",
+    "e-commerce",
+    "supabase",
+    "stripe",
+    "paypal",
+    "shipping",
+    "webhooks",
+    "performance-testing"
+  ],
+  "author": "APIHammer Testing Suite",
+  "license": "MIT",
+  "engines": {
+    "node": ">=18.0.0"
+  },
+  "dependencies": {},
+  "devDependencies": {},
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/your-org/anoint-array.git"
+  },
+  "bugs": {
+    "url": "https://github.com/your-org/anoint-array/issues"
+  },
+  "homepage": "https://github.com/your-org/anoint-array#readme"
+}
