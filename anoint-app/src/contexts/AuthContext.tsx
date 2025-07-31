@@ -122,40 +122,71 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
   }
 
   const signUp = async (email: string, password: string) => {
+    console.log('🔐 Starting signup process for:', email)
+    
     const { data, error } = await supabase.auth.signUp({
       email,
       password,
     })
     
+    if (error) {
+      console.error('❌ Signup error:', error.message)
+      return { error }
+    }
+    
     // If signup successful and user was created, create profile
-    if (!error && data.user) {
+    if (data.user) {
+      console.log('✅ Auth user created, ID:', data.user.id)
+      
+      // Wait a moment for auth to propagate
+      await new Promise(resolve => setTimeout(resolve, 1000))
+      
       try {
-        // Determine role - admin for info@anoint.me, user for others
-        const role = data.user.email === 'info@anoint.me' ? 'admin' : 'user'
-        const isVerified = data.user.email === 'info@anoint.me' ? true : false
+        // Sign in immediately to get session for profile creation
+        const { data: signInData, error: signInError } = await supabase.auth.signInWithPassword({
+          email,
+          password
+        })
         
-        // Create user profile with appropriate role
-        const { error: profileError } = await supabase
-          .from('user_profiles')
-          .insert({
-            user_id: data.user.id,
-            email: data.user.email,
-            role: role,
-            is_active: true,
-            is_verified: isVerified
-          })
-        
-        if (profileError) {
-          console.error('Error creating user profile:', profileError)
-        } else {
-          console.log('✅ User profile created successfully')
+        if (signInError) {
+          console.error('❌ Auto sign-in failed:', signInError.message)
+          return { error: signInError }
         }
-      } catch (profileError) {
-        console.error('Exception creating user profile:', profileError)
+        
+        if (signInData.session) {
+          console.log('✅ Session obtained, creating profile...')
+          
+          // Determine role - admin for info@anoint.me, user for others
+          const role = email === 'info@anoint.me' ? 'admin' : 'user'
+          const isVerified = email === 'info@anoint.me' ? true : false
+          
+          // Create user profile with appropriate role
+          const { error: profileError } = await supabase
+            .from('user_profiles')
+            .insert({
+              user_id: data.user.id,
+              email: email,
+              display_name: email.split('@')[0], // Default display name
+              role: role,
+              is_active: true,
+              is_verified: isVerified
+            })
+          
+          if (profileError) {
+            console.error('❌ Profile creation error:', profileError.message)
+            console.error('Full error details:', profileError)
+            // Don't fail signup if profile creation fails
+          } else {
+            console.log('✅ User profile created successfully')
+          }
+        }
+      } catch (exception) {
+        console.error('❌ Exception during profile creation:', exception)
+        // Don't fail signup if profile creation fails
       }
     }
     
-    return { error }
+    return { error: null }
   }
 
   const signOut = async () => {
