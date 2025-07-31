@@ -22,8 +22,9 @@ if (supabaseUrl === 'https://placeholder.supabase.co') {
 }
 
 // If key looks truncated or invalid, use the known working key
-if (!supabaseKey || supabaseKey === 'placeholder-key' || supabaseKey.length < 200) {
+if (!supabaseKey || supabaseKey === 'placeholder-key' || supabaseKey.length < 250) {
   console.warn('⚠️ Using hardcoded Supabase key - environment variable missing or truncated')
+  console.warn(`   Original key length: ${supabaseKey?.length || 0}, using full key`)
   supabaseKey = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InhtbmdoY2lpdGllZmJ3eHpoZ3J3Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTM3MjM0NzMsImV4cCI6MjA2OTI5OTQ3M30.dIeGonQS9a0ZhFo5WVYj1zMxtmm5juE35oCJSMm62a4'
 }
 

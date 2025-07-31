@@ -3,17 +3,14 @@
 # Netlify build script that handles environment variables
 echo "🔨 Starting Netlify build..."
 
-# Check if environment variables are set
-if [ -z "$VITE_SUPABASE_URL" ]; then
-  echo "⚠️  VITE_SUPABASE_URL not set in Netlify environment"
-  # Use the production values as fallback
-  export VITE_SUPABASE_URL="https://xmnghciitiefbwxzhgrw.supabase.co"
-  echo "✅ Using fallback URL"
-fi
+# Always use the correct values to avoid truncation issues
+echo "🔧 Setting up environment variables..."
+export VITE_SUPABASE_URL="https://xmnghciitiefbwxzhgrw.supabase.co"
+export VITE_SUPABASE_ANON_KEY="eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InhtbmdoY2lpdGllZmJ3eHpoZ3J3Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTM3MjM0NzMsImV4cCI6MjA2OTI5OTQ3M30.dIeGonQS9a0ZhFo5WVYj1zMxtmm5juE35oCJSMm62a4"
 
-if [ -z "$VITE_SUPABASE_ANON_KEY" ]; then
-  echo "⚠️  VITE_SUPABASE_ANON_KEY not set in Netlify environment"
-fi
+echo "✅ Environment variables set"
+echo "📏 URL length: ${#VITE_SUPABASE_URL}"
+echo "📏 Key length: ${#VITE_SUPABASE_ANON_KEY}"
 
 # Run the build
 echo "📦 Running npm build..."
