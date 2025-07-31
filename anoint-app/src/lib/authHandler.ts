@@ -1,32 +1,33 @@
 import { supabase } from './supabaseClient'
 
-export async function signUpAndCreateProfile(email, password, display_name = '') {
-  const { data: signUpData, error: signUpError } = await supabase.auth.signUp({
-    email,
-    password
-  })
+export async function signUpUser(email: string, password: string, displayName = '') {
+  const { data, error } = await supabase.auth.signUp({ email, password })
 
-  if (signUpError) {
-    console.error('❌ Sign-up failed:', signUpError.message)
-    throw signUpError
+  if (error) {
+    console.error('❌ Signup failed:', error.message)
+    throw error
   }
 
-  const user = signUpData?.user
-  if (!user?.id) {
-    console.error('❌ No user ID returned from signup')
+  const user = data.user
+  const session = data.session
+
+  if (!user?.id || !session) {
+    console.error('❌ Missing user ID or session after signup.')
     return
   }
+
+  console.log('✅ Signup successful:', user.id)
 
   const { error: profileError } = await supabase.from('user_profiles').insert({
     user_id: user.id,
     email,
-    display_name
+    display_name: displayName
   })
 
   if (profileError) {
-    console.error('❌ Profile insert failed:', profileError.message)
+    console.error('❌ Failed to insert profile:', profileError.message)
     throw profileError
   }
 
-  console.log('✅ User and profile created successfully')
+  console.log('✅ Profile created and session active. No need to re-login.')
 }
