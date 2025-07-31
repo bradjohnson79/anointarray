@@ -130,10 +130,35 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
   }
 
   const signUp = async (email: string, password: string) => {
-    const { error } = await supabase.auth.signUp({
+    const { data, error } = await supabase.auth.signUp({
       email,
       password,
     })
+    
+    // If signup successful and user was created, create profile
+    if (!error && data.user) {
+      try {
+        // Create user profile with default role
+        const { error: profileError } = await supabase
+          .from('user_profiles')
+          .insert({
+            user_id: data.user.id,
+            email: data.user.email,
+            role: 'user', // Default role
+            is_active: true,
+            is_verified: false // Will be true once email is confirmed
+          })
+        
+        if (profileError) {
+          console.error('Error creating user profile:', profileError)
+        } else {
+          console.log('✅ User profile created successfully')
+        }
+      } catch (profileError) {
+        console.error('Exception creating user profile:', profileError)
+      }
+    }
+    
     return { error }
   }
 
