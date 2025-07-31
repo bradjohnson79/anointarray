@@ -3,7 +3,7 @@ export const debugEnv = () => {
   const supabaseUrl = import.meta.env.VITE_SUPABASE_URL
   const supabaseKey = import.meta.env.VITE_SUPABASE_ANON_KEY
   
-  console.log('🔍 Environment Debug:')
+  console.log('🔍 Environment Debug (updated env vars):')
   console.log('VITE_SUPABASE_URL:', supabaseUrl)
   console.log('URL length:', supabaseUrl?.length)
   console.log('URL includes correct ID:', supabaseUrl?.includes('xmnghciitiefbwxzhgrw'))
