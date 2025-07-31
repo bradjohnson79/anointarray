@@ -3,7 +3,7 @@
   base = "anoint-app"
   
   # Build command (runs from base directory)
-  command = "npm install && bash scripts/netlify-build.sh"
+  command = "npm ci && npm run build"
   
   # Directory to publish (relative to base directory)
   publish = "dist"
@@ -18,9 +18,9 @@
   # Disable secrets scanning for Supabase anon key (it's a public key)
   SECRETS_SCAN_OMIT_KEYS = "VITE_SUPABASE_ANON_KEY"
   
-  # Supabase configuration - these should be set in Netlify dashboard
-  # VITE_SUPABASE_URL = "https://xmnghciitiefbwxzhgrw.supabase.co"
-  # VITE_SUPABASE_ANON_KEY = "your-anon-key"
+  # Supabase configuration
+  VITE_SUPABASE_URL = "https://xmnghciitiefbwxzhgrw.supabase.co"
+  VITE_SUPABASE_ANON_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InhtbmdoY2lpdGllZmJ3eHpoZ3J3Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTM3MjM0NzMsImV4cCI6MjA2OTI5OTQ3M30.dIeGonQS9a0ZhFo5WVYj1zMxtmm5juE35oCJSMm62a4"
 
 # SPA routing - redirect all routes to index.html
 [[redirects]]
