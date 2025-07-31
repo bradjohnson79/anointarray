@@ -139,15 +139,19 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
     // If signup successful and user was created, create profile
     if (!error && data.user) {
       try {
-        // Create user profile with default role
+        // Determine role - admin for info@anoint.me, user for others
+        const role = data.user.email === 'info@anoint.me' ? 'admin' : 'user'
+        const isVerified = data.user.email === 'info@anoint.me' ? true : false
+        
+        // Create user profile with appropriate role
         const { error: profileError } = await supabase
           .from('user_profiles')
           .insert({
             user_id: data.user.id,
             email: data.user.email,
-            role: 'user', // Default role
+            role: role,
             is_active: true,
-            is_verified: false // Will be true once email is confirmed
+            is_verified: isVerified
           })
         
         if (profileError) {
