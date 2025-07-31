@@ -3,7 +3,7 @@
   base = "anoint-app"
   
   # Build command (runs from base directory)
-  command = "npm install && npm run build"
+  command = "npm install && bash scripts/netlify-build.sh"
   
   # Directory to publish (relative to base directory)
   publish = "dist"
@@ -14,6 +14,9 @@
   
   # Build optimization
   NPM_FLAGS = "--production=false"
+  
+  # Disable secrets scanning for Supabase anon key (it's a public key)
+  SECRETS_SCAN_OMIT_KEYS = "VITE_SUPABASE_ANON_KEY"
   
   # Supabase configuration - these should be set in Netlify dashboard
   # VITE_SUPABASE_URL = "https://xmnghciitiefbwxzhgrw.supabase.co"
