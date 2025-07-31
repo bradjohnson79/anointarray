@@ -2,7 +2,7 @@ import { useState, useEffect } from 'react'
 import { Link, useLocation } from 'react-router-dom'
 import Layout from '../../components/layout/Layout'
 import ProtectedRoute from '../../components/layout/ProtectedRoute'
-import { Search, UserPlus, Trash2, Edit, Mail, Users as UsersIcon, Crown } from 'lucide-react'
+import { Search, UserPlus, Trash2, Mail, Users as UsersIcon, Crown } from 'lucide-react'
 import { getSupabaseConfig } from '../../utils/supabase-config'
 import { createClient } from '@supabase/supabase-js'
 
