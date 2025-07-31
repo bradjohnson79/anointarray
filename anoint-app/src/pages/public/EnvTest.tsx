@@ -2,6 +2,7 @@ import Layout from '../../components/layout/Layout'
 
 const EnvTest = () => {
   const supabaseUrl = import.meta.env.VITE_SUPABASE_URL || 'NOT SET'
+  const supabaseKey = import.meta.env.VITE_SUPABASE_ANON_KEY || 'NOT SET'
   const hasTypo = supabaseUrl.includes('xmnghciitifbwxzhgorw')
   const isCorrect = supabaseUrl.includes('xmnghciitiefbwxzhgrw')
   
@@ -34,6 +35,18 @@ const EnvTest = () => {
             <div className="mt-6 p-4 bg-yellow-900 rounded">
               <h3 className="font-semibold mb-2">Expected URL:</h3>
               <code className="text-sm">https://xmnghciitiefbwxzhgrw.supabase.co</code>
+            </div>
+            
+            <div className="mt-6">
+              <h2 className="text-xl font-semibold mb-2">VITE_SUPABASE_ANON_KEY:</h2>
+              <div className="bg-gray-900 p-3 rounded space-y-2">
+                <p className="text-sm">First 50 chars: <code>{supabaseKey.substring(0, 50)}...</code></p>
+                <p className="text-sm">Key length: <span className={supabaseKey.length > 200 ? 'text-green-400' : 'text-red-400'}>{supabaseKey.length} characters</span></p>
+                <p className="text-sm">Expected length: ~251 characters</p>
+                {supabaseKey.length < 200 && (
+                  <p className="text-red-400 font-semibold">⚠️ API key appears to be truncated!</p>
+                )}
+              </div>
             </div>
             
             <div className="mt-4 text-sm text-gray-400">

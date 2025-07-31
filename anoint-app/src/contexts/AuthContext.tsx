@@ -7,7 +7,7 @@ debugEnv()
 
 // Force correct URL if typo is detected
 let supabaseUrl = import.meta.env.VITE_SUPABASE_URL || 'https://placeholder.supabase.co'
-const supabaseKey = import.meta.env.VITE_SUPABASE_ANON_KEY || 'placeholder-key'
+let supabaseKey = import.meta.env.VITE_SUPABASE_ANON_KEY || 'placeholder-key'
 
 // Fix typo if present
 if (supabaseUrl.includes('xmnghciitifbwxzhgorw')) {
@@ -19,6 +19,12 @@ if (supabaseUrl.includes('xmnghciitifbwxzhgorw')) {
 if (supabaseUrl === 'https://placeholder.supabase.co') {
   console.warn('⚠️ Using hardcoded Supabase URL - environment variables not loaded')
   supabaseUrl = 'https://xmnghciitiefbwxzhgrw.supabase.co'
+}
+
+// If key looks truncated or invalid, use the known working key
+if (!supabaseKey || supabaseKey === 'placeholder-key' || supabaseKey.length < 200) {
+  console.warn('⚠️ Using hardcoded Supabase key - environment variable missing or truncated')
+  supabaseKey = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InhtbmdoY2lpdGllZmJ3eHpoZ3J3Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTM3MjM0NzMsImV4cCI6MjA2OTI5OTQ3M30.dIeGonQS9a0ZhFo5WVYj1zMxtmm5juE35oCJSMm62a4'
 }
 
 const supabase = createClient(supabaseUrl, supabaseKey)
