@@ -1,32 +1,13 @@
 import { createContext, useContext, useEffect, useState } from 'react'
 import { createClient, type User, type Session } from '@supabase/supabase-js'
 import { debugEnv } from '../utils/debug-env'
+import { getSupabaseConfig } from '../utils/supabase-config'
 
 // Debug environment on load
 debugEnv()
 
-// Force correct URL if typo is detected
-let supabaseUrl = import.meta.env.VITE_SUPABASE_URL || 'https://placeholder.supabase.co'
-let supabaseKey = import.meta.env.VITE_SUPABASE_ANON_KEY || 'placeholder-key'
-
-// Fix typo if present
-if (supabaseUrl.includes('xmnghciitifbwxzhgorw')) {
-  console.warn('⚠️ Fixing Supabase URL typo')
-  supabaseUrl = supabaseUrl.replace('xmnghciitifbwxzhgorw', 'xmnghciitiefbwxzhgrw')
-}
-
-// If still using placeholder, use correct URL
-if (supabaseUrl === 'https://placeholder.supabase.co') {
-  console.warn('⚠️ Using hardcoded Supabase URL - environment variables not loaded')
-  supabaseUrl = 'https://xmnghciitiefbwxzhgrw.supabase.co'
-}
-
-// If key looks truncated or invalid, use the known working key
-if (!supabaseKey || supabaseKey === 'placeholder-key' || supabaseKey.length < 250) {
-  console.warn('⚠️ Using hardcoded Supabase key - environment variable missing or truncated')
-  console.warn(`   Original key length: ${supabaseKey?.length || 0}, using full key`)
-  supabaseKey = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InhtbmdoY2lpdGllZmJ3eHpoZ3J3Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTM3MjM0NzMsImV4cCI6MjA2OTI5OTQ3M30.dIeGonQS9a0ZhFo5WVYj1zMxtmm5juE35oCJSMm62a4'
-}
+// Get properly configured Supabase settings
+const { url: supabaseUrl, anonKey: supabaseKey } = getSupabaseConfig()
 
 const supabase = createClient(supabaseUrl, supabaseKey)
 
