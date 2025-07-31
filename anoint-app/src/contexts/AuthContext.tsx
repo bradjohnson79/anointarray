@@ -1,5 +1,11 @@
 import { createContext, useContext, useEffect, useState } from 'react'
 import { createClient, type User, type Session } from '@supabase/supabase-js'
+import { debugEnv } from '../utils/debug-env'
+
+// Debug environment on load
+if (import.meta.env.DEV) {
+  debugEnv()
+}
 
 const supabase = createClient(
   import.meta.env.VITE_SUPABASE_URL || 'https://placeholder.supabase.co',

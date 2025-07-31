@@ -14,6 +14,10 @@
   
   # Build optimization
   NPM_FLAGS = "--production=false"
+  
+  # Supabase configuration - these should be set in Netlify dashboard
+  # VITE_SUPABASE_URL = "https://xmnghciitiefbwxzhgrw.supabase.co"
+  # VITE_SUPABASE_ANON_KEY = "your-anon-key"
 
 # SPA routing - redirect all routes to index.html
 [[redirects]]
