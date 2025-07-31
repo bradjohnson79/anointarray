@@ -134,10 +134,34 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
       return { error }
     }
     
-    // Check if we have user and session from signup
-    if (data.user && data.session) {
-      console.log('✅ Auth user created with session, ID:', data.user.id)
-      console.log('✅ Session already active, no need to sign in again')
+    let session = data.session
+    const user = data.user
+    
+    // Handle case where user is created but session is missing
+    if (user && !session) {
+      console.warn('⚠️ No session returned after sign-up, attempting fallback login...')
+      
+      // Wait a moment for user to be fully created
+      await new Promise(resolve => setTimeout(resolve, 1000))
+      
+      const { data: loginData, error: loginError } = await supabase.auth.signInWithPassword({
+        email,
+        password
+      })
+      
+      if (loginError) {
+        console.error('❌ Fallback login failed:', loginError.message)
+        // Still try to create profile even if login fails
+      } else {
+        session = loginData.session
+        console.log('✅ Fallback login successful, session obtained')
+      }
+    }
+    
+    // Create profile if we have a user (with or without session)
+    if (user) {
+      console.log('✅ Auth user created, ID:', user.id)
+      console.log('📊 Session status:', session ? 'Active' : 'Missing')
       
       try {
         // Determine role - admin for info@anoint.me, user for others
@@ -148,7 +172,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
         const { error: profileError } = await supabase
           .from('user_profiles')
           .insert({
-            user_id: data.user.id,
+            user_id: user.id,
             email: email,
             display_name: email.split('@')[0], // Default display name
             role: role,
@@ -167,8 +191,6 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
         console.error('❌ Exception during profile creation:', exception)
         // Don't fail signup if profile creation fails
       }
-    } else if (data.user && !data.session) {
-      console.log('⚠️ User created but no session (email confirmation may be required)')
     }
     
     return { error: null }
