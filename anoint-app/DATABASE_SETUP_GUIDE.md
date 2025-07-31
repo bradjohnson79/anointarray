@@ -18,6 +18,7 @@ CREATE TABLE IF NOT EXISTS user_profiles (
   first_name TEXT,
   last_name TEXT,
   display_name TEXT,
+  avatar_url TEXT,
   role TEXT DEFAULT 'user' CHECK (role IN ('user', 'admin', 'moderator', 'vip')),
   is_active BOOLEAN DEFAULT true,
   is_verified BOOLEAN DEFAULT false,
@@ -55,6 +56,13 @@ CREATE TRIGGER handle_user_profiles_updated_at
   BEFORE UPDATE ON user_profiles
   FOR EACH ROW EXECUTE FUNCTION handle_updated_at();
 ```
+
+3. **Create Storage Bucket for Avatars** (Optional - for avatar uploads):
+   - Go to: https://supabase.com/dashboard/project/xmnghciitiefbwxzhgrw/storage/buckets
+   - Click "New bucket"
+   - Name: `avatars`
+   - Make it public: Yes
+   - Click "Create bucket"
 
 ## 🧪 **STEP 2: Test User Creation**
 

@@ -2,7 +2,7 @@ import { useState } from 'react'
 import Layout from '../../components/layout/Layout'
 import ProtectedRoute from '../../components/layout/ProtectedRoute'
 import { useAuth } from '../../contexts/AuthContext'
-import { Download, Eye, Grid3X3, FileText } from 'lucide-react'
+import { Download, Eye, Grid3X3, FileText, LogOut } from 'lucide-react'
 
 // Mock data for generated arrays - replace with Supabase query
 const mockArrays = [
@@ -27,7 +27,7 @@ const mockArrays = [
 ]
 
 const Dashboard = () => {
-  const { user } = useAuth()
+  const { user, signOut } = useAuth()
   const [arrays] = useState(mockArrays)
 
   const handleDownload = (arrayId: string) => {
@@ -70,7 +70,7 @@ const Dashboard = () => {
                     </div>
                     <div>
                       <label className="text-sm text-gray-400">Account Type</label>
-                      <p className="text-purple-400 font-semibold">Premium Member</p>
+                      <p className="text-purple-400 font-semibold">Member</p>
                     </div>
                   </div>
                   
@@ -93,6 +93,17 @@ const Dashboard = () => {
                       <p className="text-3xl font-bold text-purple-400">∞</p>
                       <p className="text-sm text-gray-400">Possibilities</p>
                     </div>
+                  </div>
+                  
+                  {/* Logout Button */}
+                  <div className="mt-6 pt-6 border-t border-gray-700">
+                    <button
+                      onClick={signOut}
+                      className="w-full bg-red-600 hover:bg-red-700 text-white py-2 rounded-lg transition-colors flex items-center justify-center gap-2"
+                    >
+                      <LogOut size={16} />
+                      Sign Out
+                    </button>
                   </div>
                 </div>
               </div>
