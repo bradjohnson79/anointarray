@@ -15,6 +15,7 @@ const VipProducts = lazy(() => import('./pages/public/VipProducts'));
 const PrivacyPolicy = lazy(() => import('./pages/public/PrivacyPolicy'));
 const TermsConditions = lazy(() => import('./pages/public/TermsConditions'));
 const Disclaimer = lazy(() => import('./pages/public/Disclaimer'));
+const EnvTest = lazy(() => import('./pages/public/EnvTest'));
 const Dashboard = lazy(() => import('./pages/private/Dashboard'));
 const AdminUsers = lazy(() => import('./pages/admin/Users'));
 const AdminProducts = lazy(() => import('./pages/admin/Products'));
@@ -51,6 +52,7 @@ function App() {
             <Route path="/privacy-policy" element={<PrivacyPolicy />} />
             <Route path="/terms-conditions" element={<TermsConditions />} />
             <Route path="/disclaimer" element={<Disclaimer />} />
+            <Route path="/env-test" element={<EnvTest />} />
             
             {/* Private Routes */}
             <Route path="/dashboard" element={<Dashboard />} />

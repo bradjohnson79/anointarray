@@ -3,14 +3,25 @@ import { createClient, type User, type Session } from '@supabase/supabase-js'
 import { debugEnv } from '../utils/debug-env'
 
 // Debug environment on load
-if (import.meta.env.DEV) {
-  debugEnv()
+debugEnv()
+
+// Force correct URL if typo is detected
+let supabaseUrl = import.meta.env.VITE_SUPABASE_URL || 'https://placeholder.supabase.co'
+const supabaseKey = import.meta.env.VITE_SUPABASE_ANON_KEY || 'placeholder-key'
+
+// Fix typo if present
+if (supabaseUrl.includes('xmnghciitifbwxzhgorw')) {
+  console.warn('⚠️ Fixing Supabase URL typo')
+  supabaseUrl = supabaseUrl.replace('xmnghciitifbwxzhgorw', 'xmnghciitiefbwxzhgrw')
 }
 
-const supabase = createClient(
-  import.meta.env.VITE_SUPABASE_URL || 'https://placeholder.supabase.co',
-  import.meta.env.VITE_SUPABASE_ANON_KEY || 'placeholder-key'
-)
+// If still using placeholder, use correct URL
+if (supabaseUrl === 'https://placeholder.supabase.co') {
+  console.warn('⚠️ Using hardcoded Supabase URL - environment variables not loaded')
+  supabaseUrl = 'https://xmnghciitiefbwxzhgrw.supabase.co'
+}
+
+const supabase = createClient(supabaseUrl, supabaseKey)
 
 interface UserProfile {
   id: string
