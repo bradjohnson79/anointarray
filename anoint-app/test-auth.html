@@ -1,0 +1,84 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Auth Test</title>
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+</head>
+<body>
+    <h1>Supabase Auth Test</h1>
+    
+    <div>
+        <h2>Test with existing admin</h2>
+        <input type="email" id="email" placeholder="bradjohnson79@gmail.com">
+        <input type="password" id="password" placeholder="password">
+        <button onclick="testSignIn()">Sign In</button>
+    </div>
+    
+    <div>
+        <h2>Create new user</h2>
+        <input type="email" id="newEmail" placeholder="info@anoint.me" value="info@anoint.me">
+        <input type="password" id="newPassword" placeholder="Admin123" value="Admin123">
+        <button onclick="testSignUp()">Sign Up</button>
+    </div>
+    
+    <div id="result"></div>
+    
+    <script>
+        const supabaseUrl = 'https://xmnghciitiefbwxzhgrw.supabase.co'
+        const supabaseKey = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InhtbmdoY2lpdGllZmJ3eHpoZ3J3Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTM3MjM0NzMsImV4cCI6MjA2OTI5OTQ3M30.dIeGonQS9a0ZhFo5WVYj1zMxtmm5juE35oCJSMm62a4'
+        
+        const supabase = supabase.createClient(supabaseUrl, supabaseKey)
+        
+        function log(message) {
+            document.getElementById('result').innerHTML += '<p>' + message + '</p>'
+            console.log(message)
+        }
+        
+        async function testSignIn() {
+            const email = document.getElementById('email').value
+            const password = document.getElementById('password').value
+            
+            log('🔄 Testing sign in...')
+            
+            try {
+                const { data, error } = await supabase.auth.signInWithPassword({
+                    email: email,
+                    password: password
+                })
+                
+                if (error) {
+                    log('❌ Sign in error: ' + error.message)
+                } else {
+                    log('✅ Sign in successful!')
+                    log('User: ' + data.user.email)
+                }
+            } catch (err) {
+                log('❌ Sign in exception: ' + err.message)
+            }
+        }
+        
+        async function testSignUp() {
+            const email = document.getElementById('newEmail').value
+            const password = document.getElementById('newPassword').value
+            
+            log('🔄 Testing sign up...')
+            
+            try {
+                const { data, error } = await supabase.auth.signUp({
+                    email: email,
+                    password: password
+                })
+                
+                if (error) {
+                    log('❌ Sign up error: ' + error.message)
+                } else {
+                    log('✅ Sign up successful!')
+                    log('User: ' + data.user.email)
+                }
+            } catch (err) {
+                log('❌ Sign up exception: ' + err.message)
+            }
+        }
+    </script>
+</body>
+</html>

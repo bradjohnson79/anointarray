@@ -17,7 +17,7 @@ export const debugEnv = () => {
   }
   
   // Check if key is complete
-  const expectedKeyLength = 251 // Typical Supabase anon key length
+  const expectedKeyLength = 208 // Actual Supabase anon key length for this project
   if (supabaseKey && supabaseKey.length < expectedKeyLength) {
     console.error(`❌ API key appears truncated! Length: ${supabaseKey.length}, expected: ~${expectedKeyLength}`)
   }
