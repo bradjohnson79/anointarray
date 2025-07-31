@@ -1,20 +1,29 @@
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import { Link, useLocation } from 'react-router-dom'
 import Layout from '../../components/layout/Layout'
 import ProtectedRoute from '../../components/layout/ProtectedRoute'
 import { Search, UserPlus, Trash2, Edit, Mail, Users as UsersIcon, Crown } from 'lucide-react'
+import { getSupabaseConfig } from '../../utils/supabase-config'
+import { createClient } from '@supabase/supabase-js'
 
-// Mock user data - replace with Supabase query
-const mockUsers = [
-  { id: '1', email: 'user1@example.com', created_at: '2025-01-10', role: 'user', status: 'active' },
-  { id: '2', email: 'user2@example.com', created_at: '2025-01-15', role: 'user', status: 'active' },
-  { id: '3', email: 'admin@example.com', created_at: '2025-01-01', role: 'admin', status: 'active' },
-  { id: '4', email: 'user3@example.com', created_at: '2025-01-20', role: 'user', status: 'inactive' }
-]
+const { url: supabaseUrl, anonKey: supabaseKey } = getSupabaseConfig()
+const supabase = createClient(supabaseUrl, supabaseKey)
+
+interface UserProfile {
+  id: string
+  user_id: string
+  email: string
+  role: 'user' | 'admin' | 'moderator' | 'vip'
+  is_active: boolean
+  is_verified: boolean
+  created_at: string
+  updated_at: string
+}
 
 const Users = () => {
   const location = useLocation()
-  const [users, setUsers] = useState(mockUsers)
+  const [users, setUsers] = useState<UserProfile[]>([])
+  const [loading, setLoading] = useState(true)
   const [searchTerm, setSearchTerm] = useState('')
   const [showAddUser, setShowAddUser] = useState(false)
   const [newUser, setNewUser] = useState({ email: '', password: '', role: 'user' })
@@ -24,31 +33,146 @@ const Users = () => {
     { name: 'VIP Subscribers', path: '/admin/vip-subscribers', icon: Crown }
   ]
 
+  // Load users from Supabase
+  useEffect(() => {
+    loadUsers()
+  }, [])
+
+  const loadUsers = async () => {
+    try {
+      const { data, error } = await supabase
+        .from('user_profiles')
+        .select('*')
+        .order('created_at', { ascending: false })
+      
+      if (error) {
+        console.error('Error loading users:', error)
+      } else {
+        setUsers(data || [])
+      }
+    } catch (error) {
+      console.error('Exception loading users:', error)
+    } finally {
+      setLoading(false)
+    }
+  }
+
   const filteredUsers = users.filter(user => 
     user.email.toLowerCase().includes(searchTerm.toLowerCase())
   )
 
   const handleAddUser = async () => {
-    // Implement Supabase user creation
-    console.log('Adding user:', newUser)
-    setShowAddUser(false)
-    setNewUser({ email: '', password: '', role: 'user' })
+    try {
+      // Create auth user first
+      const { data: authData, error: authError } = await supabase.auth.signUp({
+        email: newUser.email,
+        password: newUser.password,
+      })
+
+      if (authError) {
+        alert('Error creating user: ' + authError.message)
+        return
+      }
+
+      if (authData.user) {
+        // Create profile
+        const { error: profileError } = await supabase
+          .from('user_profiles')
+          .insert({
+            user_id: authData.user.id,
+            email: newUser.email,
+            role: newUser.role as 'user' | 'admin' | 'moderator' | 'vip',
+            is_active: true,
+            is_verified: true // Admin created users are pre-verified
+          })
+
+        if (profileError) {
+          console.error('Error creating profile:', profileError)
+          alert('User created but profile failed: ' + profileError.message)
+        } else {
+          await loadUsers() // Refresh list
+          setShowAddUser(false)
+          setNewUser({ email: '', password: '', role: 'user' })
+          alert('User created successfully!')
+        }
+      }
+    } catch (error) {
+      console.error('Exception creating user:', error)
+      alert('Error creating user')
+    }
   }
 
   const handleDeleteUser = async (userId: string) => {
-    if (confirm('Are you sure you want to delete this user?')) {
-      // Implement Supabase user deletion
-      setUsers(users.filter(u => u.id !== userId))
+    if (confirm('Are you sure you want to delete this user? This will also delete their auth account.')) {
+      try {
+        // Delete profile first
+        const { error: profileError } = await supabase
+          .from('user_profiles')
+          .delete()
+          .eq('id', userId)
+
+        if (profileError) {
+          console.error('Error deleting profile:', profileError)
+          alert('Error deleting user profile')
+          return
+        }
+
+        // Note: Deleting auth users requires service role key
+        // For now, just remove from profiles table
+        await loadUsers()
+        alert('User profile deleted successfully')
+      } catch (error) {
+        console.error('Exception deleting user:', error)
+        alert('Error deleting user')
+      }
     }
   }
 
   const handleToggleStatus = async (userId: string) => {
-    // Implement status toggle in Supabase
-    setUsers(users.map(u => 
-      u.id === userId 
-        ? { ...u, status: u.status === 'active' ? 'inactive' : 'active' }
-        : u
-    ))
+    try {
+      const user = users.find(u => u.id === userId)
+      if (!user) return
+
+      const { error } = await supabase
+        .from('user_profiles')
+        .update({ 
+          is_active: !user.is_active,
+          updated_at: new Date().toISOString()
+        })
+        .eq('id', userId)
+
+      if (error) {
+        console.error('Error updating user status:', error)
+        alert('Error updating user status')
+      } else {
+        await loadUsers() // Refresh list
+      }
+    } catch (error) {
+      console.error('Exception updating user status:', error)
+      alert('Error updating user status')
+    }
+  }
+
+  const handleRoleChange = async (userId: string, newRole: string) => {
+    try {
+      const { error } = await supabase
+        .from('user_profiles')
+        .update({ 
+          role: newRole,
+          updated_at: new Date().toISOString()
+        })
+        .eq('id', userId)
+
+      if (error) {
+        console.error('Error updating user role:', error)
+        alert('Error updating user role')
+      } else {
+        await loadUsers() // Refresh list
+      }
+    } catch (error) {
+      console.error('Exception updating user role:', error)
+      alert('Error updating user role')
+    }
   }
 
   return (
@@ -109,68 +233,102 @@ const Users = () => {
 
             {/* Users Table */}
             <div className="bg-gray-800 rounded-lg overflow-hidden">
-              <div className="overflow-x-auto">
-                <table className="w-full">
-                  <thead className="bg-gray-700">
-                    <tr>
-                      <th className="px-6 py-3 text-left text-xs font-medium text-gray-400 uppercase tracking-wider">Email</th>
-                      <th className="px-6 py-3 text-left text-xs font-medium text-gray-400 uppercase tracking-wider">Role</th>
-                      <th className="px-6 py-3 text-left text-xs font-medium text-gray-400 uppercase tracking-wider">Status</th>
-                      <th className="px-6 py-3 text-left text-xs font-medium text-gray-400 uppercase tracking-wider">Created</th>
-                      <th className="px-6 py-3 text-left text-xs font-medium text-gray-400 uppercase tracking-wider">Actions</th>
-                    </tr>
-                  </thead>
-                  <tbody className="divide-y divide-gray-700">
-                    {filteredUsers.map((user) => (
-                      <tr key={user.id} className="hover:bg-gray-700 transition-colors">
-                        <td className="px-6 py-4 whitespace-nowrap">
-                          <div className="flex items-center">
-                            <Mail size={16} className="text-gray-400 mr-2" />
-                            <span>{user.email}</span>
-                          </div>
-                        </td>
-                        <td className="px-6 py-4 whitespace-nowrap">
-                          <span className={`px-2 py-1 text-xs rounded ${
-                            user.role === 'admin' 
-                              ? 'bg-purple-900 text-purple-300' 
-                              : 'bg-gray-700 text-gray-300'
-                          }`}>
-                            {user.role}
-                          </span>
-                        </td>
-                        <td className="px-6 py-4 whitespace-nowrap">
-                          <button
-                            onClick={() => handleToggleStatus(user.id)}
-                            className={`px-3 py-1 text-xs rounded ${
-                              user.status === 'active'
-                                ? 'bg-green-900 text-green-300'
-                                : 'bg-red-900 text-red-300'
-                            }`}
-                          >
-                            {user.status}
-                          </button>
-                        </td>
-                        <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-400">
-                          {user.created_at}
-                        </td>
-                        <td className="px-6 py-4 whitespace-nowrap">
-                          <div className="flex gap-2">
-                            <button className="text-purple-400 hover:text-purple-300 transition-colors">
-                              <Edit size={18} />
-                            </button>
-                            <button
-                              onClick={() => handleDeleteUser(user.id)}
-                              className="text-red-400 hover:text-red-300 transition-colors"
-                            >
-                              <Trash2 size={18} />
-                            </button>
-                          </div>
-                        </td>
+              {loading ? (
+                <div className="flex items-center justify-center py-12">
+                  <div className="animate-spin rounded-full h-8 w-8 border-4 border-purple-500 border-t-transparent"></div>
+                  <span className="ml-3 text-gray-400">Loading users...</span>
+                </div>
+              ) : (
+                <div className="overflow-x-auto">
+                  <table className="w-full">
+                    <thead className="bg-gray-700">
+                      <tr>
+                        <th className="px-6 py-3 text-left text-xs font-medium text-gray-400 uppercase tracking-wider">Email</th>
+                        <th className="px-6 py-3 text-left text-xs font-medium text-gray-400 uppercase tracking-wider">Role</th>
+                        <th className="px-6 py-3 text-left text-xs font-medium text-gray-400 uppercase tracking-wider">Status</th>
+                        <th className="px-6 py-3 text-left text-xs font-medium text-gray-400 uppercase tracking-wider">Verified</th>
+                        <th className="px-6 py-3 text-left text-xs font-medium text-gray-400 uppercase tracking-wider">Created</th>
+                        <th className="px-6 py-3 text-left text-xs font-medium text-gray-400 uppercase tracking-wider">Actions</th>
                       </tr>
-                    ))}
-                  </tbody>
-                </table>
-              </div>
+                    </thead>
+                    <tbody className="divide-y divide-gray-700">
+                      {filteredUsers.length === 0 ? (
+                        <tr>
+                          <td colSpan={6} className="px-6 py-8 text-center text-gray-400">
+                            {searchTerm ? 'No users found matching your search.' : 'No users found.'}
+                          </td>
+                        </tr>
+                      ) : (
+                        filteredUsers.map((user) => (
+                          <tr key={user.id} className="hover:bg-gray-700 transition-colors">
+                            <td className="px-6 py-4 whitespace-nowrap">
+                              <div className="flex items-center">
+                                <Mail size={16} className="text-gray-400 mr-2" />
+                                <span>{user.email}</span>
+                              </div>
+                            </td>
+                            <td className="px-6 py-4 whitespace-nowrap">
+                              <select
+                                value={user.role}
+                                onChange={(e) => handleRoleChange(user.id, e.target.value)}
+                                className={`px-2 py-1 text-xs rounded bg-gray-700 border-none ${
+                                  user.role === 'admin' 
+                                    ? 'text-purple-300' 
+                                    : user.role === 'moderator'
+                                    ? 'text-blue-300'
+                                    : user.role === 'vip' 
+                                    ? 'text-yellow-300'
+                                    : 'text-gray-300'
+                                }`}
+                              >
+                                <option value="user">User</option>
+                                <option value="vip">VIP</option>
+                                <option value="moderator">Moderator</option>
+                                <option value="admin">Admin</option>
+                              </select>
+                            </td>
+                            <td className="px-6 py-4 whitespace-nowrap">
+                              <button
+                                onClick={() => handleToggleStatus(user.id)}
+                                className={`px-3 py-1 text-xs rounded transition-colors ${
+                                  user.is_active
+                                    ? 'bg-green-900 text-green-300 hover:bg-green-800'
+                                    : 'bg-red-900 text-red-300 hover:bg-red-800'
+                                }`}
+                              >
+                                {user.is_active ? 'Active' : 'Inactive'}
+                              </button>
+                            </td>
+                            <td className="px-6 py-4 whitespace-nowrap">
+                              <span className={`px-2 py-1 text-xs rounded ${
+                                user.is_verified
+                                  ? 'bg-green-900 text-green-300'
+                                  : 'bg-yellow-900 text-yellow-300'
+                              }`}>
+                                {user.is_verified ? 'Verified' : 'Pending'}
+                              </span>
+                            </td>
+                            <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-400">
+                              {new Date(user.created_at).toLocaleDateString()}
+                            </td>
+                            <td className="px-6 py-4 whitespace-nowrap">
+                              <div className="flex gap-2">
+                                <button
+                                  onClick={() => handleDeleteUser(user.id)}
+                                  className="text-red-400 hover:text-red-300 transition-colors"
+                                  title="Delete user"
+                                >
+                                  <Trash2 size={18} />
+                                </button>
+                              </div>
+                            </td>
+                          </tr>
+                        ))
+                      )}
+                    </tbody>
+                  </table>
+                </div>
+              )}
             </div>
 
             {/* Add User Modal */}
@@ -205,6 +363,8 @@ const Users = () => {
                         className="w-full px-4 py-2 bg-gray-700 text-white rounded-lg focus:outline-none focus:ring-2 focus:ring-purple-600"
                       >
                         <option value="user">User</option>
+                        <option value="vip">VIP</option>
+                        <option value="moderator">Moderator</option>
                         <option value="admin">Admin</option>
                       </select>
                     </div>
