@@ -134,56 +134,41 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
       return { error }
     }
     
-    // If signup successful and user was created, create profile
-    if (data.user) {
-      console.log('✅ Auth user created, ID:', data.user.id)
-      
-      // Wait a moment for auth to propagate
-      await new Promise(resolve => setTimeout(resolve, 1000))
+    // Check if we have user and session from signup
+    if (data.user && data.session) {
+      console.log('✅ Auth user created with session, ID:', data.user.id)
+      console.log('✅ Session already active, no need to sign in again')
       
       try {
-        // Sign in immediately to get session for profile creation
-        const { data: signInData, error: signInError } = await supabase.auth.signInWithPassword({
-          email,
-          password
-        })
+        // Determine role - admin for info@anoint.me, user for others
+        const role = email === 'info@anoint.me' ? 'admin' : 'user'
+        const isVerified = email === 'info@anoint.me' ? true : false
         
-        if (signInError) {
-          console.error('❌ Auto sign-in failed:', signInError.message)
-          return { error: signInError }
-        }
+        // Create user profile with appropriate role
+        const { error: profileError } = await supabase
+          .from('user_profiles')
+          .insert({
+            user_id: data.user.id,
+            email: email,
+            display_name: email.split('@')[0], // Default display name
+            role: role,
+            is_active: true,
+            is_verified: isVerified
+          })
         
-        if (signInData.session) {
-          console.log('✅ Session obtained, creating profile...')
-          
-          // Determine role - admin for info@anoint.me, user for others
-          const role = email === 'info@anoint.me' ? 'admin' : 'user'
-          const isVerified = email === 'info@anoint.me' ? true : false
-          
-          // Create user profile with appropriate role
-          const { error: profileError } = await supabase
-            .from('user_profiles')
-            .insert({
-              user_id: data.user.id,
-              email: email,
-              display_name: email.split('@')[0], // Default display name
-              role: role,
-              is_active: true,
-              is_verified: isVerified
-            })
-          
-          if (profileError) {
-            console.error('❌ Profile creation error:', profileError.message)
-            console.error('Full error details:', profileError)
-            // Don't fail signup if profile creation fails
-          } else {
-            console.log('✅ User profile created successfully')
-          }
+        if (profileError) {
+          console.error('❌ Profile creation error:', profileError.message)
+          console.error('Full error details:', profileError)
+          // Don't fail signup if profile creation fails
+        } else {
+          console.log('✅ User profile created successfully')
         }
       } catch (exception) {
         console.error('❌ Exception during profile creation:', exception)
         // Don't fail signup if profile creation fails
       }
+    } else if (data.user && !data.session) {
+      console.log('⚠️ User created but no session (email confirmation may be required)')
     }
     
     return { error: null }
