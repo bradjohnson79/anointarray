@@ -4,11 +4,11 @@ import { useAuth } from '../../contexts/AuthContext'
 interface ProtectedRouteProps {
   children: React.ReactNode
   requireAdmin?: boolean
-  requiredRole?: string
+  requiredRole?: 'admin' | 'moderator' | 'vip'
 }
 
 const ProtectedRoute = ({ children, requireAdmin = false, requiredRole }: ProtectedRouteProps) => {
-  const { isAuthenticated, loading } = useAuth()
+  const { isAuthenticated, loading, isAdmin, isModerator, isVip, getUserRole } = useAuth()
 
   if (loading) {
     return (
@@ -25,11 +25,59 @@ const ProtectedRoute = ({ children, requireAdmin = false, requiredRole }: Protec
     return <Navigate to="/auth" replace />
   }
 
-  // For now, we'll allow all authenticated users access to admin routes
-  // In a real app, you'd check user roles here
-  if (requireAdmin || requiredRole) {
-    // TODO: Add proper admin role checking
-    console.log('Admin access required - implement role checking', requiredRole)
+  // Check role-based access
+  if (requireAdmin && !isAdmin()) {
+    return (
+      <div className="min-h-screen bg-black flex items-center justify-center">
+        <div className="text-center">
+          <h1 className="text-3xl font-bold text-red-500 mb-4">Access Denied</h1>
+          <p className="text-gray-400 mb-8">You don't have admin privileges to access this page.</p>
+          <p className="text-gray-500 text-sm">Your role: {getUserRole() || 'user'}</p>
+          <button 
+            onClick={() => window.history.back()} 
+            className="mt-4 px-6 py-2 bg-purple-600 hover:bg-purple-700 text-white rounded-lg transition-colors"
+          >
+            Go Back
+          </button>
+        </div>
+      </div>
+    )
+  }
+
+  if (requiredRole) {
+    let hasAccess = false
+    
+    switch (requiredRole) {
+      case 'admin':
+        hasAccess = isAdmin()
+        break
+      case 'moderator':
+        hasAccess = isModerator()
+        break
+      case 'vip':
+        hasAccess = isVip()
+        break
+      default:
+        hasAccess = false
+    }
+
+    if (!hasAccess) {
+      return (
+        <div className="min-h-screen bg-black flex items-center justify-center">
+          <div className="text-center">
+            <h1 className="text-3xl font-bold text-red-500 mb-4">Insufficient Privileges</h1>
+            <p className="text-gray-400 mb-8">You need {requiredRole} role to access this page.</p>
+            <p className="text-gray-500 text-sm">Your role: {getUserRole() || 'user'}</p>
+            <button 
+              onClick={() => window.history.back()} 
+              className="mt-4 px-6 py-2 bg-purple-600 hover:bg-purple-700 text-white rounded-lg transition-colors"
+            >
+              Go Back
+            </button>
+          </div>
+        </div>
+      )
+    }
   }
 
   return <>{children}</>

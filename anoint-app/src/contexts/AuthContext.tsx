@@ -6,15 +6,35 @@ const supabase = createClient(
   import.meta.env.VITE_SUPABASE_ANON_KEY || 'placeholder-key'
 )
 
+interface UserProfile {
+  id: string
+  user_id: string
+  email: string
+  first_name?: string
+  last_name?: string
+  display_name?: string
+  role: 'user' | 'admin' | 'moderator' | 'vip'
+  is_active: boolean
+  is_verified: boolean
+  created_at: string
+  updated_at: string
+}
+
 interface AuthContextType {
   user: User | null
   session: Session | null
+  profile: UserProfile | null
   loading: boolean
   signIn: (email: string, password: string) => Promise<{ error?: any }>
   signUp: (email: string, password: string) => Promise<{ error?: any }>
   signOut: () => Promise<{ error?: any }>
   isAuthenticated: boolean
   getUserEmail: () => string | null
+  getUserRole: () => string | null
+  isAdmin: () => boolean
+  isModerator: () => boolean
+  isVip: () => boolean
+  refreshProfile: () => Promise<void>
 }
 
 const AuthContext = createContext<AuthContextType | undefined>(undefined)
@@ -30,22 +50,66 @@ export const useAuth = () => {
 export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
   const [user, setUser] = useState<User | null>(null)
   const [session, setSession] = useState<Session | null>(null)
+  const [profile, setProfile] = useState<UserProfile | null>(null)
   const [loading, setLoading] = useState(true)
+
+  const fetchUserProfile = async (userId: string) => {
+    try {
+      const { data, error } = await supabase
+        .from('user_profiles')
+        .select('*')
+        .eq('user_id', userId)
+        .single()
+
+      if (error) {
+        console.error('Error fetching user profile:', error)
+        return null
+      }
+
+      return data as UserProfile
+    } catch (error) {
+      console.error('Error fetching user profile:', error)
+      return null
+    }
+  }
+
+  const refreshProfile = async () => {
+    if (user) {
+      const userProfile = await fetchUserProfile(user.id)
+      setProfile(userProfile)
+    }
+  }
 
   useEffect(() => {
     // Get initial session
-    supabase.auth.getSession().then(({ data: { session } }) => {
+    supabase.auth.getSession().then(async ({ data: { session } }) => {
       setSession(session)
       setUser(session?.user ?? null)
+      
+      if (session?.user) {
+        const userProfile = await fetchUserProfile(session.user.id)
+        setProfile(userProfile)
+      } else {
+        setProfile(null)
+      }
+      
       setLoading(false)
     })
 
     // Listen for auth changes
     const {
       data: { subscription },
-    } = supabase.auth.onAuthStateChange((_event, session) => {
+    } = supabase.auth.onAuthStateChange(async (_event, session) => {
       setSession(session)
       setUser(session?.user ?? null)
+      
+      if (session?.user) {
+        const userProfile = await fetchUserProfile(session.user.id)
+        setProfile(userProfile)
+      } else {
+        setProfile(null)
+      }
+      
       setLoading(false)
     })
 
@@ -77,15 +141,37 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
     return user?.email || null
   }
 
+  const getUserRole = (): string | null => {
+    return profile?.role || null
+  }
+
+  const isAdmin = (): boolean => {
+    return profile?.role === 'admin' || false
+  }
+
+  const isModerator = (): boolean => {
+    return profile?.role === 'moderator' || profile?.role === 'admin' || false
+  }
+
+  const isVip = (): boolean => {
+    return profile?.role === 'vip' || profile?.role === 'moderator' || profile?.role === 'admin' || false
+  }
+
   const value: AuthContextType = {
     user,
     session,
+    profile,
     loading,
     signIn,
     signUp,
     signOut,
     isAuthenticated: !!user,
-    getUserEmail
+    getUserEmail,
+    getUserRole,
+    isAdmin,
+    isModerator,
+    isVip,
+    refreshProfile
   }
 
   return (
