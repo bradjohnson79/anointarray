@@ -18,12 +18,15 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
   })
 
   useEffect(() => {
+    let timeoutId: NodeJS.Timeout
+    
     // Check for existing session on mount and set up auth state listener
     const initializeAuth = async () => {
       console.log('🔄 AuthContext: Initializing authentication...')
       try {
         const user = await SupabaseAuth.getCurrentUser()
         console.log('✅ AuthContext: Auth initialized, user:', user?.email || 'none')
+        clearTimeout(timeoutId) // Clear timeout since we got a result
         setAuthState({
           user,
           isAuthenticated: !!user,
@@ -31,6 +34,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
         })
       } catch (error) {
         console.error('❌ AuthContext: Error initializing auth:', error)
+        clearTimeout(timeoutId) // Clear timeout since we got a result
         // Even if auth fails, we should stop loading
         setAuthState({
           user: null,
@@ -40,26 +44,13 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
       }
     }
 
-    // Add a timeout to prevent infinite loading
-    const timeoutId = setTimeout(() => {
-      if (authState.isLoading) {
-        console.error('⏱️ AuthContext: Auth initialization timeout - stopping loading')
-        setAuthState({
-          user: null,
-          isAuthenticated: false,
-          isLoading: false
-        })
-      }
-    }, 5000) // 5 second timeout
-
-    initializeAuth()
-
-    // Set up auth state change listener
+    // Set up auth state change listener first
     const { data: { subscription } } = SupabaseAuth.onAuthStateChange((user) => {
       console.log('🔄 AuthContext: Auth state change detected:', {
         user: user ? `${user.email} (${user.role})` : null,
         isAuthenticated: !!user
       })
+      clearTimeout(timeoutId) // Clear timeout since we got an auth state change
       setAuthState(prev => ({
         ...prev,
         user,
@@ -67,6 +58,18 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
         isLoading: false
       }))
     })
+
+    // Start initialization
+    initializeAuth()
+
+    // Add a timeout to prevent infinite loading (fallback only)
+    timeoutId = setTimeout(() => {
+      console.error('⏱️ AuthContext: Auth initialization timeout - stopping loading')
+      setAuthState(prev => ({
+        ...prev,
+        isLoading: false
+      }))
+    }, 8000) // 8 second timeout (longer to allow for slow connections)
 
     // Cleanup subscription and timeout on unmount
     return () => {
