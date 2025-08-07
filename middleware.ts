@@ -1,52 +1,122 @@
-import { NextResponse } from 'next/server'
-import type { NextRequest } from 'next/server'
+import { NextResponse } from "next/server";
+import type { NextRequest } from "next/server";
+import { createServerClient } from "@supabase/ssr";
 
-// Define protected routes
-const protectedRoutes = [
-  '/member',
-  '/admin'
-]
+export async function middleware(req: NextRequest) {
+  let res = NextResponse.next({
+    request: {
+      headers: req.headers,
+    },
+  });
 
-// Define admin-only routes
-const adminRoutes = [
-  '/admin'
-]
+  const supabase = createServerClient(
+    process.env.NEXT_PUBLIC_SUPABASE_URL!,
+    process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!,
+    {
+      cookies: {
+        get(name: string) {
+          return req.cookies.get(name)?.value;
+        },
+        set(name: string, value: string, options: any) {
+          req.cookies.set({
+            name,
+            value,
+            ...options,
+          });
+          res = NextResponse.next({
+            request: {
+              headers: req.headers,
+            },
+          });
+          res.cookies.set({
+            name,
+            value,
+            ...options,
+          });
+        },
+        remove(name: string, options: any) {
+          req.cookies.set({
+            name,
+            value: "",
+            ...options,
+          });
+          res = NextResponse.next({
+            request: {
+              headers: req.headers,
+            },
+          });
+          res.cookies.set({
+            name,
+            value: "",
+            ...options,
+          });
+        },
+      },
+    }
+  );
 
-export function middleware(request: NextRequest) {
-  const { pathname } = request.nextUrl
-
-  // Check if the current path is a protected route
-  const isProtectedRoute = protectedRoutes.some(route => pathname.startsWith(route))
-  
-  if (isProtectedRoute) {
-    // In a real app, you'd check for valid session tokens
-    // For now, we'll allow client-side protection to handle this
-    // but we could add server-side session validation here
+  // Check if the current path requires admin access
+  if (req.nextUrl.pathname.startsWith("/admin")) {
+    console.info("[middleware] Admin route accessed:", req.nextUrl.pathname);
     
-    // Check for auth token (this would be a real JWT or session token)
-    const authToken = request.cookies.get('auth-token')?.value
-    
-    // For development, we'll let client-side protection handle this
-    // In production, you'd validate the token here
-    if (!authToken && process.env.NODE_ENV === 'production') {
-      // Redirect to login if no auth token in production
-      return NextResponse.redirect(new URL('/login', request.url))
+    try {
+      // Get the current session
+      const { data: { session }, error: sessionError } = await supabase.auth.getSession();
+      
+      if (sessionError || !session) {
+        console.info("[middleware] No valid session, redirecting to login");
+        return NextResponse.redirect(new URL("/login", req.url));
+      }
+      
+      console.info("[middleware] Valid session found, checking admin role for user:", session.user.id);
+      
+      // Check if user has admin role in database
+      const { data: profile, error: profileError } = await supabase
+        .from("profiles")
+        .select("is_admin")
+        .eq("id", session.user.id)
+        .single();
+      
+      if (profileError) {
+        console.error("[middleware] Profile fetch error:", profileError);
+        console.info("[middleware] Profile error - redirecting to member dashboard");
+        return NextResponse.redirect(new URL("/dashboard", req.url));
+      }
+      
+      if (!profile?.is_admin) {
+        console.info("[middleware] User is not admin, redirecting to member dashboard");
+        return NextResponse.redirect(new URL("/dashboard", req.url));
+      }
+      
+      console.info("[middleware] Admin access granted for:", session.user.email);
+    } catch (error) {
+      console.error("[middleware] Middleware error:", error);
+      return NextResponse.redirect(new URL("/login", req.url));
     }
   }
 
-  return NextResponse.next()
+  // For member dashboard, just ensure they're authenticated
+  if (req.nextUrl.pathname.startsWith("/dashboard")) {
+    console.info("[middleware] Member dashboard accessed");
+    
+    try {
+      const { data: { session } } = await supabase.auth.getSession();
+      
+      if (!session) {
+        console.info("[middleware] No session for member dashboard, redirecting to login");
+        return NextResponse.redirect(new URL("/login", req.url));
+      }
+      
+      console.info("[middleware] Member dashboard access granted");
+    } catch (error) {
+      console.error("[middleware] Member dashboard check error:", error);
+      return NextResponse.redirect(new URL("/login", req.url));
+    }
+  }
+
+  return res;
 }
 
-export const config = {
-  matcher: [
-    /*
-     * Match all request paths except for the ones starting with:
-     * - api (API routes)
-     * - _next/static (static files)
-     * - _next/image (image optimization files)
-     * - favicon.ico (favicon file)
-     * - public folder files
-     */
-    '/((?!api|_next/static|_next/image|favicon.ico|.*\\..*$).*)',
-  ],
-}
+export const config = { 
+  matcher: ["/admin/:path*", "/dashboard/:path*"] 
+};
