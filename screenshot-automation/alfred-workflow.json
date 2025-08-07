@@ -1,0 +1,181 @@
+{
+  "version": "1.0.0",
+  "name": "Claude Code Screenshot Integration",
+  "description": "Streamlined screenshot workflow for Claude Code analysis and feedback",
+  "category": "Productivity",
+  "bundleid": "com.anointarray.claudecode.screenshots",
+  "author": "ANOINT Array",
+  "website": "https://anoint.me",
+  "objects": [
+    {
+      "type": "alfred.workflow.input.keyword",
+      "uid": "ccshot-area",
+      "config": {
+        "keyword": "ccshot",
+        "withspace": true,
+        "argumenttype": 1,
+        "title": "Claude Code Screenshot (Area)",
+        "subtitle": "Take area screenshot and analyze with Claude Code",
+        "text": {
+          "copy": "ccshot {query}",
+          "largetype": "Claude Code Screenshot - Area Selection"
+        }
+      }
+    },
+    {
+      "type": "alfred.workflow.input.keyword", 
+      "uid": "ccfull-screen",
+      "config": {
+        "keyword": "ccfull",
+        "withspace": true,
+        "argumenttype": 1,
+        "title": "Claude Code Screenshot (Full Screen)",
+        "subtitle": "Take full screen screenshot and analyze with Claude Code",
+        "text": {
+          "copy": "ccfull {query}",
+          "largetype": "Claude Code Screenshot - Full Screen"
+        }
+      }
+    },
+    {
+      "type": "alfred.workflow.input.keyword",
+      "uid": "ccwindow-shot", 
+      "config": {
+        "keyword": "ccwindow",
+        "withspace": true,
+        "argumenttype": 1,
+        "title": "Claude Code Screenshot (Window)",
+        "subtitle": "Take window screenshot and analyze with Claude Code",
+        "text": {
+          "copy": "ccwindow {query}",
+          "largetype": "Claude Code Screenshot - Window Selection"
+        }
+      }
+    },
+    {
+      "type": "alfred.workflow.input.keyword",
+      "uid": "ccui-feedback",
+      "config": {
+        "keyword": "ccui",
+        "withspace": true,
+        "argumenttype": 1,
+        "title": "Claude Code UI Analysis",
+        "subtitle": "Take screenshot and get detailed UI/UX feedback",
+        "text": {
+          "copy": "ccui {query}",
+          "largetype": "Claude Code Screenshot - UI/UX Analysis"
+        }
+      }
+    },
+    {
+      "type": "alfred.workflow.input.keyword",
+      "uid": "ccdebug-shot",
+      "config": {
+        "keyword": "ccdebug", 
+        "withspace": true,
+        "argumenttype": 1,
+        "title": "Claude Code Debug Analysis",
+        "subtitle": "Take screenshot and get debugging help",
+        "text": {
+          "copy": "ccdebug {query}",
+          "largetype": "Claude Code Screenshot - Debug Analysis"
+        }
+      }
+    },
+    {
+      "type": "alfred.workflow.action.script",
+      "uid": "execute-ccshot",
+      "config": {
+        "scriptargtype": 1,
+        "scriptfile": "claude-code-screenshot.applescript",
+        "cachescript": false
+      }
+    },
+    {
+      "type": "alfred.workflow.action.script", 
+      "uid": "execute-ccfull",
+      "config": {
+        "scriptargtype": 1,
+        "script": "osascript claude-code-screenshot.applescript full quick",
+        "scriptfile": "",
+        "cachescript": false
+      }
+    },
+    {
+      "type": "alfred.workflow.action.script",
+      "uid": "execute-ccwindow", 
+      "config": {
+        "scriptargtype": 1,
+        "script": "osascript claude-code-screenshot.applescript window quick",
+        "scriptfile": "",
+        "cachescript": false
+      }
+    },
+    {
+      "type": "alfred.workflow.action.script",
+      "uid": "execute-ccui",
+      "config": {
+        "scriptargtype": 1,
+        "script": "osascript claude-code-screenshot.applescript area ui",
+        "scriptfile": "",
+        "cachescript": false
+      }
+    },
+    {
+      "type": "alfred.workflow.action.script",
+      "uid": "execute-ccdebug",
+      "config": {
+        "scriptargtype": 1,
+        "script": "osascript claude-code-screenshot.applescript area debug",
+        "scriptfile": "",
+        "cachescript": false
+      }
+    }
+  ],
+  "connections": {
+    "ccshot-area": [
+      {
+        "destinationuid": "execute-ccshot",
+        "modifiers": 0,
+        "modifiersubtext": "",
+        "vitoclose": false
+      }
+    ],
+    "ccfull-screen": [
+      {
+        "destinationuid": "execute-ccfull",
+        "modifiers": 0,
+        "modifiersubtext": "",
+        "vitoclose": false
+      }
+    ],
+    "ccwindow-shot": [
+      {
+        "destinationuid": "execute-ccwindow", 
+        "modifiers": 0,
+        "modifiersubtext": "",
+        "vitoclose": false
+      }
+    ],
+    "ccui-feedback": [
+      {
+        "destinationuid": "execute-ccui",
+        "modifiers": 0,
+        "modifiersubtext": "",
+        "vitoclose": false
+      }
+    ],
+    "ccdebug-shot": [
+      {
+        "destinationuid": "execute-ccdebug",
+        "modifiers": 0,
+        "modifiersubtext": "",
+        "vitoclose": false
+      }
+    ]
+  },
+  "variables": {
+    "screenshotPath": "/Users/bradjohnson/Documents/anoint-array/WEBSITE/screenshot-automation/",
+    "claudeCodePath": "/Users/bradjohnson/Documents/anoint-array/WEBSITE/anoint-array/"
+  }
+}

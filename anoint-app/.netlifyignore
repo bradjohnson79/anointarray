@@ -1,9 +1,0 @@
-# Ignore environment files during Netlify build
-.env*
-*.env
-.env.local
-.env.production
-
-# Ignore scripts that might contain sensitive data
-scripts/direct-admin-setup.js
-scripts/create-fresh-admin.js
