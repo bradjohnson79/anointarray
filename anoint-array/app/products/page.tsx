@@ -40,10 +40,18 @@ export default function ProductCatalogPage() {
   const [cart, setCart] = useState<{productId: string, quantity: number}[]>([])
 
   useEffect(() => {
-    const publishedProducts = getPublishedProducts()
-    setProducts(publishedProducts)
-    setFilteredProducts(publishedProducts)
-    setCategories(getAllCategories())
+    try {
+      const publishedProducts = getPublishedProducts()
+      const allCategories = getAllCategories()
+      
+      console.log('Loading products:', publishedProducts.length, 'categories:', allCategories.length)
+      
+      setProducts(publishedProducts)
+      setFilteredProducts(publishedProducts)
+      setCategories(allCategories)
+    } catch (error) {
+      console.error('Error loading products:', error)
+    }
   }, [])
 
   useEffect(() => {

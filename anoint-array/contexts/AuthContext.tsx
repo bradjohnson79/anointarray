@@ -41,6 +41,10 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
 
     // Set up auth state change listener
     const { data: { subscription } } = SupabaseAuth.onAuthStateChange((user) => {
+      console.log('🔄 AuthContext: Auth state change detected:', {
+        user: user ? `${user.email} (${user.role})` : null,
+        isAuthenticated: !!user
+      })
       setAuthState(prev => ({
         ...prev,
         user,
