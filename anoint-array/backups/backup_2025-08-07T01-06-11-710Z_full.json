@@ -1,0 +1,59 @@
+{
+  "metadata": {
+    "id": "backup_1754528771711",
+    "type": "full",
+    "created": "2025-08-07T01:06:11.711Z",
+    "version": "1.0",
+    "creator": "admin_backup_system",
+    "includedComponents": {
+      "sourceCode": true,
+      "database": true,
+      "configuration": true,
+      "assets": true
+    }
+  },
+  "data": {
+    "database": {
+      "users": [
+        {
+          "id": 1,
+          "email": "admin@anoint.me",
+          "role": "admin",
+          "created": "2024-01-01"
+        }
+      ],
+      "arrays": [
+        {
+          "id": 1,
+          "name": "Sample Array",
+          "type": "flower_of_life",
+          "created": "2024-01-01"
+        }
+      ],
+      "orders": [
+        {
+          "id": 1,
+          "userId": 1,
+          "total": 10,
+          "status": "completed",
+          "created": "2024-01-01"
+        }
+      ],
+      "exportedAt": "2025-08-07T01:06:11.711Z"
+    },
+    "envTemplate": {
+      "VITE_SUPABASE_URL": "your_supabase_url",
+      "VITE_SUPABASE_ANON_KEY": "your_supabase_anon_key",
+      "OPENAI_API_KEY": "your_openai_key",
+      "ANTHROPIC_API_KEY": "your_anthropic_key",
+      "STRIPE_SECRET_KEY": "your_stripe_key"
+    },
+    "fileInventory": {
+      "components": "React components directory structure",
+      "pages": "Next.js pages and API routes",
+      "public": "Static assets and images",
+      "styles": "CSS and styling files",
+      "note": "Full file backup would require archive format"
+    }
+  }
+}

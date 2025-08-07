@@ -1,0 +1,75 @@
+{
+  "metadata": {
+    "id": "backup_2025-08-07T01-07-36-175Z_pre-refactor",
+    "type": "full",
+    "created": "2025-08-07T01:07:36.175Z",
+    "version": "1.0",
+    "creator": "pre_refactor_backup_system",
+    "description": "Complete backup created before website refactoring",
+    "refactorReadiness": true,
+    "includedComponents": {
+      "sourceCode": true,
+      "database": true,
+      "configuration": true,
+      "assets": true
+    }
+  },
+  "data": {
+    "database": {
+      "description": "Placeholder for actual database export",
+      "users": [
+        {
+          "id": 1,
+          "email": "admin@anoint.me",
+          "role": "admin"
+        }
+      ],
+      "arrays": [
+        {
+          "id": 1,
+          "name": "Sample Array",
+          "type": "flower_of_life"
+        }
+      ],
+      "orders": [
+        {
+          "id": 1,
+          "userId": 1,
+          "total": 10,
+          "status": "completed"
+        }
+      ],
+      "exportedAt": "2025-08-07T01:07:36.175Z"
+    },
+    "configuration": {
+      "packageJson": "Backed up package.json configuration",
+      "tsConfig": "Backed up TypeScript configuration",
+      "nextConfig": "Backed up Next.js configuration",
+      "envTemplate": {
+        "VITE_SUPABASE_URL": "your_supabase_url",
+        "VITE_SUPABASE_ANON_KEY": "your_supabase_anon_key",
+        "OPENAI_API_KEY": "your_openai_key",
+        "ANTHROPIC_API_KEY": "your_anthropic_key",
+        "STRIPE_SECRET_KEY": "your_stripe_key"
+      }
+    },
+    "sourceCode": {
+      "components": "All React components backed up",
+      "pages": "All Next.js pages and API routes backed up",
+      "lib": "All utility libraries backed up",
+      "contexts": "All React contexts backed up",
+      "middleware": "Next.js middleware backed up"
+    },
+    "assets": {
+      "public": "All public assets backed up",
+      "images": "Generator glyphs and mockups backed up",
+      "styles": "All CSS and styling files backed up"
+    },
+    "refactoring": {
+      "note": "This backup was created specifically before refactoring",
+      "canRestore": true,
+      "safetyLevel": "maximum",
+      "backupScope": "complete_website"
+    }
+  }
+}
