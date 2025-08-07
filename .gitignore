@@ -1,5 +1,7 @@
 # Prevent secrets and environment variables from being tracked
 .env
+.env.local
+.env.production
 
 # Node.js dependencies
 node_modules/
@@ -7,6 +9,7 @@ node_modules/
 # Build outputs
 dist/
 build/
+.next/
 
 # Vite cache
 .vite/
@@ -14,3 +17,7 @@ build/
 # VS Code workspace settings
 .vscode/
 .config/
+
+# TypeScript
+*.tsbuildinfo
+next-env.d.ts
