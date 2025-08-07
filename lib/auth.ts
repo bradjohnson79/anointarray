@@ -30,22 +30,17 @@ export interface AuthState {
   isLoading: boolean
 }
 
-// Admin email addresses for role assignment
-const ADMIN_EMAILS = [
-  'info@anoint.me'
-]
-
-// Transform Supabase user to our User interface
+// Transform Supabase user to our User interface using database-driven roles
 function transformSupabaseUser(supabaseUser: SupabaseUser, profile?: any): User {
   const email = supabaseUser.email || ''
-  const isAdmin = ADMIN_EMAILS.includes(email.toLowerCase())
+  const isAdmin = profile?.is_admin === true
   
   // DEBUG: Log role assignment process
   console.log('🔍 Role Assignment Debug:', {
     email: email,
-    emailLower: email.toLowerCase(),
-    adminEmails: ADMIN_EMAILS,
-    isAdmin: isAdmin
+    profileIsAdmin: profile?.is_admin,
+    resolvedIsAdmin: isAdmin,
+    profileData: profile ? 'present' : 'missing'
   })
   
   return {
@@ -134,12 +129,16 @@ export class SupabaseAuth {
       }
 
       if (data.user) {
-        // Get user profile
-        const { data: profile } = await supabase
+        // Get user profile with role information
+        const { data: profile, error: profileError } = await supabase
           .from('profiles')
           .select('*')
           .eq('id', data.user.id)
           .single()
+
+        if (profileError) {
+          console.warn('SupabaseAuth.signIn: Profile fetch error:', profileError)
+        }
 
         const user = transformSupabaseUser(data.user, profile)
         console.log('✅ SupabaseAuth: Authentication successful for:', user.displayName)
@@ -177,12 +176,16 @@ export class SupabaseAuth {
         return null
       }
 
-      // Get user profile
-      const { data: profile } = await supabase
+      // Get user profile with role information
+      const { data: profile, error: profileError } = await supabase
         .from('profiles')
         .select('*')
         .eq('id', supabaseUser.id)
         .single()
+
+      if (profileError) {
+        console.warn('SupabaseAuth.getCurrentUser: Profile fetch error:', profileError)
+      }
 
       return transformSupabaseUser(supabaseUser, profile)
     } catch (error) {
@@ -281,12 +284,16 @@ export class SupabaseAuth {
       console.log('Auth state change:', event, !!session)
       
       if (session?.user) {
-        // Get user profile
-        const { data: profile } = await supabase
+        // Get user profile with role information
+        const { data: profile, error: profileError } = await supabase
           .from('profiles')
           .select('*')
           .eq('id', session.user.id)
           .single()
+
+        if (profileError) {
+          console.warn('SupabaseAuth.onAuthStateChange: Profile fetch error:', profileError)
+        }
 
         const user = transformSupabaseUser(session.user, profile)
         callback(user)
