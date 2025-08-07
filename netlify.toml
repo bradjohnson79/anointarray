@@ -1,75 +1,10 @@
+# Simple Netlify configuration for Next.js deployment
 [build]
-  # Base directory for build (where package.json is located)
   base = "anoint-array"
-  
-  # Build command (runs from base directory)
-  command = "npm ci && npm run build"
-  
-  # Directory to publish (relative to base directory)
+  command = "npm install && npm run build"
   publish = ".next"
 
 [build.environment]
-  # Node version
   NODE_VERSION = "18"
-  
-  # Build optimization
-  NPM_FLAGS = "--production=false"
-  
-  # Disable secrets scanning for Supabase anon key (it's a public key)
-  SECRETS_SCAN_OMIT_KEYS = "NEXT_PUBLIC_SUPABASE_ANON_KEY"
-  
-  # Next.js Supabase configuration
   NEXT_PUBLIC_SUPABASE_URL = "https://xmnghciitiefbwxzhgrw.supabase.co"
   NEXT_PUBLIC_SUPABASE_ANON_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InhtbmdoY2lpdGllZmJ3eHpoZ3J3Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTM3MjM0NzMsImV4cCI6MjA2OTI5OTQ3M30.dIeGonQS9a0ZhFo5WVYj1zMxtmm5juE35oCJSMm62a4"
-  
-  # Application URLs
-  NEXT_PUBLIC_BASE_URL = "https://anointarray.com"
-  NEXTAUTH_URL = "https://anointarray.com"
-  
-  # Environment
-  NODE_ENV = "production"
-
-# Next.js routing - let Next.js handle all routes
-# No redirects needed as Next.js has its own routing system
-
-# Security headers
-[[headers]]
-  for = "/*"
-  [headers.values]
-    X-Frame-Options = "DENY"
-    X-XSS-Protection = "1; mode=block"
-    X-Content-Type-Options = "nosniff"
-    Referrer-Policy = "strict-origin-when-cross-origin"
-    Permissions-Policy = "camera=(), microphone=(), geolocation=(), payment=()"
-
-# Cache static assets
-[[headers]]
-  for = "/assets/*"
-  [headers.values]
-    Cache-Control = "public, max-age=31536000, immutable"
-
-# Cache service worker and manifest with shorter cache
-[[headers]]
-  for = "/sw.js"
-  [headers.values]
-    Cache-Control = "public, max-age=0, must-revalidate"
-    Service-Worker-Allowed = "/"
-
-[[headers]]
-  for = "/manifest.json"
-  [headers.values]
-    Cache-Control = "public, max-age=86400"
-    Content-Type = "application/manifest+json"
-
-# Next.js plugin for Netlify
-[[plugins]]
-  package = "@netlify/plugin-nextjs"
-
-# Prerender for better SEO  
-[[plugins]]
-  package = "@netlify/plugin-lighthouse"
-
-# Functions configuration (if needed later)
-[functions]
-  directory = "functions"
-  node_bundler = "esbuild"
