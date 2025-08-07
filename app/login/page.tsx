@@ -1,9 +1,9 @@
 'use client'
 
 import { useState, useEffect, Suspense } from 'react'
-import { useAuth } from '@/contexts/AuthContext'
 import { useRouter, useSearchParams } from 'next/navigation'
 import { Eye, EyeOff, CheckCircle } from 'lucide-react'
+import { supabase } from '@/contexts/AuthContext'
 
 function LoginPageContent() {
   const [email, setEmail] = useState('')
@@ -11,7 +11,7 @@ function LoginPageContent() {
   const [showPassword, setShowPassword] = useState(false)
   const [error, setError] = useState('')
   const [showSuccess, setShowSuccess] = useState(false)
-  const { login, isLoading } = useAuth()
+  const [isLoading, setIsLoading] = useState(false)
   const router = useRouter()
   const searchParams = useSearchParams()
 
@@ -25,57 +25,83 @@ function LoginPageContent() {
     }
   }, [searchParams])
 
+  // Listen for auth state changes and redirect immediately on SIGNED_IN
+  useEffect(() => {
+    console.info("[login] Setting up auth state listener for immediate redirect")
+    
+    const { data: { subscription } } = supabase.auth.onAuthStateChange(async (event, session) => {
+      if (event === "SIGNED_IN" && session) {
+        console.info("[login] signed in, checking role…");
+        
+        try {
+          const { data, error } = await supabase
+            .from("profiles")
+            .select("is_admin")
+            .eq("id", session.user.id)
+            .single();
+          
+          if (error) { 
+            console.error("[login] profile error", error); 
+            console.info("[login] defaulting to member dashboard due to profile error");
+            router.replace("/dashboard"); 
+            return; 
+          }
+          
+          const targetRoute = data?.is_admin ? "/admin" : "/dashboard";
+          console.info("[login] redirecting to:", targetRoute);
+          router.replace(targetRoute);
+        } catch (profileError) {
+          console.error("[login] profile fetch failed", profileError);
+          console.info("[login] defaulting to member dashboard due to fetch failure");
+          router.replace("/dashboard");
+        }
+      }
+    });
+    
+    return () => {
+      console.info("[login] Cleaning up auth state listener");
+      subscription.unsubscribe();
+    };
+  }, [router])
+
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
     setError('')
+    setIsLoading(true)
 
     // Clean the inputs
-    const cleanEmail = email.trim()
-    const cleanPassword = password.replace(/[*]/g, '').trim() // Remove asterisks and trim
+    const cleanEmail = email.trim().toLowerCase()
+    const cleanPassword = password.trim()
     
-    console.log('🔐 Login form submitted with:')
-    console.log('  📧 Email from form:', `"${email}"`)
-    console.log('  🔑 Password from form:', `"${password}"`)
-    console.log('  📧 Clean email:', `"${cleanEmail}"`)
-    console.log('  🔑 Clean password:', `"${cleanPassword}"`)
-    console.log('  🔄 Auth loading state:', isLoading)
+    console.info('[login] Form submitted:', { email: cleanEmail })
 
     try {
-      console.log('📞 Calling login function...')
-      const result = await login(cleanEmail, cleanPassword)
-      console.log('📨 Login result received:', result)
+      console.info('[login] Calling Supabase signInWithPassword...')
+      const { data, error } = await supabase.auth.signInWithPassword({
+        email: cleanEmail,
+        password: cleanPassword
+      })
       
-      if (result.success) {
-        console.log('✅ Login successful! Checking session...')
-        
-        // Small delay to ensure session is stored
-        await new Promise(resolve => setTimeout(resolve, 100))
-        
-        const sessionData = sessionStorage.getItem('anoint_auth_session')
-        console.log('💾 Session data:', sessionData)
-        
-        if (sessionData) {
-          const user = JSON.parse(sessionData)
-          console.log('👤 Parsed user:', user)
-          
-          if (user.role === 'admin') {
-            console.log('🏠 Redirecting to admin dashboard...')
-            window.location.href = '/admin/dashboard'
-          } else {
-            console.log('🏠 Redirecting to member dashboard...')
-            window.location.href = '/member/dashboard'
-          }
-        } else {
-          console.log('⚠️ No session data found, redirecting to admin dashboard as fallback')
-          window.location.href = '/admin/dashboard'
-        }
-      } else {
-        console.log('❌ Login failed:', result.error)
-        setError(result.error || 'Login failed')
+      if (error) {
+        console.error('[login] Authentication failed:', error.message)
+        setError(error.message)
+        setIsLoading(false)
+        return
       }
-    } catch (error) {
-      console.error('🚨 Login error caught:', error)
-      setError('An unexpected error occurred')
+      
+      if (data.user) {
+        console.info('[login] Authentication successful - auth state listener will handle redirect')
+        // Don't set loading to false here - let the redirect happen
+        // The auth state listener will handle the redirect automatically
+      } else {
+        console.error('[login] No user returned from authentication')
+        setError('Authentication failed - no user returned')
+        setIsLoading(false)
+      }
+    } catch (authError) {
+      console.error('[login] Authentication error:', authError)
+      setError('Authentication system error')
+      setIsLoading(false)
     }
   }
 
