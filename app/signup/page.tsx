@@ -2,7 +2,7 @@
 
 import { useState } from 'react'
 import { useRouter } from 'next/navigation'
-import { Eye, EyeOff } from 'lucide-react'
+import { Eye, EyeOff, CheckCircle } from 'lucide-react'
 import { SupabaseAuth } from '@/lib/auth'
 
 export default function SignUpPage() {
@@ -13,6 +13,7 @@ export default function SignUpPage() {
   const [showPassword, setShowPassword] = useState(false)
   const [error, setError] = useState('')
   const [isLoading, setIsLoading] = useState(false)
+  const [success, setSuccess] = useState(false)
   const router = useRouter()
 
   const handleSubmit = async (e: React.FormEvent) => {
@@ -42,13 +43,38 @@ export default function SignUpPage() {
         setError(error)
       } else if (user) {
         // Successfully signed up
-        router.push('/login?registered=true')
+        setSuccess(true)
+        // Redirect after showing success message
+        setTimeout(() => {
+          router.push('/login?registered=true')
+        }, 2000)
       }
     } catch (error) {
       setError('An unexpected error occurred')
     } finally {
       setIsLoading(false)
     }
+  }
+
+  if (success) {
+    return (
+      <div className="min-h-screen bg-gradient-to-br from-gray-900 via-purple-900 to-cyan-900 flex items-center justify-center p-4">
+        <div className="bg-gray-800/80 backdrop-blur-lg rounded-2xl p-8 w-full max-w-md shadow-2xl border border-purple-500/20 text-center">
+          <div className="mb-6">
+            <div className="w-16 h-16 bg-green-500/20 rounded-full flex items-center justify-center mx-auto mb-4">
+              <CheckCircle size={32} className="text-green-400" />
+            </div>
+            <h2 className="text-2xl font-bold text-white mb-2">Welcome to ANOINT Array!</h2>
+            <p className="text-gray-300 mb-2">
+              Your free account has been created successfully.
+            </p>
+            <p className="text-purple-400 text-sm">
+              Redirecting you to login...
+            </p>
+          </div>
+        </div>
+      </div>
+    )
   }
 
   return (

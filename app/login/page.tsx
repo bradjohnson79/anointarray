@@ -1,17 +1,29 @@
 'use client'
 
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import { useAuth } from '@/contexts/AuthContext'
-import { useRouter } from 'next/navigation'
-import { Eye, EyeOff } from 'lucide-react'
+import { useRouter, useSearchParams } from 'next/navigation'
+import { Eye, EyeOff, CheckCircle } from 'lucide-react'
 
 export default function LoginPage() {
   const [email, setEmail] = useState('')
   const [password, setPassword] = useState('')
   const [showPassword, setShowPassword] = useState(false)
   const [error, setError] = useState('')
+  const [showSuccess, setShowSuccess] = useState(false)
   const { login, isLoading } = useAuth()
   const router = useRouter()
+  const searchParams = useSearchParams()
+
+  useEffect(() => {
+    const registered = searchParams.get('registered')
+    if (registered === 'true') {
+      setShowSuccess(true)
+      // Hide success message after 10 seconds
+      const timer = setTimeout(() => setShowSuccess(false), 10000)
+      return () => clearTimeout(timer)
+    }
+  }, [searchParams])
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
@@ -75,6 +87,16 @@ export default function LoginPage() {
           <h1 className="text-3xl font-bold text-white mb-2">ANOINT Array</h1>
           <p className="text-purple-300">Welcome back</p>
         </div>
+
+        {showSuccess && (
+          <div className="mb-6 bg-green-900/50 border border-green-500 text-green-300 px-4 py-3 rounded-lg flex items-center">
+            <CheckCircle size={20} className="mr-3 flex-shrink-0" />
+            <div>
+              <p className="font-medium">Account created successfully!</p>
+              <p className="text-sm text-green-400 mt-1">You can now sign in with your credentials below.</p>
+            </div>
+          </div>
+        )}
 
         <form onSubmit={handleSubmit} className="space-y-6">
           <div>
