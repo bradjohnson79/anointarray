@@ -64,12 +64,12 @@ export default function SignUpPage() {
             <div className="w-16 h-16 bg-green-500/20 rounded-full flex items-center justify-center mx-auto mb-4">
               <CheckCircle size={32} className="text-green-400" />
             </div>
-            <h2 className="text-2xl font-bold text-white mb-2">Welcome to ANOINT Array!</h2>
+            <h2 className="text-2xl font-bold text-white mb-2">Account Created!</h2>
             <p className="text-gray-300 mb-2">
-              Your free account has been created successfully.
+              Your account has been created. Please check your email to confirm your free account.
             </p>
             <p className="text-purple-400 text-sm">
-              Redirecting you to login...
+              Redirecting you to login page...
             </p>
           </div>
         </div>
