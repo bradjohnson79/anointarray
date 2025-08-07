@@ -1,0 +1,42 @@
+{
+  "name": "anoint-array-integration-tests",
+  "version": "1.0.0",
+  "description": "Comprehensive integration testing suite for ANOINT Array platform",
+  "scripts": {
+    "test": "jest --runInBand --verbose",
+    "test:watch": "jest --runInBand --verbose --watch",
+    "test:api": "jest api-integration-tests.js --runInBand --verbose",
+    "test:e2e": "jest playwright-integration-tests.js --runInBand --verbose",
+    "test:performance": "jest performance-integration-tests.js --runInBand --verbose --timeout=300000",
+    "test:smoke": "jest --runInBand --verbose --testNamePattern='smoke'",
+    "test:critical": "jest --runInBand --verbose --testNamePattern='(authentication|payment|generation)'",
+    "test:cross-browser": "jest --runInBand --verbose --testNamePattern='Cross-Browser'",
+    "test:load": "jest --runInBand --verbose --testNamePattern='Load Testing'",
+    "test:ci": "jest --runInBand --verbose --ci --coverage --maxWorkers=2",
+    "test:dev": "jest --runInBand --verbose --watch --testPathPattern=api-integration-tests.js",
+    "install-deps": "npm install"
+  },
+  "devDependencies": {
+    "@jest/globals": "^29.7.0",
+    "@playwright/test": "^1.40.0",
+    "jest": "^29.7.0",
+    "puppeteer": "^21.5.0",
+    "supertest": "^6.3.3"
+  },
+  "jest": {
+    "testEnvironment": "node",
+    "testTimeout": 120000,
+    "setupFilesAfterEnv": ["<rootDir>/jest.setup.js"],
+    "testMatch": [
+      "**/*integration-tests.js"
+    ],
+    "collectCoverage": false,
+    "verbose": true,
+    "maxWorkers": 1,
+    "testSequencer": "<rootDir>/jest.sequencer.js"
+  },
+  "engines": {
+    "node": ">=18.0.0",
+    "npm": ">=8.0.0"
+  }
+}

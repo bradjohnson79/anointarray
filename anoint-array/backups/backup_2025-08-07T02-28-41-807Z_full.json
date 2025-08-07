@@ -1,0 +1,141 @@
+{
+  "metadata": {
+    "id": "backup_1754533721807",
+    "type": "full",
+    "created": "2025-08-07T02:28:41.807Z",
+    "version": "1.0",
+    "creator": "admin_backup_system",
+    "includedComponents": {
+      "sourceCode": true,
+      "database": true,
+      "configuration": true,
+      "assets": true
+    }
+  },
+  "data": {
+    "database": {
+      "users": [
+        {
+          "id": 1,
+          "email": "admin@anoint.me",
+          "role": "admin",
+          "created": "2024-01-01"
+        }
+      ],
+      "arrays": [
+        {
+          "id": 1,
+          "name": "Sample Array",
+          "type": "flower_of_life",
+          "created": "2024-01-01"
+        }
+      ],
+      "orders": [
+        {
+          "id": 1,
+          "userId": 1,
+          "total": 10,
+          "status": "completed",
+          "created": "2024-01-01"
+        }
+      ],
+      "exportedAt": "2025-08-07T02:28:41.807Z"
+    },
+    "packageJson": {
+      "name": "anoint-array",
+      "version": "0.1.0",
+      "private": true,
+      "scripts": {
+        "dev": "next dev --turbopack",
+        "build": "next build",
+        "start": "next start",
+        "lint": "next lint"
+      },
+      "dependencies": {
+        "@anthropic-ai/sdk": "^0.57.0",
+        "@radix-ui/react-slot": "^1.2.3",
+        "@radix-ui/react-switch": "^1.2.5",
+        "@radix-ui/react-tabs": "^1.1.12",
+        "@supabase/supabase-js": "^2.53.0",
+        "@types/archiver": "^6.0.3",
+        "archiver": "^7.0.1",
+        "class-variance-authority": "^0.7.1",
+        "clsx": "^2.1.1",
+        "csv-parser": "^3.2.0",
+        "dotenv": "^17.2.1",
+        "lucide-react": "^0.535.0",
+        "next": "15.4.5",
+        "openai": "^5.11.0",
+        "react": "19.1.0",
+        "react-dom": "19.1.0",
+        "stripe": "^18.4.0",
+        "tailwind-merge": "^3.3.1"
+      },
+      "devDependencies": {
+        "@eslint/eslintrc": "^3",
+        "@tailwindcss/postcss": "^4",
+        "@types/node": "^20",
+        "@types/react": "^19",
+        "@types/react-dom": "^19",
+        "eslint": "^9",
+        "eslint-config-next": "15.4.5",
+        "tailwindcss": "^4",
+        "typescript": "^5"
+      }
+    },
+    "tsConfig": {
+      "compilerOptions": {
+        "target": "ES2017",
+        "lib": [
+          "dom",
+          "dom.iterable",
+          "esnext"
+        ],
+        "allowJs": true,
+        "skipLibCheck": true,
+        "strict": true,
+        "noEmit": true,
+        "esModuleInterop": true,
+        "module": "esnext",
+        "moduleResolution": "bundler",
+        "resolveJsonModule": true,
+        "isolatedModules": true,
+        "jsx": "preserve",
+        "incremental": true,
+        "plugins": [
+          {
+            "name": "next"
+          }
+        ],
+        "paths": {
+          "@/*": [
+            "./*"
+          ]
+        }
+      },
+      "include": [
+        "next-env.d.ts",
+        "**/*.ts",
+        "**/*.tsx",
+        ".next/types/**/*.ts"
+      ],
+      "exclude": [
+        "node_modules"
+      ]
+    },
+    "envTemplate": {
+      "VITE_SUPABASE_URL": "your_supabase_url",
+      "VITE_SUPABASE_ANON_KEY": "your_supabase_anon_key",
+      "OPENAI_API_KEY": "your_openai_key",
+      "ANTHROPIC_API_KEY": "your_anthropic_key",
+      "STRIPE_SECRET_KEY": "your_stripe_key"
+    },
+    "fileInventory": {
+      "components": "React components directory structure",
+      "pages": "Next.js pages and API routes",
+      "public": "Static assets and images",
+      "styles": "CSS and styling files",
+      "note": "Full file backup would require archive format"
+    }
+  }
+}
