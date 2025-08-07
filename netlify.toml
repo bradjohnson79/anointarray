@@ -1,12 +1,12 @@
 [build]
   # Base directory for build (where package.json is located)
-  base = "anoint-app"
+  base = "anoint-array"
   
   # Build command (runs from base directory)
   command = "npm ci && npm run build"
   
   # Directory to publish (relative to base directory)
-  publish = "dist"
+  publish = ".next"
 
 [build.environment]
   # Node version
@@ -16,17 +16,21 @@
   NPM_FLAGS = "--production=false"
   
   # Disable secrets scanning for Supabase anon key (it's a public key)
-  SECRETS_SCAN_OMIT_KEYS = "VITE_SUPABASE_ANON_KEY"
+  SECRETS_SCAN_OMIT_KEYS = "NEXT_PUBLIC_SUPABASE_ANON_KEY"
   
-  # Supabase configuration
-  VITE_SUPABASE_URL = "https://xmnghciitiefbwxzhgrw.supabase.co"
-  VITE_SUPABASE_ANON_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InhtbmdoY2lpdGllZmJ3eHpoZ3J3Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTM3MjM0NzMsImV4cCI6MjA2OTI5OTQ3M30.dIeGonQS9a0ZhFo5WVYj1zMxtmm5juE35oCJSMm62a4"
+  # Next.js Supabase configuration
+  NEXT_PUBLIC_SUPABASE_URL = "https://xmnghciitiefbwxzhgrw.supabase.co"
+  NEXT_PUBLIC_SUPABASE_ANON_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InhtbmdoY2lpdGllZmJ3eHpoZ3J3Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTM3MjM0NzMsImV4cCI6MjA2OTI5OTQ3M30.dIeGonQS9a0ZhFo5WVYj1zMxtmm5juE35oCJSMm62a4"
+  
+  # Application URLs
+  NEXT_PUBLIC_BASE_URL = "https://anointarray.com"
+  NEXTAUTH_URL = "https://anointarray.com"
+  
+  # Environment
+  NODE_ENV = "production"
 
-# SPA routing - redirect all routes to index.html
-[[redirects]]
-  from = "/*"
-  to = "/index.html"
-  status = 200
+# Next.js routing - let Next.js handle all routes
+# No redirects needed as Next.js has its own routing system
 
 # Security headers
 [[headers]]
@@ -57,7 +61,11 @@
     Cache-Control = "public, max-age=86400"
     Content-Type = "application/manifest+json"
 
-# Prerender for better SEO
+# Next.js plugin for Netlify
+[[plugins]]
+  package = "@netlify/plugin-nextjs"
+
+# Prerender for better SEO  
 [[plugins]]
   package = "@netlify/plugin-lighthouse"
 
