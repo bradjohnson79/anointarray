@@ -1,7 +1,7 @@
 # Simple Netlify configuration for Next.js deployment
 [build]
   base = "anoint-array"
-  command = "npm ci && npm run build"
+  command = "npm install && npm run build"
   publish = ".next"
 
 [build.environment]
