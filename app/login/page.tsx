@@ -34,21 +34,34 @@ function LoginPageContent() {
         console.info("[login] signed in, checking role…");
         
         try {
+          console.info("[login] Fetching user profile for role determination...");
           const { data, error } = await supabase
             .from("profiles")
             .select("is_admin")
             .eq("id", session.user.id)
             .single();
           
+          console.info("[login] Profile fetch result:", { 
+            data: data, 
+            error: error?.message,
+            isAdmin: data?.is_admin 
+          });
+          
           if (error) { 
-            console.error("[login] profile error", error); 
-            console.info("[login] defaulting to member dashboard due to profile error");
+            console.error("[login] Profile error:", error); 
+            console.info("[login] Defaulting to member dashboard due to profile error");
+            console.info("[login] Executing router.replace('/dashboard')...");
             router.replace("/dashboard"); 
             return; 
           }
           
           const targetRoute = data?.is_admin ? "/admin" : "/dashboard";
-          console.info("[login] redirecting to:", targetRoute);
+          console.info("[login] Role-based redirect decision:", {
+            isAdmin: data?.is_admin,
+            targetRoute: targetRoute,
+            userEmail: session.user.email
+          });
+          console.info("[login] Executing router.replace:", targetRoute);
           router.replace(targetRoute);
         } catch (profileError) {
           console.error("[login] profile fetch failed", profileError);
@@ -90,7 +103,12 @@ function LoginPageContent() {
       }
       
       if (data.user) {
-        console.info('[login] Authentication successful - auth state listener will handle redirect')
+        console.info('[login] Authentication successful:', {
+          userId: data.user.id,
+          email: data.user.email,
+          emailVerified: data.user.email_confirmed_at ? true : false
+        })
+        console.info('[login] Auth state listener will handle redirect - waiting for SIGNED_IN event...')
         // Don't set loading to false here - let the redirect happen
         // The auth state listener will handle the redirect automatically
       } else {
