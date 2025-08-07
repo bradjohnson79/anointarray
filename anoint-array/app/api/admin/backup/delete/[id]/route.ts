@@ -4,8 +4,9 @@ import { join } from 'path'
 
 export async function DELETE(
   request: Request,
-  { params }: { params: { id: string } }
+  context: { params: Promise<{ id: string }> }
 ) {
+  const params = await context.params
   try {
     const backupId = params.id
     const backupDir = join(process.cwd(), 'backups')

@@ -20,11 +20,6 @@ interface DigitalDownload {
   ipAddresses: string[]
 }
 
-interface RouteParams {
-  params: {
-    token: string
-  }
-}
 
 // Mock database - in production this would be a real database
 const mockDownloads: DigitalDownload[] = [
@@ -106,7 +101,11 @@ function logDownloadAttempt(token: string, ipAddress: string, userAgent: string,
   console.log('Digital download attempt:', logEntry)
 }
 
-export async function GET(request: NextRequest, { params }: RouteParams) {
+export async function GET(
+  request: NextRequest,
+  context: { params: Promise<{ token: string }> }
+) {
+  const params = await context.params
   try {
     const { token } = params
     const ipAddress = getClientIP(request)
@@ -198,7 +197,11 @@ export async function GET(request: NextRequest, { params }: RouteParams) {
 }
 
 // GET download info without triggering download (for verification)
-export async function POST(request: NextRequest, { params }: RouteParams) {
+export async function POST(
+  request: NextRequest,
+  context: { params: Promise<{ token: string }> }
+) {
+  const params = await context.params
   try {
     const { token } = params
     const ipAddress = getClientIP(request)

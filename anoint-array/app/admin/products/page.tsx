@@ -294,8 +294,8 @@ export default function ProductManagementPage() {
     if (field === 'title' && value) {
       setFormData(prev => ({
         ...prev,
-        slug: createSlug(value),
-        sku: isCreatingNew ? generateSKU(value) : prev.sku,
+        slug: createSlug(String(value)),
+        sku: isCreatingNew ? generateSKU(String(value)) : prev.sku,
         metaTitle: !prev.metaTitle ? `${value} - ANOINT Array` : prev.metaTitle
       }))
     }
