@@ -1,0 +1,38 @@
+# Netlify configuration for Next.js 15 deployment
+[build]
+  command = "npm ci && npm run build"
+  publish = ".next"
+
+[build.environment]
+  NODE_VERSION = "22"
+  NPM_VERSION = "10"
+
+# Next.js specific settings
+[functions]
+  directory = ".netlify/functions"
+
+# Redirects for Next.js App Router
+[[redirects]]
+  from = "/*"
+  to = "/index.html"
+  status = 200
+  conditions = {Role = ["admin"]}
+
+# Headers for security and performance  
+[[headers]]
+  for = "/*"
+  [headers.values]
+    X-Frame-Options = "DENY"
+    X-Content-Type-Options = "nosniff"
+    Referrer-Policy = "strict-origin-when-cross-origin"
+    X-XSS-Protection = "1; mode=block"
+
+[[headers]]
+  for = "/api/*"
+  [headers.values]
+    cache-control = "no-cache, no-store, must-revalidate"
+
+[[headers]]
+  for = "/_next/static/*"
+  [headers.values]
+    cache-control = "public, max-age=31536000, immutable"
