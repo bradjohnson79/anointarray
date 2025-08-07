@@ -4,7 +4,9 @@
   "private": true,
   "scripts": {
     "dev": "next dev --turbopack",
+    "prebuild": "echo 'Starting Next.js build...' && node -v && npm -v",
     "build": "next build",
+    "postbuild": "echo 'Build completed successfully - Next.js output directory created'",
     "start": "next start",
     "lint": "next lint"
   },
