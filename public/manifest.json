@@ -19,15 +19,21 @@
       "purpose": "any maskable"
     },
     {
-      "src": "/logo-desktop.png",
-      "sizes": "200x40", 
+      "src": "/anoint-array-seal.png",
+      "sizes": "192x192",
       "type": "image/png",
       "purpose": "any"
     },
     {
-      "src": "/logo-mobile.png",
-      "sizes": "150x35",
-      "type": "image/png", 
+      "src": "/anoint-array-seal.png",
+      "sizes": "144x144",
+      "type": "image/png",
+      "purpose": "any"
+    },
+    {
+      "src": "/anoint-array-seal.png",
+      "sizes": "96x96",
+      "type": "image/png",
       "purpose": "any"
     }
   ],
