@@ -93,7 +93,7 @@ export default function LoginPage() {
             <CheckCircle size={20} className="mr-3 flex-shrink-0" />
             <div>
               <p className="font-medium">Account created successfully!</p>
-              <p className="text-sm text-green-400 mt-1">You can now sign in with your credentials below.</p>
+              <p className="text-sm text-green-400 mt-1">Please check your email to confirm your account before logging in.</p>
             </div>
           </div>
         )}

@@ -78,6 +78,7 @@ export class SupabaseAuth {
         email: email.trim().toLowerCase(),
         password,
         options: {
+          emailRedirectTo: `${typeof window !== 'undefined' ? window.location.origin : 'https://anointarray.com'}/auth`,
           data: {
             display_name: displayName || email.split('@')[0],
             full_name: displayName || email.split('@')[0]
@@ -259,7 +260,7 @@ export class SupabaseAuth {
   static async resetPassword(email: string): Promise<{ error: string | null }> {
     try {
       const { error } = await supabase.auth.resetPasswordForEmail(email, {
-        redirectTo: `${window.location.origin}/reset-password`
+        redirectTo: `${typeof window !== 'undefined' ? window.location.origin : 'https://anointarray.com'}/reset-password`
       })
 
       if (error) {
