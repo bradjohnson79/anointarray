@@ -7,8 +7,6 @@ const STATIC_ASSETS = [
   '/',
   '/manifest.json',
   '/offline.html',
-  '/icons/icon-192x192.png',
-  '/icons/icon-512x512.png',
   '/anoint-array-seal.png',
   '/logo-desktop.png',
   '/logo-mobile.png'
@@ -174,7 +172,7 @@ self.addEventListener('fetch', event => {
       .catch(() => {
         // Return offline fallback for failed requests
         if (request.destination === 'image') {
-          return caches.match('/icons/icon-192x192.png')
+          return caches.match('/anoint-array-seal.png')
         }
         return caches.match('/offline.html')
       })
@@ -199,8 +197,8 @@ self.addEventListener('push', event => {
   
   const options = {
     body: event.data ? event.data.text() : 'ANOINT Array notification',
-    icon: '/icons/icon-192x192.png',
-    badge: '/icons/icon-72x72.png',
+    icon: '/logo-mobile.png',
+    badge: '/anoint-array-seal.png',
     vibrate: [100, 50, 100],
     data: {
       dateOfArrival: Date.now(),
