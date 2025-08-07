@@ -1,4 +1,4 @@
-import type { Metadata } from "next";
+import type { Metadata, Viewport } from "next";
 import { Geist, Geist_Mono } from "next/font/google";
 import "./globals.css";
 import { AuthProvider } from "@/contexts/AuthContext";
@@ -17,7 +17,6 @@ export const metadata: Metadata = {
   title: "ANOINT Array - Revolutionary AI Platform",
   description: "The world's first fully autonomous, self-healing website with AI maintenance",
   manifest: "/manifest.json",
-  themeColor: "#9333ea",
   appleWebApp: {
     capable: true,
     statusBarStyle: "black-translucent",
@@ -33,13 +32,15 @@ export const metadata: Metadata = {
       { url: "/icons/icon-512x512.png", sizes: "512x512" },
     ],
   },
-  viewport: {
-    width: "device-width",
-    initialScale: 1,
-    maximumScale: 1,
-    userScalable: false,
-    viewportFit: "cover",
-  },
+};
+
+export const viewport: Viewport = {
+  width: "device-width",
+  initialScale: 1,
+  maximumScale: 1,
+  userScalable: false,
+  viewportFit: "cover",
+  themeColor: "#9333ea",
 };
 
 export default function RootLayout({
