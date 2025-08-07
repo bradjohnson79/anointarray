@@ -66,6 +66,34 @@ function transformSupabaseUser(supabaseUser: SupabaseUser, profile?: any): User 
 }
 
 export class SupabaseAuth {
+  // Bootstrap user profile if missing (safety net)
+  static async bootstrapProfile(userId: string, email: string): Promise<void> {
+    try {
+      console.info('SupabaseAuth.bootstrapProfile: Creating missing profile for:', email)
+      
+      const { error } = await supabase
+        .from('profiles')
+        .upsert({
+          id: userId,
+          email: email,
+          display_name: email.split('@')[0],
+          full_name: email.split('@')[0],
+          is_admin: email.toLowerCase() === 'info@anoint.me',
+          created_at: new Date().toISOString()
+        }, { 
+          onConflict: 'id',
+          ignoreDuplicates: false 
+        })
+      
+      if (error) {
+        console.error('SupabaseAuth.bootstrapProfile: Error creating profile:', error)
+      } else {
+        console.info('SupabaseAuth.bootstrapProfile: Profile created successfully')
+      }
+    } catch (error) {
+      console.error('SupabaseAuth.bootstrapProfile: Failed to create profile:', error)
+    }
+  }
   // Sign up new user
   static async signUp(email: string, password: string, displayName?: string): Promise<{ user: User | null; error: string | null }> {
     try {
@@ -87,22 +115,35 @@ export class SupabaseAuth {
       }
 
       if (data.user) {
-        // Create user profile
+        // Upsert user profile to ensure it exists
         const { error: profileError } = await supabase
           .from('profiles')
-          .insert({
+          .upsert({
             id: data.user.id,
             email: data.user.email,
             display_name: displayName || email.split('@')[0],
             full_name: displayName || email.split('@')[0],
+            is_admin: data.user.email?.toLowerCase() === 'info@anoint.me', // Set admin flag for admin email
             created_at: new Date().toISOString()
+          }, { 
+            onConflict: 'id',
+            ignoreDuplicates: false 
           })
 
         if (profileError) {
-          console.error('Profile creation error:', profileError)
+          console.error('Profile upsert error:', profileError)
+        } else {
+          console.info('Profile upserted successfully for:', data.user.email)
         }
 
-        const user = transformSupabaseUser(data.user)
+        // Fetch the profile to get the complete data including is_admin
+        const { data: profile } = await supabase
+          .from('profiles')
+          .select('*')
+          .eq('id', data.user.id)
+          .single()
+
+        const user = transformSupabaseUser(data.user, profile)
         return { user, error: null }
       }
 
@@ -138,6 +179,23 @@ export class SupabaseAuth {
 
         if (profileError) {
           console.warn('SupabaseAuth.signIn: Profile fetch error:', profileError)
+          
+          // If profile doesn't exist, create it (safety net for existing users)
+          if (profileError.code === 'PGRST116') { // No rows returned
+            console.info('SupabaseAuth.signIn: Profile missing, bootstrapping...')
+            await this.bootstrapProfile(data.user.id, data.user.email!)
+            
+            // Retry profile fetch
+            const { data: retryProfile } = await supabase
+              .from('profiles')
+              .select('*')
+              .eq('id', data.user.id)
+              .single()
+            
+            const user = transformSupabaseUser(data.user, retryProfile)
+            console.log('✅ SupabaseAuth: Authentication successful with bootstrapped profile for:', user.displayName)
+            return { user, error: null }
+          }
         }
 
         const user = transformSupabaseUser(data.user, profile)
@@ -185,6 +243,21 @@ export class SupabaseAuth {
 
       if (profileError) {
         console.warn('SupabaseAuth.getCurrentUser: Profile fetch error:', profileError)
+        
+        // If profile doesn't exist, create it (safety net)
+        if (profileError.code === 'PGRST116') { // No rows returned
+          console.info('SupabaseAuth.getCurrentUser: Profile missing, bootstrapping...')
+          await this.bootstrapProfile(supabaseUser.id, supabaseUser.email!)
+          
+          // Retry profile fetch
+          const { data: retryProfile } = await supabase
+            .from('profiles')
+            .select('*')
+            .eq('id', supabaseUser.id)
+            .single()
+          
+          return transformSupabaseUser(supabaseUser, retryProfile)
+        }
       }
 
       return transformSupabaseUser(supabaseUser, profile)
