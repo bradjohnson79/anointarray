@@ -20,13 +20,13 @@
     },
     {
       "src": "/logo-desktop.png",
-      "sizes": "192x192", 
+      "sizes": "200x40", 
       "type": "image/png",
       "purpose": "any"
     },
     {
       "src": "/logo-mobile.png",
-      "sizes": "96x96",
+      "sizes": "150x35",
       "type": "image/png", 
       "purpose": "any"
     }
