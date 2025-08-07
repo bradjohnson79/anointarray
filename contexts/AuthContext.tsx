@@ -27,6 +27,16 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
         const user = await SupabaseAuth.getCurrentUser()
         console.log('✅ AuthContext: Auth initialized, user:', user?.email || 'none')
         clearTimeout(timeoutId) // Clear timeout since we got a result
+        
+        // Sync to sessionStorage for login page compatibility
+        if (user) {
+          console.log('💾 AuthContext: Storing user in sessionStorage during initialization')
+          sessionStorage.setItem('anoint_auth_session', JSON.stringify(user))
+        } else {
+          console.log('🗑️ AuthContext: No user found, clearing sessionStorage')
+          sessionStorage.removeItem('anoint_auth_session')
+        }
+        
         setAuthState({
           user,
           isAuthenticated: !!user,
@@ -35,6 +45,8 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
       } catch (error) {
         console.error('❌ AuthContext: Error initializing auth:', error)
         clearTimeout(timeoutId) // Clear timeout since we got a result
+        // Clear sessionStorage on error
+        sessionStorage.removeItem('anoint_auth_session')
         // Even if auth fails, we should stop loading
         setAuthState({
           user: null,
@@ -51,6 +63,16 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
         isAuthenticated: !!user
       })
       clearTimeout(timeoutId) // Clear timeout since we got an auth state change
+      
+      // Sync to sessionStorage for login page compatibility
+      if (user) {
+        console.log('💾 AuthContext: Storing user in sessionStorage for login redirection')
+        sessionStorage.setItem('anoint_auth_session', JSON.stringify(user))
+      } else {
+        console.log('🗑️ AuthContext: Clearing sessionStorage on logout')
+        sessionStorage.removeItem('anoint_auth_session')
+      }
+      
       setAuthState(prev => ({
         ...prev,
         user,
@@ -65,10 +87,18 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     // Add a timeout to prevent infinite loading (fallback only)
     timeoutId = setTimeout(() => {
       console.error('⏱️ AuthContext: Auth initialization timeout - stopping loading')
-      setAuthState(prev => ({
-        ...prev,
-        isLoading: false
-      }))
+      setAuthState(prev => {
+        // Only update if we're still loading (prevent race condition)
+        if (prev.isLoading) {
+          console.log('⚠️ AuthContext: Timeout triggered while still loading - setting loading to false')
+          return {
+            ...prev,
+            isLoading: false
+          }
+        }
+        console.log('✅ AuthContext: Timeout triggered but loading already complete - ignoring')
+        return prev
+      })
     }, 8000) // 8 second timeout (longer to allow for slow connections)
 
     // Cleanup subscription and timeout on unmount
@@ -117,6 +147,8 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
       // Auth state will be updated by the onAuthStateChange listener
     } catch (error) {
       console.error('Logout error:', error)
+      // Clear sessionStorage on forced logout
+      sessionStorage.removeItem('anoint_auth_session')
       // Force local state update if remote logout fails
       setAuthState({
         user: null,
