@@ -20,15 +20,18 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
   useEffect(() => {
     // Check for existing session on mount and set up auth state listener
     const initializeAuth = async () => {
+      console.log('🔄 AuthContext: Initializing authentication...')
       try {
         const user = await SupabaseAuth.getCurrentUser()
+        console.log('✅ AuthContext: Auth initialized, user:', user?.email || 'none')
         setAuthState({
           user,
           isAuthenticated: !!user,
           isLoading: false
         })
       } catch (error) {
-        console.error('Error initializing auth:', error)
+        console.error('❌ AuthContext: Error initializing auth:', error)
+        // Even if auth fails, we should stop loading
         setAuthState({
           user: null,
           isAuthenticated: false,
@@ -36,6 +39,18 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
         })
       }
     }
+
+    // Add a timeout to prevent infinite loading
+    const timeoutId = setTimeout(() => {
+      if (authState.isLoading) {
+        console.error('⏱️ AuthContext: Auth initialization timeout - stopping loading')
+        setAuthState({
+          user: null,
+          isAuthenticated: false,
+          isLoading: false
+        })
+      }
+    }, 5000) // 5 second timeout
 
     initializeAuth()
 
@@ -53,8 +68,9 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
       }))
     })
 
-    // Cleanup subscription on unmount
+    // Cleanup subscription and timeout on unmount
     return () => {
+      clearTimeout(timeoutId)
       subscription?.unsubscribe()
     }
   }, [])
