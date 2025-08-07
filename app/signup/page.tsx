@@ -1,82 +1,78 @@
 'use client'
 
 import { useState } from 'react'
-import { useAuth } from '@/contexts/AuthContext'
 import { useRouter } from 'next/navigation'
 import { Eye, EyeOff } from 'lucide-react'
+import { SupabaseAuth } from '@/lib/auth'
 
-export default function LoginPage() {
+export default function SignUpPage() {
   const [email, setEmail] = useState('')
   const [password, setPassword] = useState('')
+  const [confirmPassword, setConfirmPassword] = useState('')
+  const [displayName, setDisplayName] = useState('')
   const [showPassword, setShowPassword] = useState(false)
   const [error, setError] = useState('')
-  const { login, isLoading } = useAuth()
+  const [isLoading, setIsLoading] = useState(false)
   const router = useRouter()
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
     setError('')
 
-    // Clean the inputs
-    const cleanEmail = email.trim()
-    const cleanPassword = password.replace(/[*]/g, '').trim() // Remove asterisks and trim
-    
-    console.log('🔐 Login form submitted with:')
-    console.log('  📧 Email from form:', `"${email}"`)
-    console.log('  🔑 Password from form:', `"${password}"`)
-    console.log('  📧 Clean email:', `"${cleanEmail}"`)
-    console.log('  🔑 Clean password:', `"${cleanPassword}"`)
-    console.log('  🔄 Auth loading state:', isLoading)
+    if (password !== confirmPassword) {
+      setError('Passwords do not match')
+      return
+    }
+
+    if (password.length < 6) {
+      setError('Password must be at least 6 characters')
+      return
+    }
+
+    setIsLoading(true)
 
     try {
-      console.log('📞 Calling login function...')
-      const result = await login(cleanEmail, cleanPassword)
-      console.log('📨 Login result received:', result)
-      
-      if (result.success) {
-        console.log('✅ Login successful! Checking session...')
-        
-        // Small delay to ensure session is stored
-        await new Promise(resolve => setTimeout(resolve, 100))
-        
-        const sessionData = sessionStorage.getItem('anoint_auth_session')
-        console.log('💾 Session data:', sessionData)
-        
-        if (sessionData) {
-          const user = JSON.parse(sessionData)
-          console.log('👤 Parsed user:', user)
-          
-          if (user.role === 'admin') {
-            console.log('🏠 Redirecting to admin dashboard...')
-            window.location.href = '/admin/dashboard'
-          } else {
-            console.log('🏠 Redirecting to member dashboard...')
-            window.location.href = '/member/dashboard'
-          }
-        } else {
-          console.log('⚠️ No session data found, redirecting to admin dashboard as fallback')
-          window.location.href = '/admin/dashboard'
-        }
-      } else {
-        console.log('❌ Login failed:', result.error)
-        setError(result.error || 'Login failed')
+      const { user, error } = await SupabaseAuth.signUp(
+        email,
+        password,
+        displayName || email.split('@')[0]
+      )
+
+      if (error) {
+        setError(error)
+      } else if (user) {
+        // Successfully signed up
+        router.push('/login?registered=true')
       }
     } catch (error) {
-      console.error('🚨 Login error caught:', error)
       setError('An unexpected error occurred')
+    } finally {
+      setIsLoading(false)
     }
   }
-
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-gray-900 via-purple-900 to-cyan-900 flex items-center justify-center p-4">
       <div className="bg-gray-800/80 backdrop-blur-lg rounded-2xl p-8 w-full max-w-md shadow-2xl border border-purple-500/20">
         <div className="text-center mb-8">
-          <h1 className="text-3xl font-bold text-white mb-2">ANOINT Array</h1>
-          <p className="text-purple-300">Welcome back</p>
+          <h1 className="text-3xl font-bold text-white mb-2">Create Account</h1>
+          <p className="text-purple-300">Join ANOINT Array</p>
         </div>
 
         <form onSubmit={handleSubmit} className="space-y-6">
+          <div>
+            <label className="block text-sm font-medium text-gray-300 mb-2">
+              Display Name
+            </label>
+            <input
+              type="text"
+              value={displayName}
+              onChange={(e) => setDisplayName(e.target.value)}
+              className="w-full px-4 py-3 bg-gray-700/50 border border-gray-600 rounded-lg text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-purple-500 focus:border-transparent"
+              placeholder="Your name (optional)"
+            />
+          </div>
+
           <div>
             <label className="block text-sm font-medium text-gray-300 mb-2">
               Email Address
@@ -101,7 +97,7 @@ export default function LoginPage() {
                 value={password}
                 onChange={(e) => setPassword(e.target.value)}
                 className="w-full px-4 py-3 bg-gray-700/50 border border-gray-600 rounded-lg text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-purple-500 focus:border-transparent pr-10"
-                placeholder="Enter your password"
+                placeholder="Create a password"
                 required
               />
               <button
@@ -112,6 +108,20 @@ export default function LoginPage() {
                 {showPassword ? <EyeOff size={20} /> : <Eye size={20} />}
               </button>
             </div>
+          </div>
+
+          <div>
+            <label className="block text-sm font-medium text-gray-300 mb-2">
+              Confirm Password
+            </label>
+            <input
+              type="password"
+              value={confirmPassword}
+              onChange={(e) => setConfirmPassword(e.target.value)}
+              className="w-full px-4 py-3 bg-gray-700/50 border border-gray-600 rounded-lg text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-purple-500 focus:border-transparent"
+              placeholder="Confirm your password"
+              required
+            />
           </div>
 
           {error && (
@@ -125,15 +135,15 @@ export default function LoginPage() {
             disabled={isLoading}
             className="w-full bg-gradient-to-r from-purple-600 to-cyan-600 hover:from-purple-700 hover:to-cyan-700 text-white font-semibold py-3 px-4 rounded-lg transition-all duration-200 disabled:opacity-50 disabled:cursor-not-allowed"
           >
-            {isLoading ? 'Signing in...' : 'Sign In'}
+            {isLoading ? 'Creating account...' : 'Sign Up'}
           </button>
         </form>
 
         <div className="mt-8 pt-6 border-t border-gray-700">
           <p className="text-gray-400 text-sm text-center">
-            Don't have an account?{' '}
-            <a href="/signup" className="text-purple-400 hover:text-purple-300 font-medium">
-              Sign up
+            Already have an account?{' '}
+            <a href="/login" className="text-purple-400 hover:text-purple-300 font-medium">
+              Sign in
             </a>
           </p>
         </div>
