@@ -40,6 +40,14 @@ function transformSupabaseUser(supabaseUser: SupabaseUser, profile?: any): User 
   const email = supabaseUser.email || ''
   const isAdmin = ADMIN_EMAILS.includes(email.toLowerCase())
   
+  // DEBUG: Log role assignment process
+  console.log('🔍 Role Assignment Debug:', {
+    email: email,
+    emailLower: email.toLowerCase(),
+    adminEmails: ADMIN_EMAILS,
+    isAdmin: isAdmin
+  })
+  
   return {
     id: supabaseUser.id,
     email: email,

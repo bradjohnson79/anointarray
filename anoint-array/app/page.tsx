@@ -6,6 +6,7 @@ import { useState } from 'react'
 import Link from 'next/link'
 import AuroraBackground from '@/components/AuroraBackground'
 import BottomNavigation from '@/components/mobile/BottomNavigation'
+import UserDropdown from '@/components/UserDropdown'
 import { Zap, Crown, Users, Shield, ArrowRight, Menu, X } from 'lucide-react'
 
 export default function Home() {
@@ -81,27 +82,7 @@ export default function Home() {
             {/* Auth Section */}
             <div className="hidden md:block">
               {isAuthenticated && user ? (
-                <div className="flex items-center space-x-4">
-                  <div className="flex items-center space-x-2">
-                    <div className="w-8 h-8 bg-gradient-to-r from-purple-500 to-cyan-500 rounded-full flex items-center justify-center text-white font-bold text-sm">
-                      {user.displayName?.charAt(0) || 'U'}
-                    </div>
-                    <span className="text-white font-medium">{user.displayName}</span>
-                    <span className="text-purple-300 text-sm capitalize">({user.role})</span>
-                  </div>
-                  <button
-                    onClick={handleGetStarted}
-                    className="bg-purple-600 hover:bg-purple-700 text-white px-4 py-2 rounded-lg transition-colors"
-                  >
-                    Dashboard
-                  </button>
-                  <button
-                    onClick={handleLogout}
-                    className="text-gray-300 hover:text-white px-3 py-2 text-sm transition-colors"
-                  >
-                    Logout
-                  </button>
-                </div>
+                <UserDropdown />
               ) : (
                 <div className="flex items-center space-x-4">
                   <Link href="/login" className="text-gray-300 hover:text-white px-3 py-2 text-sm font-medium transition-colors">
@@ -147,31 +128,9 @@ export default function Home() {
               </Link>
               
               {isAuthenticated && user ? (
-                <>
-                  <div className="px-3 py-2 border-t border-gray-700 mt-2">
-                    <div className="flex items-center space-x-2 mb-2">
-                      <div className="w-8 h-8 bg-gradient-to-r from-purple-500 to-cyan-500 rounded-full flex items-center justify-center text-white font-bold text-sm">
-                        {user.displayName?.charAt(0) || 'U'}
-                      </div>
-                      <div>
-                        <div className="text-white font-medium">{user.displayName}</div>
-                        <div className="text-purple-300 text-sm capitalize">{user.role}</div>
-                      </div>
-                    </div>
-                    <button
-                      onClick={handleGetStarted}
-                      className="w-full bg-purple-600 hover:bg-purple-700 text-white px-4 py-2 rounded-lg transition-colors mb-2"
-                    >
-                      Dashboard
-                    </button>
-                    <button
-                      onClick={handleLogout}
-                      className="w-full text-gray-300 hover:text-white px-3 py-2 text-sm transition-colors border border-gray-600 rounded-lg"
-                    >
-                      Logout
-                    </button>
-                  </div>
-                </>
+                <div className="px-3 py-2 border-t border-gray-700 mt-2">
+                  <UserDropdown className="w-full" />
+                </div>
               ) : (
                 <div className="px-3 py-2 border-t border-gray-700 mt-2 space-y-2">
                   <Link href="/login" className="block w-full text-gray-300 hover:text-white px-3 py-2 text-sm transition-colors border border-gray-600 rounded-lg text-center">
