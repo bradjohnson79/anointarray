@@ -3,13 +3,11 @@ import { NextRequest, NextResponse } from 'next/server'
 // Shipping Label Download Endpoint
 // Serves generated 4x6 thermal shipping labels in PDF format
 
-interface RouteParams {
-  params: {
-    trackingNumber: string
-  }
-}
-
-export async function GET(request: NextRequest, { params }: RouteParams) {
+export async function GET(
+  request: NextRequest,
+  context: { params: Promise<{ trackingNumber: string }> }
+) {
+  const params = await context.params
   try {
     const { trackingNumber } = params
     
@@ -158,7 +156,11 @@ startxref
 }
 
 // Alternative endpoint for base64 encoded labels (for browser display)
-export async function POST(request: NextRequest, { params }: RouteParams) {
+export async function POST(
+  request: NextRequest,
+  context: { params: Promise<{ trackingNumber: string }> }
+) {
+  const params = await context.params
   try {
     const { trackingNumber } = params
     

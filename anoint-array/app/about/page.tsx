@@ -21,7 +21,7 @@ export default function About() {
             </p>
             
             <p className="text-lg text-gray-300 leading-relaxed mb-8">
-              At the heart of our work lies <span className="text-cyan-400 font-semibold">authentic Transcendental infusion</span>—the art of imbuing each product with conscious intent and energetically charged patterns that align with your highest well-being. This isn't new-age gimmickry—it's <span className="text-emerald-400 font-semibold">ancient science revitalized</span> through focused intent and paired with modern Scalar enhancement.
+              At the heart of our work lies <span className="text-cyan-400 font-semibold">authentic Transcendental infusion</span>—the art of imbuing each product with conscious intent and energetically charged patterns that align with your highest well-being. This isn&apos;t new-age gimmickry—it&apos;s <span className="text-emerald-400 font-semibold">ancient science revitalized</span> through focused intent and paired with modern Scalar enhancement.
             </p>
             
             <p className="text-lg text-gray-300 leading-relaxed">
@@ -51,7 +51,7 @@ export default function About() {
                 </li>
                 <li className="flex items-start">
                   <span className="text-emerald-400 mr-3">•</span>
-                  <span>Arrays designed to interact with the user's intention field and subconscious mind</span>
+                  <span>Arrays designed to interact with the user&apos;s intention field and subconscious mind</span>
                 </li>
               </ul>
               
@@ -67,7 +67,7 @@ export default function About() {
             
             <div className="bg-gradient-to-br from-emerald-900/30 to-purple-900/30 rounded-lg p-8 border border-emerald-500/30 backdrop-blur-sm text-center">
               <p className="text-xl text-gray-300 leading-relaxed">
-                To awaken a new era of <span className="text-emerald-400 font-semibold">personal empowerment</span> through frequency, combining <span className="text-purple-400 font-semibold">sacred intention</span>, <span className="text-cyan-400 font-semibold">Scalar science</span>, and <span className="text-emerald-400 font-semibold">ancient wisdom</span>. Whether you're seeking transformation, restoration, or elevation, ANOINT: Array exists to bring alignment to every layer of your being.
+                To awaken a new era of <span className="text-emerald-400 font-semibold">personal empowerment</span> through frequency, combining <span className="text-purple-400 font-semibold">sacred intention</span>, <span className="text-cyan-400 font-semibold">Scalar science</span>, and <span className="text-emerald-400 font-semibold">ancient wisdom</span>. Whether you&apos;re seeking transformation, restoration, or elevation, ANOINT: Array exists to bring alignment to every layer of your being.
               </p>
             </div>
           </div>
