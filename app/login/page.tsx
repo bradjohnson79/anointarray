@@ -44,17 +44,17 @@ function LoginPageContent() {
             return;
           }
           
-          // Try the actual database structure (user_profiles table)
+          // Try the actual database structure (profiles table)
           const { data, error } = await supabase
-            .from("user_profiles")
-            .select("role")
-            .eq("user_id", session.user.id)
+            .from("profiles")
+            .select("is_admin")
+            .eq("id", session.user.id)
             .single();
           
           console.info("[login] Profile fetch result:", { 
             data: data, 
             error: error?.message,
-            role: data?.role 
+            isAdmin: data?.is_admin 
           });
           
           if (error) { 
@@ -65,10 +65,10 @@ function LoginPageContent() {
             return; 
           }
           
-          const targetRoute = data?.role === 'admin' ? "/admin" : "/dashboard";
-          console.info("[login] Role-based redirect decision:", {
-            role: data?.role,
-            isAdmin: data?.role === 'admin',
+          const targetRoute = data?.is_admin === true ? "/admin" : "/dashboard";
+          console.info("[login] Admin-based redirect decision:", {
+            isAdmin: data?.is_admin,
+            adminStatus: data?.is_admin === true,
             targetRoute: targetRoute,
             userEmail: session.user.email
           });
