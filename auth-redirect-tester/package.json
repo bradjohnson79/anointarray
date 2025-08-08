@@ -1,0 +1,35 @@
+{
+  "name": "anoint-auth-redirect-tester",
+  "version": "1.0.0",
+  "description": "Automated testing for ANOINT Array admin login flow and redirect behavior",
+  "main": "auth-tester.js",
+  "scripts": {
+    "test": "node auth-tester.js",
+    "test:single": "node auth-tester.js --single",
+    "test:continuous": "node auth-tester.js --continuous",
+    "install-playwright": "npx playwright install",
+    "setup": "npm install && npx playwright install"
+  },
+  "keywords": [
+    "authentication",
+    "testing",
+    "playwright",
+    "automation",
+    "admin",
+    "redirect"
+  ],
+  "author": "ANOINT Array",
+  "license": "MIT",
+  "dependencies": {
+    "playwright": "^1.48.0",
+    "fs-extra": "^11.2.0",
+    "chalk": "^4.1.2",
+    "dotenv": "^16.4.5"
+  },
+  "devDependencies": {
+    "@types/node": "^20.17.9"
+  },
+  "engines": {
+    "node": ">=18.0.0"
+  }
+}
