@@ -85,9 +85,9 @@ export async function middleware(req: NextRequest) {
       } else {
         // Fallback to database query
         const { data: profile, error: profileError } = await supabase
-          .from("user_profiles")
-          .select("role")
-          .eq("user_id", session.user.id)
+          .from("profiles")
+          .select("is_admin")
+          .eq("id", session.user.id)
           .single();
       
         if (profileError) {
@@ -102,8 +102,8 @@ export async function middleware(req: NextRequest) {
             return NextResponse.redirect(new URL("/dashboard", req.url));
           }
         } else {
-          // Check role from actual database structure
-          isAdmin = profile?.role === 'admin';
+          // Check admin status from actual database structure
+          isAdmin = profile?.is_admin === true;
           
           // Cache the profile for future use
           if (profile) {
