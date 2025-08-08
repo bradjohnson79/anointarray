@@ -33,14 +33,18 @@ export interface AuthState {
 // Transform Supabase user to our User interface using database-driven roles
 function transformSupabaseUser(supabaseUser: SupabaseUser, profile?: any): User {
   const email = supabaseUser.email || ''
-  const isAdmin = profile?.is_admin === true
+  
+  // Handle both old and new database structures
+  const isAdmin = profile?.is_admin === true || profile?.role === 'admin' || email === 'info@anoint.me'
   
   // DEBUG: Log role assignment process
   console.log('🔍 Role Assignment Debug:', {
     email: email,
     profileIsAdmin: profile?.is_admin,
+    profileRole: profile?.role,
     resolvedIsAdmin: isAdmin,
-    profileData: profile ? 'present' : 'missing'
+    profileData: profile ? 'present' : 'missing',
+    isAdminEmail: email === 'info@anoint.me'
   })
   
   return {
@@ -72,16 +76,17 @@ export class SupabaseAuth {
       console.info('SupabaseAuth.bootstrapProfile: Creating missing profile for:', email)
       
       const { error } = await supabase
-        .from('profiles')
+        .from('user_profiles')
         .upsert({
-          id: userId,
+          user_id: userId,
           email: email,
           display_name: email.split('@')[0],
-          full_name: email.split('@')[0],
-          is_admin: email.toLowerCase() === 'info@anoint.me',
+          role: email.toLowerCase() === 'info@anoint.me' ? 'admin' : 'user',
+          is_active: true,
+          is_verified: true,
           created_at: new Date().toISOString()
         }, { 
-          onConflict: 'id',
+          onConflict: 'user_id',
           ignoreDuplicates: false 
         })
       
@@ -115,18 +120,19 @@ export class SupabaseAuth {
       }
 
       if (data.user) {
-        // Upsert user profile to ensure it exists
+        // Upsert user profile to ensure it exists (using correct database structure)
         const { error: profileError } = await supabase
-          .from('profiles')
+          .from('user_profiles')
           .upsert({
-            id: data.user.id,
+            user_id: data.user.id,
             email: data.user.email,
             display_name: displayName || email.split('@')[0],
-            full_name: displayName || email.split('@')[0],
-            is_admin: data.user.email?.toLowerCase() === 'info@anoint.me', // Set admin flag for admin email
+            role: data.user.email?.toLowerCase() === 'info@anoint.me' ? 'admin' : 'user',
+            is_active: true,
+            is_verified: false, // Will be verified via email
             created_at: new Date().toISOString()
           }, { 
-            onConflict: 'id',
+            onConflict: 'user_id',
             ignoreDuplicates: false 
           })
 
@@ -136,11 +142,11 @@ export class SupabaseAuth {
           console.info('Profile upserted successfully for:', data.user.email)
         }
 
-        // Fetch the profile to get the complete data including is_admin
+        // Fetch the profile to get the complete data including role
         const { data: profile } = await supabase
-          .from('profiles')
+          .from('user_profiles')
           .select('*')
-          .eq('id', data.user.id)
+          .eq('user_id', data.user.id)
           .single()
 
         const user = transformSupabaseUser(data.user, profile)
@@ -170,11 +176,11 @@ export class SupabaseAuth {
       }
 
       if (data.user) {
-        // Get user profile with role information
+        // Get user profile with role information from actual database structure
         const { data: profile, error: profileError } = await supabase
-          .from('profiles')
+          .from('user_profiles')
           .select('*')
-          .eq('id', data.user.id)
+          .eq('user_id', data.user.id)
           .single()
 
         if (profileError) {
@@ -187,9 +193,9 @@ export class SupabaseAuth {
             
             // Retry profile fetch
             const { data: retryProfile } = await supabase
-              .from('profiles')
+              .from('user_profiles')
               .select('*')
-              .eq('id', data.user.id)
+              .eq('user_id', data.user.id)
               .single()
             
             const user = transformSupabaseUser(data.user, retryProfile)
@@ -234,11 +240,11 @@ export class SupabaseAuth {
         return null
       }
 
-      // Get user profile with role information
+      // Get user profile with role information from actual database structure
       const { data: profile, error: profileError } = await supabase
-        .from('profiles')
+        .from('user_profiles')
         .select('*')
-        .eq('id', supabaseUser.id)
+        .eq('user_id', supabaseUser.id)
         .single()
 
       if (profileError) {
@@ -251,9 +257,9 @@ export class SupabaseAuth {
           
           // Retry profile fetch
           const { data: retryProfile } = await supabase
-            .from('profiles')
+            .from('user_profiles')
             .select('*')
-            .eq('id', supabaseUser.id)
+            .eq('user_id', supabaseUser.id)
             .single()
           
           return transformSupabaseUser(supabaseUser, retryProfile)
@@ -357,11 +363,11 @@ export class SupabaseAuth {
       console.log('Auth state change:', event, !!session)
       
       if (session?.user) {
-        // Get user profile with role information
+        // Get user profile with role information from actual database structure
         const { data: profile, error: profileError } = await supabase
-          .from('profiles')
+          .from('user_profiles')
           .select('*')
-          .eq('id', session.user.id)
+          .eq('user_id', session.user.id)
           .single()
 
         if (profileError) {

@@ -35,16 +35,26 @@ function LoginPageContent() {
         
         try {
           console.info("[login] Fetching user profile for role determination...");
+          
+          // Emergency fallback for info@anoint.me
+          if (session.user.email === 'info@anoint.me') {
+            console.info("[login] Admin email detected - forcing admin redirect");
+            console.info("[login] Executing router.replace('/admin')...");
+            router.replace("/admin");
+            return;
+          }
+          
+          // Try the actual database structure (user_profiles table)
           const { data, error } = await supabase
-            .from("profiles")
-            .select("is_admin")
-            .eq("id", session.user.id)
+            .from("user_profiles")
+            .select("role")
+            .eq("user_id", session.user.id)
             .single();
           
           console.info("[login] Profile fetch result:", { 
             data: data, 
             error: error?.message,
-            isAdmin: data?.is_admin 
+            role: data?.role 
           });
           
           if (error) { 
@@ -55,9 +65,10 @@ function LoginPageContent() {
             return; 
           }
           
-          const targetRoute = data?.is_admin ? "/admin" : "/dashboard";
+          const targetRoute = data?.role === 'admin' ? "/admin" : "/dashboard";
           console.info("[login] Role-based redirect decision:", {
-            isAdmin: data?.is_admin,
+            role: data?.role,
+            isAdmin: data?.role === 'admin',
             targetRoute: targetRoute,
             userEmail: session.user.email
           });

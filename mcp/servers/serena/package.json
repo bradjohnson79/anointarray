@@ -1,0 +1,36 @@
+{
+  "name": "serena-build-server",
+  "version": "1.0.0",
+  "description": "Serena Build Management MCP Server for ANOINT Array",
+  "main": "index.ts",
+  "type": "module",
+  "scripts": {
+    "start": "tsx index.ts",
+    "dev": "nodemon --exec tsx index.ts",
+    "build": "tsc",
+    "test": "echo 'No tests specified'"
+  },
+  "bin": {
+    "serena-build-server": "./index.ts"
+  },
+  "dependencies": {
+    "@modelcontextprotocol/sdk": "^1.17.2",
+    "dotenv": "^17.2.1"
+  },
+  "devDependencies": {
+    "@types/node": "^20",
+    "tsx": "^4.20.3",
+    "nodemon": "^3.1.10",
+    "typescript": "^5"
+  },
+  "keywords": [
+    "mcp",
+    "build-management",
+    "serena",
+    "automation",
+    "performance",
+    "optimization"
+  ],
+  "author": "ANOINT Array",
+  "license": "MIT"
+}

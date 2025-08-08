@@ -70,22 +70,33 @@ export async function middleware(req: NextRequest) {
       
       console.info("[middleware] Valid session found, checking admin role for user:", session.user.id);
       
-      // Check if user has admin role in database
+      // Check if user has admin role in database (using actual table structure)
+      console.info("[middleware] Checking admin role for user:", session.user.id);
+      
+      // First, try the actual user_profiles table structure
       const { data: profile, error: profileError } = await supabase
-        .from("profiles")
-        .select("is_admin")
-        .eq("id", session.user.id)
+        .from("user_profiles")
+        .select("role")
+        .eq("user_id", session.user.id)
         .single();
       
       if (profileError) {
         console.error("[middleware] Profile fetch error:", profileError);
-        console.info("[middleware] Profile error - redirecting to member dashboard");
-        return NextResponse.redirect(new URL("/dashboard", req.url));
-      }
-      
-      if (!profile?.is_admin) {
-        console.info("[middleware] User is not admin, redirecting to member dashboard");
-        return NextResponse.redirect(new URL("/dashboard", req.url));
+        
+        // Fallback: Check if user is info@anoint.me (emergency admin access)
+        if (session.user.email === 'info@anoint.me') {
+          console.info("[middleware] Admin email fallback activated for info@anoint.me");
+          // Allow access - this is our admin user
+        } else {
+          console.info("[middleware] Profile error - redirecting to member dashboard");
+          return NextResponse.redirect(new URL("/dashboard", req.url));
+        }
+      } else {
+        // Check role from actual database structure
+        if (profile?.role !== 'admin') {
+          console.info("[middleware] User role is not admin:", profile?.role, "- redirecting to member dashboard");
+          return NextResponse.redirect(new URL("/dashboard", req.url));
+        }
       }
       
       console.info("[middleware] Admin access granted for:", session.user.email);
