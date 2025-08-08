@@ -8,10 +8,20 @@
     "build": "next build",
     "postbuild": "echo 'Build completed successfully - Next.js output directory created'",
     "start": "next start",
-    "lint": "next lint"
+    "lint": "next lint",
+    "mcp:install": "./mcp/scripts/install.sh",
+    "mcp:start": "./mcp/scripts/start-all.sh",
+    "mcp:stop": "./mcp/scripts/stop-all.sh",
+    "mcp:status": "./mcp/scripts/status.sh",
+    "mcp:logs": "tail -f mcp/logs/*.log",
+    "mcp:dev": "./mcp/scripts/dev.sh",
+    "mcp:dev:stop": "./mcp/scripts/stop-dev.sh",
+    "mcp:dev:status": "./mcp/scripts/status-dev.sh",
+    "mcp:health": "./mcp/scripts/health-check.sh"
   },
   "dependencies": {
     "@anthropic-ai/sdk": "^0.57.0",
+    "@modelcontextprotocol/sdk": "^1.17.2",
     "@radix-ui/react-slot": "^1.2.3",
     "@radix-ui/react-switch": "^1.2.5",
     "@radix-ui/react-tabs": "^1.1.12",
@@ -21,15 +31,18 @@
     "archiver": "^7.0.1",
     "class-variance-authority": "^0.7.1",
     "clsx": "^2.1.1",
+    "concurrently": "^9.2.0",
     "csv-parser": "^3.2.0",
     "dotenv": "^17.2.1",
     "lucide-react": "^0.535.0",
     "next": "15.4.5",
+    "nodemon": "^3.1.10",
     "openai": "^5.11.0",
     "react": "19.1.0",
     "react-dom": "19.1.0",
     "stripe": "^18.4.0",
-    "tailwind-merge": "^3.3.1"
+    "tailwind-merge": "^3.3.1",
+    "tsx": "^4.20.3"
   },
   "devDependencies": {
     "@eslint/eslintrc": "^3",
