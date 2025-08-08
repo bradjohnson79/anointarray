@@ -1,0 +1,30 @@
+version: '3.8'
+
+services:
+  auth-tester:
+    build: .
+    container_name: anoint-auth-tester
+    environment:
+      - BASE_URL=https://anointarray.com
+      - TEST_EMAIL=info@anoint.me
+      - TEST_PASSWORD=AdminPassword123
+      - TEST_INTERVAL=120000
+      - HEADLESS=true
+    volumes:
+      - ./logs:/app/logs
+      - ./screenshots:/app/screenshots
+    restart: unless-stopped
+    command: ["node", "auth-tester.js", "--continuous"]
+    
+  # Optional: Monitoring dashboard
+  monitoring:
+    image: nginx:alpine
+    container_name: anoint-auth-monitor
+    ports:
+      - "8080:80"
+    volumes:
+      - ./monitoring:/usr/share/nginx/html:ro
+      - ./logs:/usr/share/nginx/html/logs:ro
+    depends_on:
+      - auth-tester
+    restart: unless-stopped

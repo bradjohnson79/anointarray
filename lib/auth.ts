@@ -1,4 +1,5 @@
 import { supabase } from './supabase'
+import { AuthCache } from './redis'
 import type { User as SupabaseUser } from '@supabase/supabase-js'
 
 export interface User {
@@ -162,8 +163,15 @@ export class SupabaseAuth {
 
   // Sign in existing user
   static async signIn(email: string, password: string): Promise<{ user: User | null; error: string | null }> {
+    const startTime = Date.now()
+    
     try {
       console.log('🔐 SupabaseAuth.signIn called with email:', email)
+      
+      // Check rate limiting
+      if (await AuthCache.isRateLimited(email)) {
+        return { user: null, error: 'Too many failed attempts. Please try again later.' }
+      }
       
       const { data, error } = await supabase.auth.signInWithPassword({
         email: email.trim().toLowerCase(),
@@ -172,40 +180,61 @@ export class SupabaseAuth {
 
       if (error) {
         console.error('Supabase signin error:', error)
+        // Record authentication failure
+        await AuthCache.recordAuthFailure(email)
         return { user: null, error: error.message }
       }
 
       if (data.user) {
-        // Get user profile with role information from actual database structure
-        const { data: profile, error: profileError } = await supabase
-          .from('user_profiles')
-          .select('*')
-          .eq('user_id', data.user.id)
-          .single()
-
-        if (profileError) {
-          console.warn('SupabaseAuth.signIn: Profile fetch error:', profileError)
+        // Try to get cached profile first
+        let profile = await AuthCache.getUserProfile(data.user.id)
+        
+        if (!profile) {
+          // Get user profile with role information from actual database structure
+          const { data: dbProfile, error: profileError } = await supabase
+            .from('user_profiles')
+            .select('*')
+            .eq('user_id', data.user.id)
+            .single()
           
-          // If profile doesn't exist, create it (safety net for existing users)
-          if (profileError.code === 'PGRST116') { // No rows returned
-            console.info('SupabaseAuth.signIn: Profile missing, bootstrapping...')
-            await this.bootstrapProfile(data.user.id, data.user.email!)
+          profile = dbProfile
+          
+          if (profileError) {
+            console.warn('SupabaseAuth.signIn: Profile fetch error:', profileError)
             
-            // Retry profile fetch
-            const { data: retryProfile } = await supabase
-              .from('user_profiles')
-              .select('*')
-              .eq('user_id', data.user.id)
-              .single()
-            
-            const user = transformSupabaseUser(data.user, retryProfile)
-            console.log('✅ SupabaseAuth: Authentication successful with bootstrapped profile for:', user.displayName)
-            return { user, error: null }
+            // If profile doesn't exist, create it (safety net for existing users)
+            if (profileError.code === 'PGRST116') { // No rows returned
+              console.info('SupabaseAuth.signIn: Profile missing, bootstrapping...')
+              await this.bootstrapProfile(data.user.id, data.user.email!)
+              
+              // Retry profile fetch
+              const { data: retryProfile } = await supabase
+                .from('user_profiles')
+                .select('*')
+                .eq('user_id', data.user.id)
+                .single()
+              
+              profile = retryProfile
+            }
+          } else {
+            // Cache the profile for future use
+            await AuthCache.cacheUserProfile(data.user.id, profile)
           }
         }
 
         const user = transformSupabaseUser(data.user, profile)
-        console.log('✅ SupabaseAuth: Authentication successful for:', user.displayName)
+        
+        // Clear any auth failures on successful login
+        await AuthCache.clearAuthFailures(email)
+        
+        // Record performance metrics
+        const loginTime = Date.now() - startTime
+        await AuthCache.recordPerformanceMetric('auth_login_time', loginTime, {
+          user_id: data.user.id,
+          is_admin: user.role === 'admin' ? 'true' : 'false'
+        })
+        
+        console.log('✅ SupabaseAuth: Authentication successful for:', user.displayName, `(${loginTime}ms)`)
         return { user, error: null }
       }
 
