@@ -1,5 +1,5 @@
 // Service Worker Version - increment when updating
-const SW_VERSION = '2.0.0'
+const SW_VERSION = '3.0.0'
 const CACHE_NAME = `anoint-array-v${SW_VERSION}`
 const STATIC_CACHE = `anoint-static-v${SW_VERSION}`
 const DYNAMIC_CACHE = `anoint-dynamic-v${SW_VERSION}`

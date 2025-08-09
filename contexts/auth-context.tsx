@@ -89,31 +89,90 @@ export function AuthProvider({ children }: AuthProviderProps) {
       const sessionUser = s?.session?.user ?? null
 
       // Subscribe to auth changes (single source of truth)
-      const { data: sub } = supabase.auth.onAuthStateChange((event, sess) => {
+      const { data: sub } = supabase.auth.onAuthStateChange(async (event, sess) => {
         if (!mounted) return
         if (DEBUG) console.log('[AuthProvider] onAuthStateChange:', event, !!sess)
         setSession(sess ?? null)
-        setUser(sess?.user ? transformUser(sess.user, profile) : null)
+        
+        // If we have a session, try to fetch updated profile
+        if (sess?.user) {
+          try {
+            const { data: updatedProfile } = await supabase
+              .from('user_profiles')
+              .select('*')
+              .eq('id', sess.user.id)
+              .single()
+            
+            if (mounted) {
+              setProfile(updatedProfile ?? null)
+              setUser(transformUser(sess.user, updatedProfile))
+            }
+          } catch (err) {
+            // Fall back to email-based detection
+            if (mounted) {
+              setUser(transformUser(sess.user, null))
+            }
+          }
+        } else {
+          setUser(null)
+        }
       })
       unsub = () => sub.subscription.unsubscribe?.()
 
       // Profile load (guard 404 gracefully)
       if (sessionUser?.id) {
         try {
-          const { data: profileData, error: pErr } = await supabase
+          // Try user_profiles first
+          let { data: profileData, error: pErr } = await supabase
             .from('user_profiles')
-            .select('is_admin, full_name, phone')
+            .select('*')
             .eq('id', sessionUser.id)
             .single()
 
+          // If user_profiles fails, try profiles view as fallback
+          if (pErr && pErr.code === 'PGRST116') {
+            if (DEBUG) console.log('[AuthProvider] user_profiles not found, trying profiles view')
+            const profilesResult = await supabase
+              .from('profiles')
+              .select('*')
+              .eq('id', sessionUser.id)
+              .single()
+            
+            profileData = profilesResult.data
+            pErr = profilesResult.error
+          }
+
           if (DEBUG) console.log('[AuthProvider] profile:', { has: !!profileData, error: pErr?.message })
+          
           if (mounted) {
+            // Even if profile fetch fails, still set user with email-based admin detection
             setProfile(profileData ?? null)
             setUser(transformUser(sessionUser, profileData))
+            
+            // If no profile exists but user is admin email, create a minimal profile
+            if (!profileData && isAdminEmail(sessionUser.email || '')) {
+              if (DEBUG) console.log('[AuthProvider] Admin email detected but no profile, creating minimal profile')
+              // Don't block on this - fire and forget
+              supabase
+                .from('user_profiles')
+                .upsert({
+                  id: sessionUser.id,
+                  email: sessionUser.email,
+                  full_name: sessionUser.email?.split('@')[0],
+                  display_name: sessionUser.email?.split('@')[0],
+                  is_admin: true,
+                  created_at: new Date().toISOString(),
+                  updated_at: new Date().toISOString()
+                })
+                .then(({ error }) => {
+                  if (error && DEBUG) console.log('[AuthProvider] Profile creation error:', error)
+                })
+            }
           }
         } catch (err) {
           if (DEBUG) console.error('[AuthProvider] profile fetch threw:', err)
           if (mounted) {
+            // Still set user even if profile fetch completely fails
             setProfile(null)
             setUser(transformUser(sessionUser, null))
           }
