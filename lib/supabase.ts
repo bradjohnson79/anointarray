@@ -8,21 +8,12 @@ import { createClient } from '@supabase/supabase-js'
 const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL || ''
 const supabaseAnonKey = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY || ''
 
-// Debug logging for production
-console.log('🔧 Supabase initialization:', {
-  hasUrl: !!supabaseUrl,
-  hasKey: !!supabaseAnonKey,
-  urlLength: supabaseUrl.length,
-  keyLength: supabaseAnonKey.length
-})
+// Production ready - no debug logging
 
 // Create client only if we have valid credentials
 export const supabase = (() => {
   if (!supabaseUrl || !supabaseAnonKey) {
-    console.error('❌ Supabase credentials missing:', {
-      url: supabaseUrl || 'MISSING',
-      key: supabaseAnonKey ? 'SET' : 'MISSING'
-    })
+    // Credentials missing - return mock client
     // Return a mock client that throws helpful errors
     return {
       auth: {
@@ -38,15 +29,15 @@ export const supabase = (() => {
         insert: () => Promise.reject(new Error('Supabase not configured')),
         update: () => ({ eq: () => Promise.reject(new Error('Supabase not configured')) })
       })
-    } as any
+    } as ReturnType<typeof createClient>
   }
   
   try {
     const client = createClient(supabaseUrl, supabaseAnonKey)
-    console.log('✅ Supabase client created successfully')
+    // Client created successfully
     return client
   } catch (error) {
-    console.error('❌ Failed to create Supabase client:', error)
+    // Failed to create client
     throw error
   }
 })()
