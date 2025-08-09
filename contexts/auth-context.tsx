@@ -14,6 +14,12 @@ const DEBUG = process.env.NEXT_PUBLIC_DEBUG_AUTH === '1'
 // Initialize Supabase client directly
 const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL!
 const supabaseAnonKey = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!
+
+// Validate required env vars
+if (!supabaseUrl || !supabaseAnonKey) {
+  console.error('[AuthProvider] Missing Supabase environment variables')
+}
+
 const supabase = createClient(supabaseUrl, supabaseAnonKey)
 
 // Admin email check
@@ -62,23 +68,15 @@ export function AuthProvider({ children }: AuthProviderProps) {
   useEffect(() => {
     let mounted = true
     let unsub: (() => void) | undefined
-    const controller = new AbortController()
     const timeoutMs = 10000 // 10s
-    const start = Date.now()
 
     async function init() {
-      if (DEBUG) console.log('[AuthProvider] init start, waiting for router...')
+      if (DEBUG) console.log('[AuthProvider] init start (App Router)')
       
-      // Wait until router is ready (Next.js)
-      if (!router.isReady) {
-        await new Promise(r => {
-          const i = setInterval(() => {
-            if (router.isReady) { 
-              clearInterval(i)
-              r(null)
-            }
-          }, 50)
-        })
+      // Client-side guard
+      if (typeof window === 'undefined') {
+        if (DEBUG) console.log('[AuthProvider] SSR - skipping init')
+        return
       }
 
       // First, get current session explicitly
@@ -144,19 +142,17 @@ export function AuthProvider({ children }: AuthProviderProps) {
 
     return () => {
       mounted = false
-      controller.abort()
       unsub?.()
+      clearTimeout(t)
     }
-  }, [router.isReady])
+  }, [])
 
   // Redirect logic - only AuthProvider performs redirects
   useEffect(() => {
     if (isLoading) return
-    // Avoid redirect loops while hydration not ready
-    if (!router.isReady) return
 
-    const path = router.asPath || pathname
-    const onAuthPage = path.startsWith('/auth') || ['/login', '/signup', '/forgot-password'].includes(path)
+    const path = pathname
+    const onAuthPage = path?.startsWith('/auth') || ['/login', '/signup', '/forgot-password'].includes(path || '')
 
     if (DEBUG) console.log('[AuthProvider] redirect check:', { path, onAuthPage, hasSession: !!session, hasProfile: !!profile })
 
@@ -169,7 +165,7 @@ export function AuthProvider({ children }: AuthProviderProps) {
         router.replace('/member/dashboard')
       }
     }
-  }, [isLoading, session, profile, router.isReady, router.asPath, pathname])
+  }, [isLoading, session, profile, pathname, router])
 
   // Sign in function
   const signIn = useCallback(async (email: string, password: string): Promise<boolean> => {
