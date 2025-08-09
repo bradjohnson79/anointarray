@@ -30,27 +30,39 @@ export function AuthProvider({ children }: AuthProviderProps) {
   const router = useRouter()
   const pathname = usePathname()
 
-  // Initialize authentication state
+  // Initialize authentication state with timeout failsafe
   useEffect(() => {
     let mounted = true
+    
+    // CRITICAL HOTFIX: Add timeout to prevent infinite loading
+    const loadingTimeout = setTimeout(() => {
+      if (mounted) {
+        console.warn('Auth initialization timeout - forcing loading to false')
+        setIsLoading(false)
+      }
+    }, 5000) // 5 second timeout
 
     const initializeAuth = async () => {
       try {
         const currentUser = await AuthenticationService.getCurrentUser()
         if (mounted) {
           setUser(currentUser)
+          clearTimeout(loadingTimeout)
         }
       } catch (initError) {
         if (mounted) {
+          console.error('Auth initialization error:', initError)
           setError({
             code: 'INIT_ERROR',
             message: 'Failed to initialize authentication',
             remediation: 'Please refresh the page. If the problem persists, clear your browser cache.'
           })
+          clearTimeout(loadingTimeout)
         }
       } finally {
         if (mounted) {
           setIsLoading(false)
+          clearTimeout(loadingTimeout)
         }
       }
     }
@@ -58,17 +70,31 @@ export function AuthProvider({ children }: AuthProviderProps) {
     initializeAuth()
 
     // Set up auth state listener
-    const { data: { subscription } } = AuthenticationService.onAuthStateChange((updatedUser) => {
-      if (mounted) {
-        setUser(updatedUser)
-        setError(null) // Clear errors on successful auth state change
-        setIsLoading(false)
-      }
-    })
+    try {
+      const { data: { subscription } } = AuthenticationService.onAuthStateChange((updatedUser) => {
+        if (mounted) {
+          setUser(updatedUser)
+          setError(null) // Clear errors on successful auth state change
+          setIsLoading(false)
+          clearTimeout(loadingTimeout)
+        }
+      })
 
-    return () => {
-      mounted = false
-      subscription?.unsubscribe()
+      return () => {
+        mounted = false
+        clearTimeout(loadingTimeout)
+        subscription?.unsubscribe()
+      }
+    } catch (listenerError) {
+      console.error('Auth state listener error:', listenerError)
+      if (mounted) {
+        setIsLoading(false)
+        clearTimeout(loadingTimeout)
+      }
+      return () => {
+        mounted = false
+        clearTimeout(loadingTimeout)
+      }
     }
   }, [])
 
