@@ -7,6 +7,7 @@ import { createContext, useContext, useEffect, useState, useCallback, ReactNode,
 import { useRouter, usePathname } from 'next/navigation'
 import type { AuthenticatedUser, AuthenticationState, AuthenticationError } from '../lib/types/auth'
 import { AuthenticationService } from '../lib/services/authentication'
+import ErrorBoundary from '@/components/ErrorBoundary'
 
 interface AuthContextType extends AuthenticationState {
   signIn: (email: string, password: string) => Promise<boolean>
@@ -200,9 +201,24 @@ export function AuthProvider({ children }: AuthProviderProps) {
   }), [user, isLoading, error, signIn, signUp, signOut, requestPasswordReset, clearError])
 
   return (
-    <AuthContext.Provider value={contextValue}>
-      {children}
-    </AuthContext.Provider>
+    <ErrorBoundary fallback={
+      <div className="min-h-screen bg-gradient-to-br from-gray-900 via-red-900 to-gray-900 flex items-center justify-center p-4">
+        <div className="bg-gray-800/80 backdrop-blur-lg rounded-2xl p-8 w-full max-w-md shadow-2xl border border-red-500/20 text-center">
+          <h2 className="text-xl font-bold text-white mb-4">Authentication Error</h2>
+          <p className="text-gray-300 mb-4">Something went wrong with authentication. Please refresh the page.</p>
+          <button 
+            onClick={() => window.location.reload()} 
+            className="bg-red-600 hover:bg-red-700 text-white px-4 py-2 rounded-lg"
+          >
+            Refresh Page
+          </button>
+        </div>
+      </div>
+    }>
+      <AuthContext.Provider value={contextValue}>
+        {children}
+      </AuthContext.Provider>
+    </ErrorBoundary>
   )
 }
 
