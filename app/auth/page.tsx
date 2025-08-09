@@ -42,16 +42,8 @@ function AuthCallbackContent() {
             setStatus('success')
             setMessage('Email confirmed successfully!')
             
-            // Redirect to dashboard after 2 seconds
-            setTimeout(() => {
-              // Check user role from session
-              const isAdmin = data.session.user.email === 'info@anoint.me'
-              if (isAdmin) {
-                router.push('/admin/dashboard')
-              } else {
-                router.push('/member/dashboard')
-              }
-            }, 2000)
+            // Let AuthContext handle all redirects - no competing logic
+            // Just show success message and let auth state change trigger redirect
           } else {
             setStatus('error')
             setMessage('Failed to create session')

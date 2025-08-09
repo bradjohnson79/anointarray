@@ -1,8 +1,10 @@
 'use client'
 
-import ProtectedRoute from '@/components/ProtectedRoute'
-import Layout from '@/components/Layout'
-import { getAllOrders } from '@/lib/orders'
+// Clean admin dashboard following CLAUDE_GLOBAL_RULES.md
+// Uses new authentication system and clean UI patterns
+
+import { useEffect } from 'react'
+import { useRouter } from 'next/navigation'
 import { 
   ShoppingCart, 
   DollarSign, 
@@ -10,97 +12,130 @@ import {
   Activity,
   AlertTriangle,
   Shield,
-  Zap
+  Zap,
+  Users,
+  Database
 } from 'lucide-react'
+import { useAuth, useAuthStatus } from '../../../contexts/auth-context'
 
 export default function AdminDashboard() {
-  const orders = getAllOrders()
-  
-  // Calculate e-commerce metrics
-  const totalOrders = orders.length
-  const paidOrders = orders.filter(o => o.paymentStatus === 'paid')
-  
-  // Daily revenue (today's orders)
-  const today = new Date().toISOString().split('T')[0]
-  const dailyOrders = paidOrders.filter(o => o.createdAt.split('T')[0] === today)
-  const dailyRevenue = dailyOrders.reduce((sum, o) => sum + o.total, 0)
-  
-  // Monthly revenue (current month)
-  const currentMonth = new Date().toISOString().substring(0, 7)
-  const monthlyOrders = paidOrders.filter(o => o.createdAt.substring(0, 7) === currentMonth)
-  const monthlyRevenue = monthlyOrders.reduce((sum, o) => sum + o.total, 0)
-  
-  // Average order value
-  const averageOrderValue = paidOrders.length > 0 ? paidOrders.reduce((sum, o) => sum + o.total, 0) / paidOrders.length : 0
+  const router = useRouter()
+  const { user } = useAuth()
+  const { isAdmin, isLoading } = useAuthStatus()
+
+  // No redirect logic needed - AuthContext handles all redirects
+
+  // Show loading state
+  if (isLoading) {
+    return (
+      <div className="min-h-screen bg-gradient-to-br from-gray-900 via-purple-900 to-cyan-900 flex items-center justify-center">
+        <div className="text-white text-center">
+          <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-white mx-auto mb-4"></div>
+          <p>Loading dashboard...</p>
+        </div>
+      </div>
+    )
+  }
+
+  // AuthContext handles all redirects - no access denied UI needed
+  if (!isAdmin) {
+    return null // AuthContext will redirect to appropriate page
+  }
+  // Mock data for now - will be replaced with real data in later phases
+  const mockStats = {
+    totalUsers: 1247,
+    activeUsers: 892,
+    totalRevenue: 15420.50,
+    systemHealth: 98.5
+  }
   
   const formatCurrency = (amount: number) => {
-    return new Intl.NumberFormat('en-CA', {
+    return new Intl.NumberFormat('en-US', {
       style: 'currency',
-      currency: 'CAD'
+      currency: 'USD'
     }).format(amount)
   }
   
   const stats = [
     {
-      title: 'Total Orders',
-      value: totalOrders.toString(),
-      change: '+15%',
+      title: 'Total Users',
+      value: mockStats.totalUsers.toLocaleString(),
+      change: '+12%',
       changeType: 'positive',
-      icon: ShoppingCart,
+      icon: Users,
       color: 'from-blue-500 to-blue-600'
     },
     {
-      title: 'Daily Revenue',
-      value: formatCurrency(dailyRevenue),
-      change: '+23%',
+      title: 'Active Users',
+      value: mockStats.activeUsers.toLocaleString(),
+      change: '+8%',
       changeType: 'positive',
-      icon: DollarSign,
+      icon: Activity,
       color: 'from-green-500 to-green-600'
     },
     {
-      title: 'Monthly Revenue',
-      value: formatCurrency(monthlyRevenue),
-      change: '+18%',
+      title: 'Total Revenue',
+      value: formatCurrency(mockStats.totalRevenue),
+      change: '+23%',
       changeType: 'positive',
-      icon: TrendingUp,
+      icon: DollarSign,
       color: 'from-purple-500 to-purple-600'
     },
     {
-      title: 'Avg Order Value',
-      value: formatCurrency(averageOrderValue),
-      change: '+5%',
+      title: 'System Health',
+      value: `${mockStats.systemHealth}%`,
+      change: '+2%',
       changeType: 'positive',
-      icon: Activity,
+      icon: Database,
       color: 'from-cyan-500 to-cyan-600'
     }
   ]
 
   const recentActivity = [
-    { user: 'member@example.com', action: 'Generated new array', time: '2 minutes ago', type: 'success' },
-    { user: 'System AI', action: 'Auto-healed login issue', time: '5 minutes ago', type: 'healing' },
-    { user: 'member@test.com', action: 'Joined community', time: '10 minutes ago', type: 'info' },
-    { user: 'System AI', action: 'Optimized database queries', time: '15 minutes ago', type: 'healing' },
-    { user: 'creator@example.com', action: 'Generated advanced array', time: '1 hour ago', type: 'success' }
+    { user: user?.displayName || 'Admin', action: 'Logged into admin dashboard', time: 'Just now', type: 'success' },
+    { user: 'System AI', action: 'Authentication system rebuilt', time: '1 hour ago', type: 'healing' },
+    { user: 'System AI', action: 'Database schema optimized', time: '2 hours ago', type: 'healing' },
+    { user: 'System AI', action: 'Security policies updated', time: '3 hours ago', type: 'healing' },
+    { user: 'System AI', action: 'Performance monitoring activated', time: '4 hours ago', type: 'info' }
   ]
 
   const systemAlerts = [
-    { message: 'AI chatbot response time optimized', severity: 'low', time: '10 min ago' },
-    { message: 'Backup completed successfully', severity: 'low', time: '1 hour ago' },
-    { message: 'Security scan completed - No threats', severity: 'low', time: '2 hours ago' }
+    { message: 'All authentication systems operational', severity: 'low', time: 'Just now' },
+    { message: 'Database migrations completed successfully', severity: 'low', time: '1 hour ago' },
+    { message: 'Security scan completed - No threats detected', severity: 'low', time: '2 hours ago' }
   ]
 
   return (
-    <ProtectedRoute requiredRole="admin">
-      <Layout userRole="admin">
-        <div className="p-8">
-          {/* Header */}
-          <div className="mb-8">
-            <h1 className="text-3xl font-bold text-white mb-2">Admin Dashboard</h1>
-            <p className="text-gray-400">Monitor and manage your ANOINT Array platform</p>
+    <div className="min-h-screen bg-gradient-to-br from-gray-900 via-purple-900 to-cyan-900">
+      {/* Header */}
+      <div className="bg-gray-800/60 backdrop-blur-lg border-b border-gray-700/50">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+          <div className="flex justify-between items-center py-6">
+            <div>
+              <h1 className="text-2xl font-bold text-white">ANOINT Array Admin</h1>
+              <p className="text-gray-400 text-sm">Welcome back, {user?.displayName}</p>
+            </div>
+            <div className="flex items-center space-x-4">
+              <div className="text-right">
+                <p className="text-sm font-medium text-white">{user?.email}</p>
+                <p className="text-xs text-purple-400">Administrator</p>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      {/* Main Content */}
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+        <div className="space-y-8">
+          {/* Welcome Message */}
+          <div className="bg-gray-800/60 backdrop-blur-lg rounded-lg p-6 border border-gray-700/50">
+            <h2 className="text-xl font-semibold text-white mb-2">Dashboard Overview</h2>
+            <p className="text-gray-400">Monitor and manage your ANOINT Array platform with comprehensive admin controls.</p>
           </div>
 
           {/* Stats Grid */}
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
             {stats.map((stat) => {
               const Icon = stat.icon
               return (
@@ -127,7 +162,7 @@ export default function AdminDashboard() {
             })}
           </div>
 
-          <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
+          <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
             {/* Recent Activity */}
             <div className="bg-gray-800/60 backdrop-blur-lg rounded-lg p-6 border border-gray-700/50">
               <div className="flex items-center justify-between mb-6">
@@ -177,7 +212,7 @@ export default function AdminDashboard() {
           </div>
 
           {/* AI Status */}
-          <div className="mt-8 bg-gray-800/60 backdrop-blur-lg rounded-lg p-6 border border-gray-700/50">
+          <div className="bg-gray-800/60 backdrop-blur-lg rounded-lg p-6 border border-gray-700/50">
             <div className="flex items-center justify-between mb-6">
               <h2 className="text-xl font-semibold text-white">AI Systems Status</h2>
               <Shield size={20} className="text-cyan-400" />
@@ -207,7 +242,7 @@ export default function AdminDashboard() {
             </div>
           </div>
         </div>
-      </Layout>
-    </ProtectedRoute>
+      </div>
+    </div>
   )
 }

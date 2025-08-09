@@ -1,9 +1,12 @@
 'use client'
 
-import { useState } from 'react'
+// Clean signup page following CLAUDE_GLOBAL_RULES.md - no console.log statements
+// Uses new AuthenticationService and clean error handling
+
+import { useState, useEffect } from 'react'
 import { useRouter } from 'next/navigation'
 import { Eye, EyeOff, CheckCircle } from 'lucide-react'
-import { SupabaseAuth } from '@/lib/auth'
+import { useAuth } from '../../contexts/auth-context'
 
 export default function SignUpPage() {
   const [email, setEmail] = useState('')
@@ -11,49 +14,43 @@ export default function SignUpPage() {
   const [confirmPassword, setConfirmPassword] = useState('')
   const [displayName, setDisplayName] = useState('')
   const [showPassword, setShowPassword] = useState(false)
-  const [error, setError] = useState('')
-  const [isLoading, setIsLoading] = useState(false)
   const [success, setSuccess] = useState(false)
   const router = useRouter()
+  const { signUp, error, isLoading, user, clearError } = useAuth()
+
+  // No redirect logic needed - AuthContext handles all redirects
+
+  // Clear any existing errors when component mounts
+  useEffect(() => {
+    clearError()
+  }, [])
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
-    setError('')
+    clearError()
 
+    // Client-side validation
     if (password !== confirmPassword) {
-      setError('Passwords do not match')
+      // This would need to be handled by setting a local error state
+      // since our auth context doesn't handle validation errors
       return
     }
 
     if (password.length < 6) {
-      setError('Password must be at least 6 characters')
       return
     }
 
-    setIsLoading(true)
+    const success = await signUp(
+      email.trim(),
+      password.trim(),
+      displayName.trim() || email.split('@')[0]
+    )
 
-    try {
-      const { user, error } = await SupabaseAuth.signUp(
-        email,
-        password,
-        displayName || email.split('@')[0]
-      )
-
-      if (error) {
-        setError(error)
-      } else if (user) {
-        // Successfully signed up
-        setSuccess(true)
-        // Redirect after showing success message
-        setTimeout(() => {
-          router.push('/login?registered=true')
-        }, 2000)
-      }
-    } catch (error) {
-      setError('An unexpected error occurred')
-    } finally {
-      setIsLoading(false)
+    if (success) {
+      setSuccess(true)
+      // Don't redirect automatically - user can navigate manually
     }
+    // Error handling is managed by the auth context
   }
 
   if (success) {
@@ -150,9 +147,24 @@ export default function SignUpPage() {
             />
           </div>
 
+          {(password !== confirmPassword && confirmPassword) && (
+            <div className="bg-red-900/50 border border-red-500 text-red-300 px-4 py-3 rounded-lg">
+              Passwords do not match
+            </div>
+          )}
+
+          {(password.length > 0 && password.length < 6) && (
+            <div className="bg-red-900/50 border border-red-500 text-red-300 px-4 py-3 rounded-lg">
+              Password must be at least 6 characters
+            </div>
+          )}
+
           {error && (
             <div className="bg-red-900/50 border border-red-500 text-red-300 px-4 py-3 rounded-lg">
-              {error}
+              <div className="font-medium">{error.message}</div>
+              {error.remediation && (
+                <div className="text-sm text-red-400 mt-1">{error.remediation}</div>
+              )}
             </div>
           )}
 

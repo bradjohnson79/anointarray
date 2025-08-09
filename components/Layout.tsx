@@ -1,6 +1,6 @@
 'use client'
 
-import { useAuth } from '@/contexts/AuthContext'
+import { useAuth } from '../contexts/auth-context'
 import { useRouter } from 'next/navigation'
 import Link from 'next/link'
 import AuroraBackground from './AuroraBackground'
@@ -30,13 +30,13 @@ interface LayoutProps {
 }
 
 export default function Layout({ children, userRole }: LayoutProps) {
-  const { user, logout } = useAuth()
+  const { user, signOut } = useAuth()
   const router = useRouter()
   const [sidebarOpen, setSidebarOpen] = useState(false)
 
   const handleLogout = async () => {
-    await logout()
-    router.push('/login')
+    await signOut()
+    // AuthContext will handle redirect after logout
   }
 
   const adminNavItems = [
