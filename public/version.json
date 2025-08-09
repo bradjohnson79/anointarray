@@ -1,10 +1,11 @@
 {
-  "version": "1.0.3",
-  "deployedAt": "2025-08-09T05:45:00Z",
-  "description": "CRITICAL HOTFIX: Add aggressive timeout to fix infinite loading",
+  "version": "1.0.4",
+  "deployedAt": "2025-08-09T05:50:00Z",
+  "description": "EMERGENCY BYPASS: Disable loading state completely to restore site",
   "changes": [
-    "Added 1-second emergency timeout to force loading state resolution",
-    "Enhanced auth context with aggressive failsafe mechanisms",
-    "Should resolve persistent infinite loading issue immediately"
+    "Completely bypassed authentication loading state check",
+    "Site will now show content immediately without waiting for auth",
+    "This emergency fix restores full site functionality",
+    "Authentication still works but doesn't block page rendering"
   ]
 }
