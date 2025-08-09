@@ -108,7 +108,7 @@ export function createError(
 }
 
 // Handle Supabase auth errors
-export function handleSupabaseAuthError(error: any): AppError {
+export function handleSupabaseAuthError(error: unknown): AppError {
   const message = error?.message?.toLowerCase() || ''
   
   if (message.includes('invalid credentials') || message.includes('email not confirmed')) {
@@ -136,7 +136,7 @@ export function handleSupabaseAuthError(error: any): AppError {
 }
 
 // Handle database errors
-export function handleDatabaseError(error: any): AppError {
+export function handleDatabaseError(error: unknown): AppError {
   const message = error?.message?.toLowerCase() || ''
   
   if (message.includes('connection') || message.includes('timeout')) {
@@ -152,7 +152,7 @@ export function handleDatabaseError(error: any): AppError {
 }
 
 // Handle network errors
-export function handleNetworkError(error: any): AppError {
+export function handleNetworkError(error: unknown): AppError {
   if (!navigator.onLine) {
     return createError(ERROR_CODES.NETWORK_OFFLINE)
   }
