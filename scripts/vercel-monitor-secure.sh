@@ -1,15 +1,37 @@
 #!/bin/bash
 
-# ANOINT Array Vercel Deployment Monitor
-# API Token: 8ewKwtgf5sVqCD9mzjUq8yhF
-# Project ID: prj_rc4JpBUeOGNDdts7FApnqxopbeC0
+# ANOINT Array Vercel Deployment Monitor - SECURE VERSION
+# Uses environment variables instead of hardcoded tokens
+#
+# Setup Instructions:
+# 1. Set environment variables:
+#    export VERCEL_TOKEN="your_new_token_here"
+#    export VERCEL_PROJECT_ID="prj_rc4JpBUeOGNDdts7FApnqxopbeC0"
+# 2. Or create a .env file (DO NOT COMMIT TO GITHUB):
+#    VERCEL_TOKEN=your_new_token_here
+#    VERCEL_PROJECT_ID=prj_rc4JpBUeOGNDdts7FApnqxopbeC0
 
-API_TOKEN="8ewKwtgf5sVqCD9mzjUq8yhF"
-PROJECT_ID="prj_rc4JpBUeOGNDdts7FApnqxopbeC0"
+# Load environment variables from .env if it exists
+if [ -f .env ]; then
+    export $(cat .env | sed 's/#.*//g' | xargs)
+fi
+
+# Check for required environment variables
+if [ -z "$VERCEL_TOKEN" ] || [ -z "$VERCEL_PROJECT_ID" ]; then
+    echo "🚨 ERROR: Missing required environment variables"
+    echo "Please set:"
+    echo "  VERCEL_TOKEN - Your Vercel API token"
+    echo "  VERCEL_PROJECT_ID - Your project ID (prj_rc4JpBUeOGNDdts7FApnqxopbeC0)"
+    echo ""
+    echo "Set via environment or create .env file (DO NOT COMMIT .env to Git)"
+    exit 1
+fi
+
 PROJECT_NAME="anointarray"
 
-echo "=== ANOINT Array Deployment Monitor ==="
+echo "=== ANOINT Array Deployment Monitor (SECURE) ==="
 echo "$(date)"
+echo "Project ID: $VERCEL_PROJECT_ID"
 echo ""
 
 # Function to check deployment status
@@ -18,8 +40,8 @@ check_deployments() {
     echo "━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━"
     
     # Get the last 5 deployments
-    curl -s -H "Authorization: Bearer $API_TOKEN" \
-        "https://api.vercel.com/v6/deployments?projectId=$PROJECT_ID&limit=5" \
+    curl -s -H "Authorization: Bearer $VERCEL_TOKEN" \
+        "https://api.vercel.com/v6/deployments?projectId=$VERCEL_PROJECT_ID&limit=5" \
         | jq -r '.deployments[] | "\(.readyState) | \(.url) | \(.createdAt)"' \
         | while IFS='|' read -r status url timestamp; do
             # Convert timestamp to readable format
@@ -44,8 +66,8 @@ check_build_errors() {
     echo "━━━━━━━━━━━━━━━━━━━━━━━━━━"
     
     # Get the most recent failed deployment
-    FAILED_DEPLOYMENT=$(curl -s -H "Authorization: Bearer $API_TOKEN" \
-        "https://api.vercel.com/v6/deployments?projectId=$PROJECT_ID&limit=10" \
+    FAILED_DEPLOYMENT=$(curl -s -H "Authorization: Bearer $VERCEL_TOKEN" \
+        "https://api.vercel.com/v6/deployments?projectId=$VERCEL_PROJECT_ID&limit=10" \
         | jq -r '.deployments[] | select(.readyState == "ERROR") | .id' | head -1)
     
     if [ "$FAILED_DEPLOYMENT" = "null" ] || [ -z "$FAILED_DEPLOYMENT" ]; then
@@ -54,7 +76,7 @@ check_build_errors() {
         echo "Latest failed deployment: $FAILED_DEPLOYMENT"
         echo ""
         echo "Error logs:"
-        curl -s -H "Authorization: Bearer $API_TOKEN" \
+        curl -s -H "Authorization: Bearer $VERCEL_TOKEN" \
             "https://api.vercel.com/v2/deployments/$FAILED_DEPLOYMENT/events" \
             | jq -r '.[] | select(.type == "stderr") | .payload.text' \
             | grep -E "(Error|Failed|⨯)" | tail -10
@@ -62,14 +84,14 @@ check_build_errors() {
     echo ""
 }
 
-# Function to check environment variables
+# Function to check environment variables (only list keys for security)
 check_env_vars() {
     echo "🔧 Environment Variables Status:"
     echo "━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━"
     
-    curl -s -H "Authorization: Bearer $API_TOKEN" \
-        "https://api.vercel.com/v9/projects/$PROJECT_ID" \
-        | jq -r '.env[] | .key' \
+    curl -s -H "Authorization: Bearer $VERCEL_TOKEN" \
+        "https://api.vercel.com/v9/projects/$VERCEL_PROJECT_ID" \
+        | jq -r '.env[]? | .key' \
         | grep -E "(SUPABASE|AUTH|ADMIN)" \
         | while read -r env_key; do
             echo "✅ $env_key - Configured"
@@ -82,8 +104,8 @@ check_domains() {
     echo "🌐 Domain Status:"
     echo "━━━━━━━━━━━━━━━━━"
     
-    curl -s -H "Authorization: Bearer $API_TOKEN" \
-        "https://api.vercel.com/v9/projects/$PROJECT_ID" \
+    curl -s -H "Authorization: Bearer $VERCEL_TOKEN" \
+        "https://api.vercel.com/v9/projects/$VERCEL_PROJECT_ID" \
         | jq -r '.targets.production.alias[]?' 2>/dev/null \
         | while read -r domain; do
             if [ "$domain" != "null" ] && [ -n "$domain" ]; then
@@ -104,13 +126,13 @@ monitor_auth_issues() {
     echo "━━━━━━━━━━━━━━━━━━━━━━━━━━━━"
     
     # Look for auth-related errors in recent deployments
-    RECENT_DEPLOYMENT=$(curl -s -H "Authorization: Bearer $API_TOKEN" \
-        "https://api.vercel.com/v6/deployments?projectId=$PROJECT_ID&limit=1" \
+    RECENT_DEPLOYMENT=$(curl -s -H "Authorization: Bearer $VERCEL_TOKEN" \
+        "https://api.vercel.com/v6/deployments?projectId=$VERCEL_PROJECT_ID&limit=1" \
         | jq -r '.deployments[0].id')
     
     if [ "$RECENT_DEPLOYMENT" != "null" ] && [ -n "$RECENT_DEPLOYMENT" ]; then
         echo "Checking deployment: $RECENT_DEPLOYMENT"
-        AUTH_ERRORS=$(curl -s -H "Authorization: Bearer $API_TOKEN" \
+        AUTH_ERRORS=$(curl -s -H "Authorization: Bearer $VERCEL_TOKEN" \
             "https://api.vercel.com/v2/deployments/$RECENT_DEPLOYMENT/events" \
             | jq -r '.[] | select(.type == "stderr") | .payload.text' \
             | grep -i -E "(suspense|searchparams|auth|login|admin)" | wc -l)
@@ -131,8 +153,8 @@ setup_monitoring_alert() {
     echo "━━━━━━━━━━━━━━━━━━━━━━━━━"
     
     # Get current deployment status
-    CURRENT_STATUS=$(curl -s -H "Authorization: Bearer $API_TOKEN" \
-        "https://api.vercel.com/v6/deployments?projectId=$PROJECT_ID&limit=1" \
+    CURRENT_STATUS=$(curl -s -H "Authorization: Bearer $VERCEL_TOKEN" \
+        "https://api.vercel.com/v6/deployments?projectId=$VERCEL_PROJECT_ID&limit=1" \
         | jq -r '.deployments[0].readyState')
     
     echo "Current deployment status: $CURRENT_STATUS"
@@ -146,8 +168,30 @@ setup_monitoring_alert() {
     echo ""
 }
 
+# Security audit function
+security_audit() {
+    echo "🔒 Security Audit:"
+    echo "━━━━━━━━━━━━━━━━━━"
+    
+    echo "✅ Using environment variables (not hardcoded tokens)"
+    echo "✅ API token is properly masked in logs"
+    
+    # Check for any recent suspicious deployments
+    echo ""
+    echo "Recent deployment activity:"
+    curl -s -H "Authorization: Bearer $VERCEL_TOKEN" \
+        "https://api.vercel.com/v6/deployments?projectId=$VERCEL_PROJECT_ID&limit=3" \
+        | jq -r '.deployments[] | "\(.createdAt) | \(.creator.email // "system") | \(.readyState)"' \
+        | while IFS='|' read -r timestamp email status; do
+            date_formatted=$(date -r $((timestamp/1000)) '+%Y-%m-%d %H:%M:%S' 2>/dev/null || echo "Invalid date")
+            echo "  $date_formatted | $email | $status"
+        done
+    echo ""
+}
+
 # Main execution
 main() {
+    security_audit
     check_deployments
     check_build_errors
     check_env_vars

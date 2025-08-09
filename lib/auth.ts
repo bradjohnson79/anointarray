@@ -31,12 +31,15 @@ export interface AuthState {
   isLoading: boolean
 }
 
+// Admin email addresses
+const ADMIN_EMAILS = ['info@anoint.me', 'breanne@aetherx.co']
+
 // Transform Supabase user to our User interface using database-driven roles
 function transformSupabaseUser(supabaseUser: SupabaseUser, profile?: any): User {
   const email = supabaseUser.email || ''
   
-  // Check admin status from database profile
-  const isAdmin = profile?.is_admin === true || email === 'info@anoint.me'
+  // Check admin status from database profile or admin email list
+  const isAdmin = profile?.is_admin === true || ADMIN_EMAILS.includes(email.toLowerCase())
   
   // DEBUG: Log admin status assignment process
   console.log('🔍 Admin Status Debug:', {
@@ -44,7 +47,7 @@ function transformSupabaseUser(supabaseUser: SupabaseUser, profile?: any): User 
     profileIsAdmin: profile?.is_admin,
     resolvedIsAdmin: isAdmin,
     profileData: profile ? 'present' : 'missing',
-    isAdminEmail: email === 'info@anoint.me'
+    isAdminEmail: ADMIN_EMAILS.includes(email.toLowerCase())
   })
   
   return {
@@ -81,7 +84,7 @@ export class SupabaseAuth {
           id: userId,
           email: email,
           display_name: email.split('@')[0],
-          is_admin: email.toLowerCase() === 'info@anoint.me',
+          is_admin: ADMIN_EMAILS.includes(email.toLowerCase()),
           created_at: new Date().toISOString(),
           updated_at: new Date().toISOString()
         }, { 
@@ -126,7 +129,7 @@ export class SupabaseAuth {
             id: data.user.id,
             email: data.user.email,
             display_name: displayName || email.split('@')[0],
-            is_admin: data.user.email?.toLowerCase() === 'info@anoint.me',
+            is_admin: ADMIN_EMAILS.includes(data.user.email?.toLowerCase() || ''),
             created_at: new Date().toISOString(),
             updated_at: new Date().toISOString()
           }, { 

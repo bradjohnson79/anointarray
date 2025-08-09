@@ -1,33 +1,41 @@
 'use client'
 
-import { useState } from 'react'
-import { SupabaseAuth } from '@/lib/auth'
+// Clean forgot password page following CLAUDE_GLOBAL_RULES.md
+// Uses new AuthenticationService and clean error handling
+
+import { useState, useEffect } from 'react'
+import { useRouter } from 'next/navigation'
 import { ArrowLeft } from 'lucide-react'
+import { useAuth } from '../../contexts/auth-context'
 
 export default function ForgotPasswordPage() {
   const [email, setEmail] = useState('')
-  const [isLoading, setIsLoading] = useState(false)
   const [success, setSuccess] = useState(false)
-  const [error, setError] = useState('')
+  const router = useRouter()
+  const { requestPasswordReset, error, isLoading, user, clearError } = useAuth()
+
+  // Redirect if user is already authenticated
+  useEffect(() => {
+    if (user && user.emailVerified) {
+      const redirectPath = user.role === 'admin' ? '/admin/dashboard' : '/member/dashboard'
+      router.replace(redirectPath)
+    }
+  }, [user, router])
+
+  // Clear any existing errors when component mounts
+  useEffect(() => {
+    clearError()
+  }, [])
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
-    setError('')
-    setIsLoading(true)
-
-    try {
-      const { error } = await SupabaseAuth.resetPassword(email)
-      
-      if (error) {
-        setError(error)
-      } else {
-        setSuccess(true)
-      }
-    } catch (err) {
-      setError('An unexpected error occurred')
-    } finally {
-      setIsLoading(false)
+    
+    const result = await requestPasswordReset(email.trim())
+    
+    if (result) {
+      setSuccess(true)
     }
+    // Error handling is managed by the auth context
   }
 
   if (success) {
@@ -86,7 +94,10 @@ export default function ForgotPasswordPage() {
 
           {error && (
             <div className="bg-red-900/50 border border-red-500 text-red-300 px-4 py-3 rounded-lg">
-              {error}
+              <div className="font-medium">{error.message}</div>
+              {error.remediation && (
+                <div className="text-sm text-red-400 mt-1">{error.remediation}</div>
+              )}
             </div>
           )}
 

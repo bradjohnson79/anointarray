@@ -9,38 +9,27 @@ import {
   User, 
   Bell, 
   Shield,
-  CreditCard,
-  Download,
-  Trash2,
+  Key,
+  Database,
   Eye,
   EyeOff,
   Upload,
-  Calendar,
-  Clock,
-  MapPin,
-  Key,
   Save,
   AlertTriangle,
   CheckCircle
 } from 'lucide-react'
 import { useState } from 'react'
-import { useRouter } from 'next/navigation'
+import { useAuth } from '@/contexts/auth-context'
 
-export default function MemberSettings() {
-  const router = useRouter()
+export default function AdminSettings() {
+  const { user } = useAuth()
   const [avatarPreview, setAvatarPreview] = useState<string | null>(null)
-  const [isExporting, setIsExporting] = useState(false)
   const [isChangingPassword, setIsChangingPassword] = useState(false)
   const [showPasswordForm, setShowPasswordForm] = useState(false)
   const [showCurrentPassword, setShowCurrentPassword] = useState(false)
   const [showNewPassword, setShowNewPassword] = useState(false)
   const [showConfirmPassword, setShowConfirmPassword] = useState(false)
-  const [birthData, setBirthData] = useState({
-    date: '1990-01-01',
-    time: '12:00',
-    location: 'New York, NY'
-  })
-
+  
   const [passwordForm, setPasswordForm] = useState({
     currentPassword: '',
     newPassword: '',
@@ -53,13 +42,16 @@ export default function MemberSettings() {
   })
   
   const [notifications, setNotifications] = useState({
-    emailUpdates: true,
     securityAlerts: true,
-    marketingEmails: false
+    systemUpdates: true,
+    userActivity: false,
+    backupReports: true
   })
 
-  const [privacy, setPrivacy] = useState({
-    profileVisibility: true
+  const [systemSettings, setSystemSettings] = useState({
+    maintenanceMode: false,
+    debugLogging: false,
+    autoBackup: true
   })
 
   const handleAvatarChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -158,6 +150,20 @@ export default function MemberSettings() {
     }
   }
 
+  const toggleNotification = (key: keyof typeof notifications) => {
+    setNotifications(prev => ({
+      ...prev,
+      [key]: !prev[key]
+    }))
+  }
+
+  const toggleSystemSetting = (key: keyof typeof systemSettings) => {
+    setSystemSettings(prev => ({
+      ...prev,
+      [key]: !prev[key]
+    }))
+  }
+
   const getPasswordStrengthColor = (score: number) => {
     switch (score) {
       case 0:
@@ -182,62 +188,14 @@ export default function MemberSettings() {
     }
   }
 
-  const handleExportData = async () => {
-    setIsExporting(true)
-    try {
-      const response = await fetch('/api/member/export-data', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-      })
-
-      if (!response.ok) throw new Error('Export failed')
-
-      // Create blob from response
-      const blob = await response.blob()
-      const url = window.URL.createObjectURL(blob)
-      
-      // Create download link
-      const a = document.createElement('a')
-      a.href = url
-      a.download = `anoint-arrays-export-${new Date().toISOString().split('T')[0]}.zip`
-      document.body.appendChild(a)
-      a.click()
-      
-      // Cleanup
-      window.URL.revokeObjectURL(url)
-      document.body.removeChild(a)
-    } catch (error) {
-      console.error('Export failed:', error)
-      alert('Failed to export data. Please try again.')
-    } finally {
-      setIsExporting(false)
-    }
-  }
-
-  const toggleNotification = (key: keyof typeof notifications) => {
-    setNotifications(prev => ({
-      ...prev,
-      [key]: !prev[key]
-    }))
-  }
-
-  const togglePrivacy = (key: keyof typeof privacy) => {
-    setPrivacy(prev => ({
-      ...prev,
-      [key]: !prev[key]
-    }))
-  }
-
   return (
-    <ProtectedRoute requiredRole="member">
-      <Layout userRole="member">
+    <ProtectedRoute requiredRole="admin">
+      <Layout userRole="admin">
         <div className="p-8">
           {/* Header */}
           <div className="mb-8">
-            <h1 className="text-3xl font-bold text-white mb-2">Account Settings</h1>
-            <p className="text-gray-400">Manage your ANOINT Array account preferences</p>
+            <h1 className="text-3xl font-bold text-white mb-2">Admin Settings</h1>
+            <p className="text-gray-400">Manage your admin account and system preferences</p>
           </div>
 
           <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
@@ -248,7 +206,7 @@ export default function MemberSettings() {
                 <CardHeader>
                   <CardTitle className="text-white flex items-center gap-2">
                     <User size={20} />
-                    Profile Information
+                    Admin Profile
                   </CardTitle>
                 </CardHeader>
                 <CardContent className="space-y-4">
@@ -290,165 +248,45 @@ export default function MemberSettings() {
                       <label className="block text-sm font-medium text-gray-300 mb-2">Full Name</label>
                       <input 
                         type="text" 
-                        defaultValue="Brad Johnson" 
+                        defaultValue="ANOINT Admin" 
                         className="w-full p-3 bg-gray-700/50 border border-gray-600/50 rounded-lg text-white focus:border-purple-500/50 focus:outline-none"
                       />
                     </div>
                     <div>
-                      <label className="block text-sm font-medium text-gray-300 mb-2">Email Address</label>
+                      <label className="block text-sm font-medium text-gray-300 mb-2">Admin Email</label>
                       <input 
                         type="email" 
-                        defaultValue="brad@example.com" 
-                        className="w-full p-3 bg-gray-700/50 border border-gray-600/50 rounded-lg text-white focus:border-purple-500/50 focus:outline-none"
+                        value={user?.email || 'info@anoint.me'}
+                        disabled
+                        className="w-full p-3 bg-gray-600/30 border border-gray-600/50 rounded-lg text-gray-400 cursor-not-allowed"
                       />
                     </div>
                   </div>
 
-                  {/* Birth Data Fields */}
-                  <div className="pt-4 border-t border-gray-700/50">
-                    <h3 className="text-white font-medium mb-4 flex items-center gap-2">
-                      <Calendar size={18} />
-                      Birth Information
-                    </h3>
-                    <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-                      <div>
-                        <label className="block text-sm font-medium text-gray-300 mb-2">Birth Date</label>
-                        <input 
-                          type="date" 
-                          value={birthData.date}
-                          onChange={(e) => setBirthData(prev => ({ ...prev, date: e.target.value }))}
-                          className="w-full p-3 bg-gray-700/50 border border-gray-600/50 rounded-lg text-white focus:border-purple-500/50 focus:outline-none"
-                        />
-                      </div>
-                      <div>
-                        <label className="block text-sm font-medium text-gray-300 mb-2">Birth Time</label>
-                        <input 
-                          type="time" 
-                          value={birthData.time}
-                          onChange={(e) => setBirthData(prev => ({ ...prev, time: e.target.value }))}
-                          className="w-full p-3 bg-gray-700/50 border border-gray-600/50 rounded-lg text-white focus:border-purple-500/50 focus:outline-none"
-                        />
-                      </div>
-                      <div>
-                        <label className="block text-sm font-medium text-gray-300 mb-2">Birth Location</label>
-                        <input 
-                          type="text" 
-                          value={birthData.location}
-                          onChange={(e) => setBirthData(prev => ({ ...prev, location: e.target.value }))}
-                          placeholder="City, State/Country"
-                          className="w-full p-3 bg-gray-700/50 border border-gray-600/50 rounded-lg text-white focus:border-purple-500/50 focus:outline-none"
-                        />
-                      </div>
-                    </div>
+                  <div>
+                    <label className="block text-sm font-medium text-gray-300 mb-2">Role</label>
+                    <input 
+                      type="text" 
+                      value="Administrator"
+                      disabled
+                      className="w-full p-3 bg-gray-600/30 border border-gray-600/50 rounded-lg text-gray-400 cursor-not-allowed"
+                    />
                   </div>
 
-                  <div>
-                    <label className="block text-sm font-medium text-gray-300 mb-2">Time Zone</label>
-                    <select className="w-full p-3 bg-gray-700/50 border border-gray-600/50 rounded-lg text-white focus:border-purple-500/50 focus:outline-none">
-                      <option>Eastern Time (ET)</option>
-                      <option>Central Time (CT)</option>
-                      <option>Mountain Time (MT)</option>
-                      <option>Pacific Time (PT)</option>
-                    </select>
-                  </div>
                   <Button className="bg-gradient-to-r from-purple-600 to-cyan-600 hover:from-purple-700 hover:to-cyan-700">
+                    <Save className="mr-2 h-4 w-4" />
                     Save Profile Changes
                   </Button>
                 </CardContent>
               </Card>
 
-              {/* Notification Settings */}
+              {/* Security Settings */}
               <Card className="bg-gray-800/60 backdrop-blur-lg border-gray-700/50">
                 <CardHeader>
                   <CardTitle className="text-white flex items-center gap-2">
-                    <Bell size={20} />
-                    Notification Preferences
+                    <Shield size={20} />
+                    Security Settings
                   </CardTitle>
-                </CardHeader>
-                <CardContent className="space-y-4">
-                  <div className="flex items-center justify-between">
-                    <div>
-                      <p className="text-white font-medium">Email Updates</p>
-                      <p className="text-gray-400 text-sm">Receive important account updates</p>
-                    </div>
-                    <Switch 
-                      checked={notifications.emailUpdates}
-                      onCheckedChange={() => toggleNotification('emailUpdates')}
-                    />
-                  </div>
-                  <div className="flex items-center justify-between">
-                    <div>
-                      <p className="text-white font-medium">Security Alerts</p>
-                      <p className="text-gray-400 text-sm">Important security notifications</p>
-                    </div>
-                    <Switch 
-                      checked={notifications.securityAlerts}
-                      onCheckedChange={() => toggleNotification('securityAlerts')}
-                    />
-                  </div>
-                  <div className="flex items-center justify-between">
-                    <div>
-                      <p className="text-white font-medium">Marketing Emails</p>
-                      <p className="text-gray-400 text-sm">Promotional offers and news</p>
-                    </div>
-                    <Switch 
-                      checked={notifications.marketingEmails}
-                      onCheckedChange={() => toggleNotification('marketingEmails')}
-                    />
-                  </div>
-                </CardContent>
-              </Card>
-
-            </div>
-
-            {/* Sidebar */}
-            <div className="space-y-6">
-              {/* Account Actions */}
-              <Card className="bg-gray-800/60 backdrop-blur-lg border-gray-700/50">
-                <CardHeader>
-                  <CardTitle className="text-white">Account Actions</CardTitle>
-                </CardHeader>
-                <CardContent className="space-y-3">
-                  <Button 
-                    variant="outline" 
-                    onClick={() => router.push('/member/billing')}
-                    className="w-full justify-start bg-gray-700/60 border-gray-600/50 text-white hover:bg-gray-600/70"
-                  >
-                    <CreditCard className="mr-2 h-4 w-4" />
-                    Billing & Payments
-                  </Button>
-                  <Button 
-                    variant="outline"
-                    onClick={handleExportData}
-                    disabled={isExporting}
-                    className="w-full justify-start bg-gray-700/60 border-gray-600/50 text-white hover:bg-gray-600/70 disabled:opacity-50 disabled:cursor-not-allowed"
-                  >
-                    {isExporting ? (
-                      <>
-                        <div className="animate-spin rounded-full h-4 w-4 border-b-2 border-white mr-2" />
-                        Exporting...
-                      </>
-                    ) : (
-                      <>
-                        <Download className="mr-2 h-4 w-4" />
-                        Export Data
-                      </>
-                    )}
-                  </Button>
-                  <Button 
-                    variant="outline" 
-                    className="w-full justify-start border-red-500/50 text-red-400 hover:bg-red-500/10"
-                  >
-                    <Trash2 className="mr-2 h-4 w-4" />
-                    Delete Account
-                  </Button>
-                </CardContent>
-              </Card>
-
-              {/* Security */}
-              <Card className="bg-gray-800/60 backdrop-blur-lg border-gray-700/50">
-                <CardHeader>
-                  <CardTitle className="text-white">Security</CardTitle>
                 </CardHeader>
                 <CardContent className="space-y-4">
                   {/* Password Management */}
@@ -456,7 +294,7 @@ export default function MemberSettings() {
                     <div className="flex items-center justify-between mb-4">
                       <div>
                         <p className="text-white font-medium">Password</p>
-                        <p className="text-gray-400 text-sm">Last changed 30 days ago</p>
+                        <p className="text-gray-400 text-sm">Last changed recently</p>
                       </div>
                       <Button 
                         size="sm" 
@@ -618,7 +456,7 @@ export default function MemberSettings() {
                     <div className="flex items-center justify-between">
                       <div>
                         <p className="text-white font-medium">Two-Factor Authentication</p>
-                        <p className="text-red-400 text-sm">Not enabled</p>
+                        <p className="text-red-400 text-sm">Not enabled - Recommended for admin accounts</p>
                       </div>
                       <Button 
                         size="sm"
@@ -631,24 +469,122 @@ export default function MemberSettings() {
                 </CardContent>
               </Card>
 
-              {/* Subscription Status */}
+              {/* Notification Settings */}
+              <Card className="bg-gray-800/60 backdrop-blur-lg border-gray-700/50">
+                <CardHeader>
+                  <CardTitle className="text-white flex items-center gap-2">
+                    <Bell size={20} />
+                    Admin Notifications
+                  </CardTitle>
+                </CardHeader>
+                <CardContent className="space-y-4">
+                  <div className="flex items-center justify-between">
+                    <div>
+                      <p className="text-white font-medium">Security Alerts</p>
+                      <p className="text-gray-400 text-sm">Critical security notifications</p>
+                    </div>
+                    <Switch 
+                      checked={notifications.securityAlerts}
+                      onCheckedChange={() => toggleNotification('securityAlerts')}
+                    />
+                  </div>
+                  <div className="flex items-center justify-between">
+                    <div>
+                      <p className="text-white font-medium">System Updates</p>
+                      <p className="text-gray-400 text-sm">Platform updates and maintenance</p>
+                    </div>
+                    <Switch 
+                      checked={notifications.systemUpdates}
+                      onCheckedChange={() => toggleNotification('systemUpdates')}
+                    />
+                  </div>
+                  <div className="flex items-center justify-between">
+                    <div>
+                      <p className="text-white font-medium">User Activity</p>
+                      <p className="text-gray-400 text-sm">New registrations and user actions</p>
+                    </div>
+                    <Switch 
+                      checked={notifications.userActivity}
+                      onCheckedChange={() => toggleNotification('userActivity')}
+                    />
+                  </div>
+                  <div className="flex items-center justify-between">
+                    <div>
+                      <p className="text-white font-medium">Backup Reports</p>
+                      <p className="text-gray-400 text-sm">Automated backup status</p>
+                    </div>
+                    <Switch 
+                      checked={notifications.backupReports}
+                      onCheckedChange={() => toggleNotification('backupReports')}
+                    />
+                  </div>
+                </CardContent>
+              </Card>
+            </div>
+
+            {/* Sidebar */}
+            <div className="space-y-6">
+              {/* System Controls */}
+              <Card className="bg-gray-800/60 backdrop-blur-lg border-gray-700/50">
+                <CardHeader>
+                  <CardTitle className="text-white flex items-center gap-2">
+                    <Database size={20} />
+                    System Controls
+                  </CardTitle>
+                </CardHeader>
+                <CardContent className="space-y-4">
+                  <div className="flex items-center justify-between">
+                    <div>
+                      <p className="text-white font-medium">Maintenance Mode</p>
+                      <p className="text-gray-400 text-sm text-xs">Disable public access</p>
+                    </div>
+                    <Switch 
+                      checked={systemSettings.maintenanceMode}
+                      onCheckedChange={() => toggleSystemSetting('maintenanceMode')}
+                    />
+                  </div>
+                  <div className="flex items-center justify-between">
+                    <div>
+                      <p className="text-white font-medium">Debug Logging</p>
+                      <p className="text-gray-400 text-sm text-xs">Enable detailed logs</p>
+                    </div>
+                    <Switch 
+                      checked={systemSettings.debugLogging}
+                      onCheckedChange={() => toggleSystemSetting('debugLogging')}
+                    />
+                  </div>
+                  <div className="flex items-center justify-between">
+                    <div>
+                      <p className="text-white font-medium">Auto Backup</p>
+                      <p className="text-gray-400 text-sm text-xs">Daily automated backups</p>
+                    </div>
+                    <Switch 
+                      checked={systemSettings.autoBackup}
+                      onCheckedChange={() => toggleSystemSetting('autoBackup')}
+                    />
+                  </div>
+                </CardContent>
+              </Card>
+
+              {/* Quick Stats */}
               <Card className="bg-gradient-to-r from-purple-900/50 to-cyan-900/50 border-purple-500/20">
                 <CardHeader>
-                  <CardTitle className="text-white">Membership Status</CardTitle>
+                  <CardTitle className="text-white">Admin Status</CardTitle>
                 </CardHeader>
                 <CardContent>
                   <div className="space-y-2">
-                    <p className="text-gray-300 text-sm">Current Plan</p>
-                    <p className="text-white font-semibold">Active Member</p>
-                    <p className="text-gray-300 text-sm">Member since January 2024</p>
+                    <p className="text-gray-300 text-sm">Role</p>
+                    <p className="text-white font-semibold">System Administrator</p>
+                    <p className="text-gray-300 text-sm">Last login</p>
+                    <p className="text-purple-400 text-sm">Today at 2:45 PM</p>
                     <div className="pt-2">
                       <div className="flex items-center justify-between text-sm">
-                        <span className="text-gray-300">Arrays Generated</span>
-                        <span className="text-purple-400 font-medium">47</span>
+                        <span className="text-gray-300">Total Users</span>
+                        <span className="text-purple-400 font-medium">247</span>
                       </div>
                       <div className="flex items-center justify-between text-sm">
-                        <span className="text-gray-300">Downloads</span>
-                        <span className="text-cyan-400 font-medium">34</span>
+                        <span className="text-gray-300">Active Sessions</span>
+                        <span className="text-cyan-400 font-medium">18</span>
                       </div>
                     </div>
                   </div>

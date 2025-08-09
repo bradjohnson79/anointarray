@@ -10,9 +10,9 @@ import type {
   AuthenticationError,
   UserProfile 
 } from '../types/auth'
-import { supabaseConfig, supabaseClientOptions } from '../config/supabase-config'
-import { handleSupabaseAuthError, logError, createError, ERROR_CODES } from '../utils/error-handler'
-import { AuthCache } from '../cache/auth-cache'
+import { supabaseConfig, supabaseClientOptions } from '@/lib/config/supabase-config'
+import { handleSupabaseAuthError, logError, createError, ERROR_CODES } from '@/lib/utils/error-handler'
+import { AuthCache } from '@/lib/cache/auth-cache'
 
 // Admin emails as constants (following CLAUDE_GLOBAL_RULES - explicit configuration)
 const ADMIN_EMAILS = [

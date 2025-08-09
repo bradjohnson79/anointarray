@@ -7,7 +7,7 @@ import { useEffect } from 'react'
 import { useRouter, useSearchParams } from 'next/navigation'
 import { Suspense } from 'react'
 import { Loader2 } from 'lucide-react'
-import { supabase } from '../../../lib/services/authentication'
+import { supabase } from '@/lib/supabase'
 
 function CallbackContent() {
   const router = useRouter()
