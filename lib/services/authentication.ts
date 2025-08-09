@@ -120,7 +120,7 @@ export class AuthenticationService {
       
       try {
         const { data: profile, error: profileError } = await supabase
-          .from('profiles')
+          .from('user_profiles')
           .select('*')
           .eq('id', data.user.id)
           .single()
@@ -306,7 +306,7 @@ export class AuthenticationService {
       // Try to fetch user profile from database, but continue without it if table doesn't exist
       try {
         const { data: profile, error: profileError } = await supabase
-          .from('profiles')
+          .from('user_profiles')
           .select('*')
           .eq('id', user.id)
           .single()

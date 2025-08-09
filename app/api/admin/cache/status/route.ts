@@ -33,7 +33,7 @@ export async function GET(request: NextRequest) {
 
     // Check if user is admin using consistent logic
     const { data: profile } = await supabase
-      .from('profiles')
+      .from('user_profiles')
       .select('is_admin')
       .eq('id', session.user.id)
       .single()
@@ -109,7 +109,7 @@ export async function DELETE(request: NextRequest) {
 
     // Check if user is admin using consistent logic
     const { data: profile } = await supabase
-      .from('profiles')
+      .from('user_profiles')
       .select('is_admin')
       .eq('id', session.user.id)
       .single()

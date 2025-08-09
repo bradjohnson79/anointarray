@@ -79,7 +79,7 @@ export class SupabaseAuth {
       console.info('SupabaseAuth.bootstrapProfile: Creating missing profile for:', email)
       
       const { error } = await supabase
-        .from('profiles')
+        .from('user_profiles')
         .upsert({
           id: userId,
           email: email,
@@ -124,7 +124,7 @@ export class SupabaseAuth {
       if (data.user) {
         // Upsert user profile to ensure it exists (using correct database structure)
         const { error: profileError } = await supabase
-          .from('profiles')
+          .from('user_profiles')
           .upsert({
             id: data.user.id,
             email: data.user.email,
@@ -145,7 +145,7 @@ export class SupabaseAuth {
 
         // Fetch the profile to get the complete data including admin status
         const { data: profile } = await supabase
-          .from('profiles')
+          .from('user_profiles')
           .select('*')
           .eq('id', data.user.id)
           .single()
@@ -192,7 +192,7 @@ export class SupabaseAuth {
         if (!profile) {
           // Get user profile with admin information from actual database structure
           const { data: dbProfile, error: profileError } = await supabase
-            .from('profiles')
+            .from('user_profiles')
             .select('*')
             .eq('id', data.user.id)
             .single()
@@ -209,7 +209,7 @@ export class SupabaseAuth {
               
               // Retry profile fetch
               const { data: retryProfile } = await supabase
-                .from('profiles')
+                .from('user_profiles')
                 .select('*')
                 .eq('id', data.user.id)
                 .single()
@@ -271,7 +271,7 @@ export class SupabaseAuth {
 
       // Get user profile with admin information from actual database structure
       const { data: profile, error: profileError } = await supabase
-        .from('profiles')
+        .from('user_profiles')
         .select('*')
         .eq('id', supabaseUser.id)
         .single()
@@ -286,7 +286,7 @@ export class SupabaseAuth {
           
           // Retry profile fetch
           const { data: retryProfile } = await supabase
-            .from('profiles')
+            .from('user_profiles')
             .select('*')
             .eq('id', supabaseUser.id)
             .single()
@@ -340,7 +340,7 @@ export class SupabaseAuth {
       }
 
       const { error } = await supabase
-        .from('profiles')
+        .from('user_profiles')
         .update({
           display_name: updates.displayName,
           full_name: updates.displayName,
@@ -394,7 +394,7 @@ export class SupabaseAuth {
       if (session?.user) {
         // Get user profile with admin information from actual database structure
         const { data: profile, error: profileError } = await supabase
-          .from('profiles')
+          .from('user_profiles')
           .select('*')
           .eq('id', session.user.id)
           .single()

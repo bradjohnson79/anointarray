@@ -1,6 +1,8 @@
-const CACHE_NAME = 'anoint-array-v1'
-const STATIC_CACHE = 'anoint-static-v1'
-const DYNAMIC_CACHE = 'anoint-dynamic-v1'
+// Service Worker Version - increment when updating
+const SW_VERSION = '2.0.0'
+const CACHE_NAME = `anoint-array-v${SW_VERSION}`
+const STATIC_CACHE = `anoint-static-v${SW_VERSION}`
+const DYNAMIC_CACHE = `anoint-dynamic-v${SW_VERSION}`
 
 // Assets to cache immediately
 const STATIC_ASSETS = [
@@ -9,13 +11,15 @@ const STATIC_ASSETS = [
   '/offline.html',
   '/anoint-array-seal.png',
   '/logo-desktop.png',
-  '/logo-mobile.png'
+  '/logo-mobile.png',
+  '/icons/icon-192.png',
+  '/icons/icon-512.png',
+  '/icons/icon-1024.png'
 ]
 
-// Routes to cache for offline access
+// Routes to cache for offline access (excluding auth routes for security)
 const CACHED_ROUTES = [
   '/',
-  '/login',
   '/products',
   '/anoint-array',
   '/about',
@@ -66,6 +70,12 @@ self.addEventListener('fetch', event => {
 
   // Skip external requests
   if (url.origin !== location.origin) return
+
+  // Skip auth routes to prevent caching sensitive data
+  if (url.pathname.startsWith('/auth') || url.pathname === '/login' || url.pathname === '/signup') {
+    event.respondWith(fetch(request))
+    return
+  }
 
   // Handle navigation requests
   if (request.mode === 'navigate') {
