@@ -29,16 +29,17 @@ export default function Home() {
     // AuthContext will handle post-logout redirect
   }
 
-  if (isLoading) {
-    return (
-      <div className="min-h-screen bg-gradient-to-br from-gray-900 via-purple-900 to-gray-900 flex items-center justify-center">
-        <div className="text-center">
-          <div className="animate-spin rounded-full h-16 w-16 border-4 border-purple-500 border-t-transparent mx-auto mb-4"></div>
-          <p className="text-purple-300 text-lg">Loading ANOINT Array...</p>
-        </div>
-      </div>
-    )
-  }
+  // EMERGENCY HOTFIX: Completely bypass loading state to restore site functionality
+  // if (isLoading) {
+  //   return (
+  //     <div className="min-h-screen bg-gradient-to-br from-gray-900 via-purple-900 to-gray-900 flex items-center justify-center">
+  //       <div className="text-center">
+  //         <div className="animate-spin rounded-full h-16 w-16 border-4 border-purple-500 border-t-transparent mx-auto mb-4"></div>
+  //         <p className="text-purple-300 text-lg">Loading ANOINT Array...</p>
+  //       </div>
+  //     </div>
+  //   )
+  // }
 
   return (
     <div className="relative">
