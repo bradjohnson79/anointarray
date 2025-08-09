@@ -1,10 +1,10 @@
 {
-  "version": "1.0.2",
-  "deployedAt": "2025-08-09T05:35:00Z",
-  "description": "HOTFIX: Temporarily disable build errors to force deployment",
+  "version": "1.0.3",
+  "deployedAt": "2025-08-09T05:45:00Z",
+  "description": "CRITICAL HOTFIX: Add aggressive timeout to fix infinite loading",
   "changes": [
-    "Disabled TypeScript and ESLint build failures to allow deployment",
-    "Fixed infinite loading issue on production site",
-    "Emergency deployment to restore site functionality"
+    "Added 1-second emergency timeout to force loading state resolution",
+    "Enhanced auth context with aggressive failsafe mechanisms",
+    "Should resolve persistent infinite loading issue immediately"
   ]
 }
