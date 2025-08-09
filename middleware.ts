@@ -1,152 +1,104 @@
-import { NextResponse } from "next/server";
-import type { NextRequest } from "next/server";
-import { createServerClient } from "@supabase/ssr";
-import { AuthCache } from "./lib/redis";
+// Simplified middleware - ONLY handles basic auth validation
+// No profile fetching, no complex redirects, no competing systems
 
-export async function middleware(req: NextRequest) {
-  let res = NextResponse.next({
+import { NextResponse } from 'next/server'
+import type { NextRequest } from 'next/server'
+import { createServerClient } from '@supabase/ssr'
+
+export async function middleware(request: NextRequest) {
+  const pathname = request.nextUrl.pathname
+
+  // Skip middleware for public routes and static assets
+  const publicRoutes = ['/login', '/signup', '/forgot-password', '/auth', '/', '/about', '/contact', '/privacy', '/terms']
+  const isPublicRoute = publicRoutes.some(route => pathname.startsWith(route)) || 
+                       pathname.startsWith('/_next') || 
+                       pathname.startsWith('/public') ||
+                       pathname.includes('.')
+
+  if (isPublicRoute) {
+    return NextResponse.next()
+  }
+
+  let response = NextResponse.next({
     request: {
-      headers: req.headers,
+      headers: request.headers,
     },
-  });
+  })
 
-  const supabase = createServerClient(
-    process.env.NEXT_PUBLIC_SUPABASE_URL!,
-    process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!,
-    {
-      cookies: {
-        get(name: string) {
-          return req.cookies.get(name)?.value;
+  try {
+    // Initialize Supabase server client
+    const supabase = createServerClient(
+      process.env.NEXT_PUBLIC_SUPABASE_URL!,
+      process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!,
+      {
+        cookies: {
+          get(name: string) {
+            return request.cookies.get(name)?.value
+          },
+          set(name: string, value: string, options: any) {
+            request.cookies.set({
+              name,
+              value,
+              ...options,
+            })
+            response = NextResponse.next({
+              request: {
+                headers: request.headers,
+              },
+            })
+            response.cookies.set({
+              name,
+              value,
+              ...options,
+            })
+          },
+          remove(name: string, options: any) {
+            request.cookies.set({
+              name,
+              value: '',
+              ...options,
+            })
+            response = NextResponse.next({
+              request: {
+                headers: request.headers,
+              },
+            })
+            response.cookies.set({
+              name,
+              value: '',
+              ...options,
+            })
+          },
         },
-        set(name: string, value: string, options: any) {
-          req.cookies.set({
-            name,
-            value,
-            ...options,
-          });
-          res = NextResponse.next({
-            request: {
-              headers: req.headers,
-            },
-          });
-          res.cookies.set({
-            name,
-            value,
-            ...options,
-          });
-        },
-        remove(name: string, options: any) {
-          req.cookies.set({
-            name,
-            value: "",
-            ...options,
-          });
-          res = NextResponse.next({
-            request: {
-              headers: req.headers,
-            },
-          });
-          res.cookies.set({
-            name,
-            value: "",
-            ...options,
-          });
-        },
-      },
-    }
-  );
+      }
+    )
 
-  // Check if the current path requires admin access
-  if (req.nextUrl.pathname.startsWith("/admin")) {
-    console.info("[middleware] Admin route accessed:", req.nextUrl.pathname);
+    // Simple session check - NO PROFILE FETCHING
+    const { data: { session }, error: sessionError } = await supabase.auth.getSession()
     
-    try {
-      // Get the current session
-      const { data: { session }, error: sessionError } = await supabase.auth.getSession();
-      
-      if (sessionError || !session) {
-        console.info("[middleware] No valid session, redirecting to login");
-        return NextResponse.redirect(new URL("/login", req.url));
-      }
-      
-      console.info("[middleware] Valid session found, checking admin role for user:", session.user.id);
-      
-      // Check if user has admin role in database (using actual table structure)
-      console.info("[middleware] Checking admin role for user:", session.user.id);
-      
-      // First, try cached admin check
-      const cachedAdminStatus = await AuthCache.isUserAdmin(session.user.id);
-      
-      let isAdmin = false;
-      
-      if (cachedAdminStatus !== null) {
-        console.info("[middleware] Using cached admin status:", cachedAdminStatus);
-        isAdmin = cachedAdminStatus;
-      } else {
-        // Fallback to database query
-        const { data: profile, error: profileError } = await supabase
-          .from("profiles")
-          .select("is_admin")
-          .eq("id", session.user.id)
-          .single();
-      
-        if (profileError) {
-          console.error("[middleware] Profile fetch error:", profileError);
-          
-          // Fallback: Check if user is info@anoint.me (emergency admin access)
-          if (session.user.email === 'info@anoint.me') {
-            console.info("[middleware] Admin email fallback activated for info@anoint.me");
-            isAdmin = true;
-          } else {
-            console.info("[middleware] Profile error - redirecting to member dashboard");
-            return NextResponse.redirect(new URL("/dashboard", req.url));
-          }
-        } else {
-          // Check admin status from actual database structure
-          isAdmin = profile?.is_admin === true;
-          
-          // Cache the profile for future use
-          if (profile) {
-            await AuthCache.cacheUserProfile(session.user.id, profile);
-          }
-        }
-      }
-      
-      // Check final admin status
-      if (!isAdmin) {
-        console.info("[middleware] User is not admin - redirecting to member dashboard");
-        return NextResponse.redirect(new URL("/dashboard", req.url));
-      }
-      
-      console.info("[middleware] Admin access granted for:", session.user.email);
-    } catch (error) {
-      console.error("[middleware] Middleware error:", error);
-      return NextResponse.redirect(new URL("/login", req.url));
+    // For protected routes, ensure user has a valid session
+    if ((pathname.startsWith('/admin') || pathname.startsWith('/member')) && (!session?.user || sessionError)) {
+      return NextResponse.redirect(new URL('/login', request.url))
     }
-  }
 
-  // For member dashboard, just ensure they're authenticated
-  if (req.nextUrl.pathname.startsWith("/dashboard")) {
-    console.info("[middleware] Member dashboard accessed");
-    
-    try {
-      const { data: { session } } = await supabase.auth.getSession();
-      
-      if (!session) {
-        console.info("[middleware] No session for member dashboard, redirecting to login");
-        return NextResponse.redirect(new URL("/login", req.url));
-      }
-      
-      console.info("[middleware] Member dashboard access granted");
-    } catch (error) {
-      console.error("[middleware] Member dashboard check error:", error);
-      return NextResponse.redirect(new URL("/login", req.url));
-    }
-  }
+    // Let individual pages handle role-based access and redirects
+    return response
 
-  return res;
+  } catch (error) {
+    // On any error, redirect to login
+    return NextResponse.redirect(new URL('/login', request.url))
+  }
 }
 
-export const config = { 
-  matcher: ["/admin/:path*", "/dashboard/:path*"] 
-};
+export const config = {
+  matcher: [
+    /*
+     * Match all request paths except for the ones starting with:
+     * - _next/static (static files)
+     * - _next/image (image optimization files)
+     * - favicon.ico (favicon file)
+     * - public folder
+     */
+    '/((?!_next/static|_next/image|favicon.ico|public).*)',
+  ],
+}

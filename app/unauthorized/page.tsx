@@ -1,26 +1,20 @@
 'use client'
 
-import { useAuth } from '@/contexts/AuthContext'
+import { useAuth } from '../../contexts/auth-context'
 import { useRouter } from 'next/navigation'
 import { Shield, ArrowLeft } from 'lucide-react'
 
 export default function UnauthorizedPage() {
-  const { user, logout } = useAuth()
+  const { user, signOut } = useAuth()
   const router = useRouter()
 
   const goBack = () => {
-    if (user?.role === 'admin') {
-      router.push('/admin/dashboard')
-    } else if (user?.role === 'member') {
-      router.push('/member/dashboard')
-    } else {
-      router.push('/login')
-    }
+    router.back() // Just go back in history, no role-based logic
   }
 
   const handleLogout = async () => {
-    await logout()
-    router.push('/login')
+    await signOut()
+    // AuthContext will handle redirect after logout
   }
 
   return (

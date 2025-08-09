@@ -1,38 +1,95 @@
 'use client'
 
-import ProtectedRoute from '@/components/ProtectedRoute'
-import Layout from '@/components/Layout'
+// Clean member dashboard following CLAUDE_GLOBAL_RULES.md
+// Uses new authentication system and clean UI patterns
+
+import { useEffect } from 'react'
+import { useRouter } from 'next/navigation'
 import { 
   Zap, 
   Plus,
-  Eye
+  Eye,
+  Star,
+  TrendingUp,
+  Shield,
+  AlertTriangle
 } from 'lucide-react'
-import { useRouter } from 'next/navigation'
+import { useAuth, useAuthStatus } from '../../../contexts/auth-context'
 
 export default function MemberDashboard() {
   const router = useRouter()
+  const { user } = useAuth()
+  const { isMember, isLoading } = useAuthStatus()
 
+  // No redirect logic needed - AuthContext handles all redirects
+
+  // Show loading state
+  if (isLoading) {
+    return (
+      <div className="min-h-screen bg-gradient-to-br from-gray-900 via-purple-900 to-cyan-900 flex items-center justify-center">
+        <div className="text-white text-center">
+          <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-white mx-auto mb-4"></div>
+          <p>Loading dashboard...</p>
+        </div>
+      </div>
+    )
+  }
+
+  // AuthContext handles all redirects - no access denied UI needed
+  if (!isMember) {
+    return null // AuthContext will redirect to appropriate page
+  }
+
+  // Mock data for demonstration - will be replaced with real data
   const recentGenerations = [
-    { name: 'Mystic Energy Array', type: 'Healing', date: '2024-01-15', status: 'Complete', power: '★★★★☆' },
-    { name: 'Abundance Manifestation', type: 'Prosperity', date: '2024-01-14', status: 'Active', power: '★★★★★' },
-    { name: 'Protection Grid', type: 'Defense', date: '2024-01-13', status: 'Complete', power: '★★★☆☆' },
-    { name: 'Love Frequency Array', type: 'Relationship', date: '2024-01-12', status: 'Complete', power: '★★★★☆' }
+    { name: 'Welcome Array', type: 'New Member', date: new Date().toISOString().split('T')[0], status: 'Complete', power: 5 },
+    { name: 'Starter Manifestation', type: 'Prosperity', date: '2024-12-15', status: 'Active', power: 4 },
+    { name: 'Protection Grid', type: 'Defense', date: '2024-12-14', status: 'Complete', power: 3 },
   ]
   
-  const totalArrays = 47 // This would come from your database/state
+  const totalArrays = recentGenerations.length
+  
+  const renderStars = (count: number) => {
+    return Array.from({ length: 5 }, (_, i) => (
+      <Star 
+        key={i} 
+        size={12} 
+        className={i < count ? 'text-yellow-400 fill-current' : 'text-gray-400'} 
+      />
+    ))
+  }
 
   return (
-    <ProtectedRoute requiredRole="member">
-      <Layout userRole="member">
-        <div className="p-8">
-          {/* Header */}
-          <div className="mb-8">
-            <h1 className="text-3xl font-bold text-white mb-2">Welcome Back, Brad</h1>
-            <p className="text-gray-400">Your ANOINT Array journey continues...</p>
+    <div className="min-h-screen bg-gradient-to-br from-gray-900 via-purple-900 to-cyan-900">
+      {/* Header */}
+      <div className="bg-gray-800/60 backdrop-blur-lg border-b border-gray-700/50">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+          <div className="flex justify-between items-center py-6">
+            <div>
+              <h1 className="text-2xl font-bold text-white">ANOINT Array Member</h1>
+              <p className="text-gray-400 text-sm">Welcome back, {user?.displayName}</p>
+            </div>
+            <div className="flex items-center space-x-4">
+              <div className="text-right">
+                <p className="text-sm font-medium text-white">{user?.email}</p>
+                <p className="text-xs text-purple-400">Member</p>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      {/* Main Content */}
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+        <div className="space-y-8">
+          {/* Welcome Message */}
+          <div className="bg-gray-800/60 backdrop-blur-lg rounded-lg p-6 border border-gray-700/50">
+            <h2 className="text-xl font-semibold text-white mb-2">Your ANOINT Array Journey</h2>
+            <p className="text-gray-400">Access powerful energy pattern generators and manage your mystical creations.</p>
           </div>
 
           {/* Quick Actions */}
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-8">
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
             <button 
               onClick={() => router.push('/member/generator')}
               className="bg-gradient-to-r from-purple-600 to-cyan-600 hover:from-purple-700 hover:to-cyan-700 rounded-lg p-6 text-left transition-all duration-200 group"
@@ -85,7 +142,9 @@ export default function MemberDashboard() {
                       </div>
                       <div className="flex items-center justify-between mt-1">
                         <span className="text-sm text-purple-300">{generation.type}</span>
-                        <span className="text-sm text-yellow-400">{generation.power}</span>
+                        <div className="flex items-center space-x-1">
+                          {renderStars(generation.power)}
+                        </div>
                       </div>
                       <p className="text-xs text-gray-400 mt-1">{generation.date}</p>
                     </div>
@@ -95,7 +154,7 @@ export default function MemberDashboard() {
             </div>
 
           {/* Generator Preview */}
-          <div className="mt-8 bg-gray-800/60 backdrop-blur-lg rounded-lg p-6 border border-gray-700/50">
+          <div className="bg-gray-800/60 backdrop-blur-lg rounded-lg p-6 border border-gray-700/50">
             <div className="flex items-center justify-between mb-6">
               <h2 className="text-xl font-semibold text-white">ANOINT Array Generator</h2>
               <div className="text-right">
@@ -137,7 +196,7 @@ export default function MemberDashboard() {
             </div>
           </div>
         </div>
-      </Layout>
-    </ProtectedRoute>
+      </div>
+    </div>
   )
 }

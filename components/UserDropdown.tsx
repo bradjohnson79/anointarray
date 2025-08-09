@@ -1,7 +1,7 @@
 'use client'
 
 import { useState, useRef, useEffect } from 'react'
-import { useAuth } from '@/contexts/AuthContext'
+import { useAuth } from '../contexts/auth-context'
 import { useRouter } from 'next/navigation'
 import { ChevronDown, User, Settings, LogOut, Shield, Crown } from 'lucide-react'
 
@@ -10,7 +10,7 @@ interface UserDropdownProps {
 }
 
 export default function UserDropdown({ className = '' }: UserDropdownProps) {
-  const { user, logout } = useAuth()
+  const { user, signOut } = useAuth()
   const router = useRouter()
   const [isOpen, setIsOpen] = useState(false)
   const dropdownRef = useRef<HTMLDivElement>(null)
@@ -46,14 +46,12 @@ export default function UserDropdown({ className = '' }: UserDropdownProps) {
   }
 
   const handleSignOut = async () => {
-    console.log('🔴 UserDropdown: Sign out clicked')
     try {
-      await logout()
-      console.log('✅ UserDropdown: Logout successful, redirecting...')
-      router.push('/')
+      await signOut()
+      // AuthContext will handle redirect after logout
       setIsOpen(false)
     } catch (error) {
-      console.error('❌ UserDropdown: Logout failed:', error)
+      console.error('Sign out failed:', error)
     }
   }
 
