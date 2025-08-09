@@ -1,0 +1,10 @@
+{
+  "version": "1.0.1",
+  "deployedAt": "2025-08-09T02:16:00Z",
+  "description": "Fixed admin redirect logic - removed all competing redirects",
+  "changes": [
+    "Eliminated race condition in login redirects",
+    "Centralized all redirect logic in AuthContext",
+    "Fixed admin login stuck issue"
+  ]
+}
