@@ -28,13 +28,14 @@ const isAdminEmail = (email: string) => ADMIN_EMAILS.includes(email.toLowerCase(
 
 // Transform Supabase user to our user type
 const transformUser = (supabaseUser: any, profile: any): AuthenticatedUser => {
-  const isAdmin = profile?.is_admin === true || isAdminEmail(supabaseUser.email || '')
+  // Check for admin using either 'role' field or 'is_admin' field (for compatibility)
+  const isAdmin = profile?.role === 'admin' || profile?.is_admin === true || isAdminEmail(supabaseUser.email || '')
   
   return {
     id: supabaseUser.id,
     email: supabaseUser.email,
     role: isAdmin ? 'admin' : 'member',
-    displayName: profile?.full_name || supabaseUser.user_metadata?.display_name || supabaseUser.email?.split('@')[0] || 'User',
+    displayName: profile?.display_name || profile?.full_name || supabaseUser.user_metadata?.display_name || supabaseUser.email?.split('@')[0] || 'User',
     emailVerified: supabaseUser.email_confirmed_at ? true : false,
     createdAt: supabaseUser.created_at,
     updatedAt: supabaseUser.updated_at || supabaseUser.created_at
@@ -157,10 +158,13 @@ export function AuthProvider({ children }: AuthProviderProps) {
                 .from('user_profiles')
                 .upsert({
                   id: sessionUser.id,
+                  user_id: sessionUser.id,
                   email: sessionUser.email,
                   full_name: sessionUser.email?.split('@')[0],
                   display_name: sessionUser.email?.split('@')[0],
-                  is_admin: true,
+                  role: 'admin',  // Use 'role' field instead of 'is_admin'
+                  is_active: true,
+                  is_verified: true,
                   created_at: new Date().toISOString(),
                   updated_at: new Date().toISOString()
                 })
@@ -216,7 +220,9 @@ export function AuthProvider({ children }: AuthProviderProps) {
     if (DEBUG) console.log('[AuthProvider] redirect check:', { path, onAuthPage, hasSession: !!session, hasProfile: !!profile })
 
     if (session && profile) {
-      if (profile.is_admin && onAuthPage) {
+      // Check for admin using either 'role' or 'is_admin' field
+      const isProfileAdmin = profile.role === 'admin' || profile.is_admin === true
+      if (isProfileAdmin && onAuthPage) {
         if (DEBUG) console.log('[AuthProvider] redirecting admin to /admin/dashboard')
         router.replace('/admin/dashboard')
       } else if (onAuthPage) {
