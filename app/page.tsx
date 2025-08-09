@@ -1,6 +1,6 @@
 'use client'
 
-import { useAuth } from '@/contexts/AuthContext'
+import { useAuth, useAuthStatus } from '../contexts/auth-context'
 import { useRouter } from 'next/navigation'
 import { useState } from 'react'
 import Link from 'next/link'
@@ -10,7 +10,8 @@ import UserDropdown from '@/components/UserDropdown'
 import { Zap, Crown, Users, Shield, ArrowRight, Menu, X } from 'lucide-react'
 
 export default function Home() {
-  const { user, isAuthenticated, isLoading, logout } = useAuth()
+  const { user, signOut } = useAuth()
+  const { isAuthenticated, isLoading } = useAuthStatus()
   const router = useRouter()
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false)
 
@@ -28,7 +29,7 @@ export default function Home() {
   }
 
   const handleLogout = async () => {
-    await logout()
+    await signOut()
     router.push('/login')
   }
 

@@ -2,6 +2,12 @@
 .env
 .env.local
 .env.production
+.env.development
+.env.mcp
+.env.mcp.local
+.env.mcp.production
+*.env
+*.local
 
 # Node.js dependencies
 node_modules/
@@ -21,3 +27,32 @@ build/
 # TypeScript
 *.tsbuildinfo
 next-env.d.ts
+
+# Security and sensitive files
+*auth-test*
+*test-report*
+*credentials*
+*secrets*
+*.key
+*.pem
+*.p12
+*.pfx
+supabase-database-reset.js
+supabase-schema-executor.js
+supabase-reset-direct.js
+webhook-monitor.js
+
+# Temporary and backup files
+*.tmp
+*.bak
+*.swp
+*~
+
+# OS generated files
+.DS_Store
+.DS_Store?
+._*
+.Spotlight-V100
+.Trashes
+ehthumbs.db
+Thumbs.db
