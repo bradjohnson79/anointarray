@@ -28,21 +28,15 @@ export default function UserDropdown({ className = '' }: UserDropdownProps) {
   }, [])
 
   const handleDashboard = () => {
-    if (user?.role === 'admin') {
-      router.push('/admin/dashboard')
-    } else {
-      router.push('/member/dashboard')
-    }
+    // AuthContext handles all navigation - no competing logic
     setIsOpen(false)
+    window.location.href = user?.role === 'admin' ? '/admin/dashboard' : '/member/dashboard'
   }
 
   const handleProfileSettings = () => {
-    if (user?.role === 'admin') {
-      router.push('/admin/settings')
-    } else {
-      router.push('/member/settings')
-    }
+    // AuthContext handles all navigation - no competing logic
     setIsOpen(false)
+    window.location.href = user?.role === 'admin' ? '/admin/settings' : '/member/settings'
   }
 
   const handleSignOut = async () => {

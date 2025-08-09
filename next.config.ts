@@ -6,14 +6,14 @@ const nextConfig: NextConfig = {
     webpackBuildWorker: true,
   },
   
-  // ESLint configuration for deployment
+  // ESLint configuration - enable for production quality
   eslint: {
-    ignoreDuringBuilds: true,
+    ignoreDuringBuilds: false, // Fixed: Enable ESLint to catch issues
   },
   
-  // TypeScript configuration for deployment
+  // TypeScript configuration - enable for production quality  
   typescript: {
-    ignoreBuildErrors: true,
+    ignoreBuildErrors: false, // Fixed: Enable TypeScript error checking
   },
   
   // Headers for PWA and mobile optimization

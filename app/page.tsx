@@ -17,20 +17,16 @@ export default function Home() {
 
   const handleGetStarted = () => {
     if (isAuthenticated && user) {
-      // Redirect to appropriate dashboard based on role
-      if (user.role === 'admin') {
-        router.push('/admin/dashboard')
-      } else {
-        router.push('/member/dashboard')
-      }
+      // AuthContext handles dashboard navigation - use window.location to avoid conflicts
+      window.location.href = user.role === 'admin' ? '/admin/dashboard' : '/member/dashboard'
     } else {
-      router.push('/login')
+      window.location.href = '/login'
     }
   }
 
   const handleLogout = async () => {
     await signOut()
-    router.push('/login')
+    // AuthContext will handle post-logout redirect
   }
 
   if (isLoading) {
