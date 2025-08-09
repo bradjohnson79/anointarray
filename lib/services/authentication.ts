@@ -127,14 +127,12 @@ export class AuthenticationService {
 
         if (profileError) {
           // If profiles table doesn't exist or profile not found, use fallback
-          console.warn('Profile fetch failed, using email-based authentication:', profileError.message)
           user = transformSupabaseUser(data.user)
         } else {
           user = transformUserProfile(data.user, profile)
         }
       } catch (profileFetchError) {
         // Profiles table doesn't exist - use email-based authentication
-        console.warn('Profiles table not available, using email-based authentication')
         user = transformSupabaseUser(data.user)
       }
       
@@ -315,14 +313,12 @@ export class AuthenticationService {
 
         if (profileError) {
           // If profiles table doesn't exist or profile not found, use fallback
-          console.warn('Profile fetch failed in getCurrentUser, using email-based authentication:', profileError.message)
           authenticatedUser = transformSupabaseUser(user)
         } else {
           authenticatedUser = transformUserProfile(user, profile)
         }
       } catch (profileFetchError) {
         // Profiles table doesn't exist - use email-based authentication
-        console.warn('Profiles table not available in getCurrentUser, using email-based authentication')
         authenticatedUser = transformSupabaseUser(user)
       }
       

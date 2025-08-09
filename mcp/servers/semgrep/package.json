@@ -1,0 +1,15 @@
+{
+  "name": "@anoint/semgrep-mcp-server",
+  "version": "1.0.0",
+  "description": "Semgrep MCP Server for code analysis and security scanning",
+  "main": "index.ts",
+  "scripts": {
+    "dev": "tsx index.ts",
+    "build": "tsx index.ts"
+  },
+  "dependencies": {
+    "@modelcontextprotocol/sdk": "^1.0.4",
+    "tsx": "^4.19.2"
+  },
+  "keywords": ["mcp", "semgrep", "security", "code-analysis"]
+}

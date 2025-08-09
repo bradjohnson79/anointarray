@@ -17,6 +17,8 @@ import {
   Database
 } from 'lucide-react'
 import { useAuth, useAuthStatus } from '../../../contexts/auth-context'
+import Layout from '../../../components/Layout'
+import ProtectedRoute from '../../../components/ProtectedRoute'
 
 export default function AdminDashboard() {
   const router = useRouter()
@@ -106,27 +108,9 @@ export default function AdminDashboard() {
   ]
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-gray-900 via-purple-900 to-cyan-900">
-      {/* Header */}
-      <div className="bg-gray-800/60 backdrop-blur-lg border-b border-gray-700/50">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="flex justify-between items-center py-6">
-            <div>
-              <h1 className="text-2xl font-bold text-white">ANOINT Array Admin</h1>
-              <p className="text-gray-400 text-sm">Welcome back, {user?.displayName}</p>
-            </div>
-            <div className="flex items-center space-x-4">
-              <div className="text-right">
-                <p className="text-sm font-medium text-white">{user?.email}</p>
-                <p className="text-xs text-purple-400">Administrator</p>
-              </div>
-            </div>
-          </div>
-        </div>
-      </div>
-
-      {/* Main Content */}
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+    <ProtectedRoute requiredRole="admin">
+      <Layout userRole="admin">
+        <div className="p-8">
         <div className="space-y-8">
           {/* Welcome Message */}
           <div className="bg-gray-800/60 backdrop-blur-lg rounded-lg p-6 border border-gray-700/50">
@@ -242,7 +226,8 @@ export default function AdminDashboard() {
             </div>
           </div>
         </div>
-      </div>
-    </div>
+        </div>
+      </Layout>
+    </ProtectedRoute>
   )
 }

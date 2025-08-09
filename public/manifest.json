@@ -14,25 +14,7 @@
   "icons": [
     {
       "src": "/anoint-array-seal.png",
-      "sizes": "512x512",
-      "type": "image/png",
-      "purpose": "any maskable"
-    },
-    {
-      "src": "/anoint-array-seal.png",
-      "sizes": "192x192",
-      "type": "image/png",
-      "purpose": "any"
-    },
-    {
-      "src": "/logo-mobile.png",
-      "sizes": "144x144",
-      "type": "image/png",
-      "purpose": "any"
-    },
-    {
-      "src": "/logo-mobile.png",
-      "sizes": "96x96",
+      "sizes": "1024x1536",
       "type": "image/png",
       "purpose": "any"
     }

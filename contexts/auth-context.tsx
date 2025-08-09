@@ -5,7 +5,7 @@
 
 import { createContext, useContext, useEffect, useState, useCallback, ReactNode, useMemo } from 'react'
 import { useRouter, usePathname } from 'next/navigation'
-import type { AuthenticatedUser, AuthenticationState, AuthenticationError } from '../lib/types/auth'
+import type { AuthenticatedUser, AuthenticationState, AuthenticationError, LoginCredentials, SignupCredentials } from '../lib/types/auth'
 import { AuthenticationService } from '../lib/services/authentication'
 import ErrorBoundary from '@/components/ErrorBoundary'
 
@@ -30,50 +30,35 @@ export function AuthProvider({ children }: AuthProviderProps) {
   const router = useRouter()
   const pathname = usePathname()
 
-  // Initialize authentication state with aggressive timeout failsafe
+  // Initialize authentication state with robust timeout failsafe
   useEffect(() => {
     let mounted = true
     
-    // CRITICAL HOTFIX: Immediately set loading to false after 1 second to prevent infinite loading
-    const emergencyTimeout = setTimeout(() => {
+    // Single, robust 3-second timeout to prevent infinite loading
+    const authTimeout = setTimeout(() => {
       if (mounted) {
-        console.warn('EMERGENCY: Auth initialization timeout - forcing loading to false')
         setIsLoading(false)
       }
-    }, 1000) // 1 second emergency timeout
+    }, 3000) // 3 second timeout
     
-    // Also keep the original 5 second timeout as backup
-    const loadingTimeout = setTimeout(() => {
-      if (mounted) {
-        console.warn('Auth initialization timeout - forcing loading to false')
-        setIsLoading(false)
-      }
-    }, 5000) // 5 second timeout
-
     const initializeAuth = async () => {
       try {
         const currentUser = await AuthenticationService.getCurrentUser()
         if (mounted) {
           setUser(currentUser)
-          clearTimeout(emergencyTimeout)
-          clearTimeout(loadingTimeout)
+          setError(null)
+          setIsLoading(false)
+          clearTimeout(authTimeout)
         }
       } catch (initError) {
         if (mounted) {
-          console.error('Auth initialization error:', initError)
           setError({
             code: 'INIT_ERROR',
             message: 'Failed to initialize authentication',
             remediation: 'Please refresh the page. If the problem persists, clear your browser cache.'
           })
-          clearTimeout(emergencyTimeout)
-          clearTimeout(loadingTimeout)
-        }
-      } finally {
-        if (mounted) {
           setIsLoading(false)
-          clearTimeout(emergencyTimeout)
-          clearTimeout(loadingTimeout)
+          clearTimeout(authTimeout)
         }
       }
     }
@@ -85,30 +70,25 @@ export function AuthProvider({ children }: AuthProviderProps) {
       const { data: { subscription } } = AuthenticationService.onAuthStateChange((updatedUser) => {
         if (mounted) {
           setUser(updatedUser)
-          setError(null) // Clear errors on successful auth state change
+          setError(null)
           setIsLoading(false)
-          clearTimeout(emergencyTimeout)
-          clearTimeout(loadingTimeout)
+          clearTimeout(authTimeout)
         }
       })
 
       return () => {
         mounted = false
-        clearTimeout(emergencyTimeout)
-        clearTimeout(loadingTimeout)
+        clearTimeout(authTimeout)
         subscription?.unsubscribe()
       }
     } catch (listenerError) {
-      console.error('Auth state listener error:', listenerError)
       if (mounted) {
         setIsLoading(false)
-        clearTimeout(emergencyTimeout)
-        clearTimeout(loadingTimeout)
+        clearTimeout(authTimeout)
       }
       return () => {
         mounted = false
-        clearTimeout(emergencyTimeout)
-        clearTimeout(loadingTimeout)
+        clearTimeout(authTimeout)
       }
     }
   }, [])
@@ -158,7 +138,7 @@ export function AuthProvider({ children }: AuthProviderProps) {
     setIsLoading(true)
     setError(null)
 
-    const result = await AuthenticationService.signIn({ email, password })
+    const result = await AuthenticationService.signIn({ email, password } as LoginCredentials)
     
     if (result.success && result.user) {
       setUser(result.user)
@@ -180,7 +160,7 @@ export function AuthProvider({ children }: AuthProviderProps) {
     setIsLoading(true)
     setError(null)
 
-    const result = await AuthenticationService.signUp({ email, password, displayName })
+    const result = await AuthenticationService.signUp({ email, password, displayName } as SignupCredentials)
     
     if (result.success) {
       // For signup, user will be null until email verification
