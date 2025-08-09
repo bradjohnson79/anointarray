@@ -1,0 +1,8 @@
+
+> supabase-management-server@1.0.0 start
+> tsx index.ts
+
+[dotenv@17.2.1] injecting env (26) from ../../../.env.local -- tip: 📡 auto-backup env with Radar: https://dotenvx.com/radar
+[dotenv@17.2.1] injecting env (34) from ../../../.env.mcp.local -- tip: ⚙️  load multiple .env files with { path: ['.env.local', '.env'] }
+[dotenv@17.2.1] injecting env (0) from ../../../.env.mcp -- tip: ⚙️  suppress all logs with { quiet: true }
+Supabase MCP server running on stdio

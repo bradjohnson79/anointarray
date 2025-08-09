@@ -6,7 +6,7 @@
 import { useState, useEffect } from 'react'
 import { useRouter } from 'next/navigation'
 import { ArrowLeft } from 'lucide-react'
-import { useAuth } from '../../contexts/auth-context'
+import { useAuth } from '@/contexts/auth-context'
 
 export default function ForgotPasswordPage() {
   const [email, setEmail] = useState('')

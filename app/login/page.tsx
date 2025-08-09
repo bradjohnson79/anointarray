@@ -6,7 +6,7 @@
 import { useState, useEffect, Suspense } from 'react'
 import { useRouter, useSearchParams } from 'next/navigation'
 import { Eye, EyeOff, CheckCircle } from 'lucide-react'
-import { useAuth } from '../../contexts/auth-context'
+import { useAuth } from '@/contexts/auth-context'
 
 function LoginPageContent() {
   const [email, setEmail] = useState('')

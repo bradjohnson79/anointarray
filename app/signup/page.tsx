@@ -6,7 +6,7 @@
 import { useState, useEffect } from 'react'
 import { useRouter } from 'next/navigation'
 import { Eye, EyeOff, CheckCircle } from 'lucide-react'
-import { useAuth } from '../../contexts/auth-context'
+import { useAuth } from '@/contexts/auth-context'
 
 export default function SignUpPage() {
   const [email, setEmail] = useState('')

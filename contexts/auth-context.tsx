@@ -1,7 +1,7 @@
 'use client'
 
 // Authentication context following CODE_STANDARDS.md - clean React patterns
-// Deterministic init with proper router.isReady checks and debug logging
+// Deterministic init with App Router navigation and debug logging
 
 import { createContext, useContext, useEffect, useState, useCallback, ReactNode, useMemo } from 'react'
 import { useRouter, usePathname } from 'next/navigation'

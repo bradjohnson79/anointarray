@@ -69,111 +69,28 @@ export default function RootLayout({
           {children}
         </AuthProvider>
         
-        {/* Service Worker Registration */}
+        {/* Service Worker Unregistration - Clean up stale service workers */}
         <script
           dangerouslySetInnerHTML={{
             __html: `
               if ('serviceWorker' in navigator) {
                 window.addEventListener('load', function() {
-                  navigator.serviceWorker.register('/sw.js', { scope: '/' })
-                    .then(function(registration) {
-                      console.log('ServiceWorker registration successful with scope: ', registration.scope);
-                      
-                      // Check for updates
-                      registration.addEventListener('updatefound', () => {
-                        const newWorker = registration.installing;
-                        newWorker.addEventListener('statechange', () => {
-                          if (newWorker.state === 'installed' && navigator.serviceWorker.controller) {
-                            // New content available, notify user
-                            if (window.confirm('New version available! Refresh to update?')) {
-                              window.location.reload();
-                            }
-                          }
-                        });
-                      });
+                  navigator.serviceWorker.getRegistrations()
+                    .then(function(registrations) {
+                      for (let registration of registrations) {
+                        registration.unregister()
+                          .then(function(boolean) {
+                            console.log('ServiceWorker unregistered successfully:', boolean);
+                          })
+                          .catch(function(error) {
+                            console.log('ServiceWorker unregistration failed:', error);
+                          });
+                      }
                     })
                     .catch(function(error) {
-                      console.log('ServiceWorker registration failed: ', error);
+                      console.log('ServiceWorker getRegistrations failed:', error);
                     });
                 });
-              }
-              
-              // PWA Install Prompt
-              let deferredPrompt;
-              const installButton = document.createElement('button');
-              installButton.style.display = 'none';
-              installButton.textContent = 'Install App';
-              installButton.className = 'pwa-install-btn';
-              
-              window.addEventListener('beforeinstallprompt', (e) => {
-                e.preventDefault();
-                deferredPrompt = e;
-                
-                // Show install button/prompt
-                const showInstallPrompt = () => {
-                  if (deferredPrompt && !window.matchMedia('(display-mode: standalone)').matches) {
-                    // Create install banner
-                    const banner = document.createElement('div');
-                    banner.innerHTML = \`
-                      <div style="position: fixed; top: 0; left: 0; right: 0; background: linear-gradient(135deg, #9333ea, #7c3aed); color: white; padding: 12px; text-align: center; z-index: 9999; box-shadow: 0 2px 10px rgba(0,0,0,0.3);">
-                        <div style="max-width: 1200px; margin: 0 auto; display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 10px;">
-                          <div style="display: flex; align-items: center; gap: 12px;">
-                            <div style="width: 32px; height: 32px; background: rgba(255,255,255,0.2); border-radius: 8px; display: flex; align-items: center; justify-content: center; font-weight: bold;">A</div>
-                            <div>
-                              <div style="font-weight: 600; font-size: 14px;">Install ANOINT Array</div>
-                              <div style="font-size: 12px; opacity: 0.9;">Get the full app experience</div>
-                            </div>
-                          </div>
-                          <div style="display: flex; gap: 8px;">
-                            <button onclick="installPWA()" style="background: rgba(255,255,255,0.2); border: none; color: white; padding: 8px 16px; border-radius: 6px; font-size: 12px; cursor: pointer; font-weight: 600;">Install</button>
-                            <button onclick="dismissInstallPrompt()" style="background: transparent; border: 1px solid rgba(255,255,255,0.3); color: white; padding: 8px 16px; border-radius: 6px; font-size: 12px; cursor: pointer;">Later</button>
-                          </div>
-                        </div>
-                      </div>
-                    \`;
-                    banner.id = 'pwa-install-banner';
-                    document.body.appendChild(banner);
-                    
-                    // Add margin to body to compensate for banner
-                    document.body.style.marginTop = '70px';
-                  }
-                };
-                
-                // Show install prompt after 3 seconds if not installed
-                setTimeout(showInstallPrompt, 3000);
-              });
-              
-              window.installPWA = () => {
-                if (deferredPrompt) {
-                  deferredPrompt.prompt();
-                  deferredPrompt.userChoice.then((choiceResult) => {
-                    if (choiceResult.outcome === 'accepted') {
-                      console.log('User accepted the install prompt');
-                    }
-                    deferredPrompt = null;
-                    dismissInstallPrompt();
-                  });
-                }
-              };
-              
-              window.dismissInstallPrompt = () => {
-                const banner = document.getElementById('pwa-install-banner');
-                if (banner) {
-                  banner.remove();
-                  document.body.style.marginTop = '0';
-                }
-                localStorage.setItem('pwa-install-dismissed', 'true');
-              };
-              
-              // Handle app installation
-              window.addEventListener('appinstalled', (evt) => {
-                console.log('PWA was installed');
-                dismissInstallPrompt();
-              });
-              
-              // Detect if running as PWA
-              if (window.matchMedia('(display-mode: standalone)').matches || window.navigator.standalone) {
-                document.documentElement.classList.add('pwa-mode');
               }
               
               // Network status detection

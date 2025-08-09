@@ -9,9 +9,9 @@ import { readFileSync } from 'fs';
 import { join } from 'path';
 
 // Load environment variables
-config({ path: '.env.local' });
-config({ path: '.env.mcp.local' });
-config({ path: '.env.mcp' });
+config({ path: '../../../.env.local' });
+config({ path: '../../../.env.mcp.local' });
+config({ path: '../../../.env.mcp' });
 
 interface SupabaseMCPServer {
   supabase: SupabaseClient;
@@ -25,7 +25,7 @@ class SupabaseMCPServer {
   constructor() {
     // Initialize Supabase client with service key for admin operations
     const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL;
-    const supabaseServiceKey = process.env.SUPABASE_SERVICE_KEY;
+    const supabaseServiceKey = process.env.SUPABASE_SERVICE_ROLE_KEY;
 
     if (!supabaseUrl || !supabaseServiceKey) {
       throw new Error('Missing required Supabase environment variables');
@@ -241,9 +241,9 @@ class SupabaseMCPServer {
     const { query, params = [] } = args;
     
     try {
-      const { data, error } = await this.supabase.rpc('execute_sql', { 
-        sql_query: query,
-        sql_params: params 
+      // Use the execute_sql RPC function
+      const { data, error } = await this.supabase.rpc('execute_sql', {
+        sql_query: query
       });
 
       if (error) throw error;

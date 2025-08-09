@@ -29,19 +29,6 @@ const nextConfig: NextConfig = {
         ],
       },
       {
-        source: '/sw.js',
-        headers: [
-          {
-            key: 'Content-Type',
-            value: 'application/javascript',
-          },
-          {
-            key: 'Service-Worker-Allowed',
-            value: '/',
-          },
-        ],
-      },
-      {
         source: '/(.*)',
         headers: [
           {
