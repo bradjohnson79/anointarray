@@ -30,11 +30,19 @@ export function AuthProvider({ children }: AuthProviderProps) {
   const router = useRouter()
   const pathname = usePathname()
 
-  // Initialize authentication state with timeout failsafe
+  // Initialize authentication state with aggressive timeout failsafe
   useEffect(() => {
     let mounted = true
     
-    // CRITICAL HOTFIX: Add timeout to prevent infinite loading
+    // CRITICAL HOTFIX: Immediately set loading to false after 1 second to prevent infinite loading
+    const emergencyTimeout = setTimeout(() => {
+      if (mounted) {
+        console.warn('EMERGENCY: Auth initialization timeout - forcing loading to false')
+        setIsLoading(false)
+      }
+    }, 1000) // 1 second emergency timeout
+    
+    // Also keep the original 5 second timeout as backup
     const loadingTimeout = setTimeout(() => {
       if (mounted) {
         console.warn('Auth initialization timeout - forcing loading to false')
@@ -47,6 +55,7 @@ export function AuthProvider({ children }: AuthProviderProps) {
         const currentUser = await AuthenticationService.getCurrentUser()
         if (mounted) {
           setUser(currentUser)
+          clearTimeout(emergencyTimeout)
           clearTimeout(loadingTimeout)
         }
       } catch (initError) {
@@ -57,11 +66,13 @@ export function AuthProvider({ children }: AuthProviderProps) {
             message: 'Failed to initialize authentication',
             remediation: 'Please refresh the page. If the problem persists, clear your browser cache.'
           })
+          clearTimeout(emergencyTimeout)
           clearTimeout(loadingTimeout)
         }
       } finally {
         if (mounted) {
           setIsLoading(false)
+          clearTimeout(emergencyTimeout)
           clearTimeout(loadingTimeout)
         }
       }
@@ -76,12 +87,14 @@ export function AuthProvider({ children }: AuthProviderProps) {
           setUser(updatedUser)
           setError(null) // Clear errors on successful auth state change
           setIsLoading(false)
+          clearTimeout(emergencyTimeout)
           clearTimeout(loadingTimeout)
         }
       })
 
       return () => {
         mounted = false
+        clearTimeout(emergencyTimeout)
         clearTimeout(loadingTimeout)
         subscription?.unsubscribe()
       }
@@ -89,10 +102,12 @@ export function AuthProvider({ children }: AuthProviderProps) {
       console.error('Auth state listener error:', listenerError)
       if (mounted) {
         setIsLoading(false)
+        clearTimeout(emergencyTimeout)
         clearTimeout(loadingTimeout)
       }
       return () => {
         mounted = false
+        clearTimeout(emergencyTimeout)
         clearTimeout(loadingTimeout)
       }
     }
