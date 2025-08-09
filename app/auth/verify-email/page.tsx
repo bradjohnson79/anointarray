@@ -18,13 +18,7 @@ export default function VerifyEmailPage() {
     clearError()
   }, [])
 
-  // Redirect verified users to dashboard
-  useEffect(() => {
-    if (user && user.emailVerified) {
-      const redirectPath = user.role === 'admin' ? '/admin/dashboard' : '/member/dashboard'
-      router.replace(redirectPath)
-    }
-  }, [user, router])
+  // AuthContext handles verified user redirects - no competing logic needed
 
   const handleResendEmail = async () => {
     if (!user?.email) return

@@ -14,11 +14,8 @@ import { supabaseConfig, supabaseClientOptions } from '@/lib/config/supabase-con
 import { handleSupabaseAuthError, logError, createError, ERROR_CODES } from '@/lib/utils/error-handler'
 import { AuthCache } from '@/lib/cache/auth-cache'
 
-// Admin emails as constants (following CLAUDE_GLOBAL_RULES - explicit configuration)
-const ADMIN_EMAILS = [
-  'info@anoint.me',
-  'breanne@aetherx.co'
-] as const
+// Import centralized admin configuration
+import { isAdminEmail, ADMIN_CONFIG } from '@/lib/config/admin-config'
 
 // Initialize Supabase client with optimized configuration
 const supabase = createClient(
@@ -30,7 +27,7 @@ const supabase = createClient(
 // Helper function to transform Supabase user to our user type (no profile table dependency)
 function transformSupabaseUser(supabaseUser: any): AuthenticatedUser {
   // Use email-based admin detection as fallback when profiles table unavailable
-  const isAdmin = ADMIN_EMAILS.includes(supabaseUser.email?.toLowerCase() || '')
+  const isAdmin = isAdminEmail(supabaseUser.email || '')
   
   return {
     id: supabaseUser.id,
@@ -46,7 +43,7 @@ function transformSupabaseUser(supabaseUser: any): AuthenticatedUser {
 // Helper function to transform database profile to our user type (when profiles table exists)
 function transformUserProfile(supabaseUser: any, profile: UserProfile): AuthenticatedUser {
   // Use consistent admin detection logic
-  const isAdmin = profile.is_admin === true || ADMIN_EMAILS.includes(supabaseUser.email?.toLowerCase() || '')
+  const isAdmin = profile.is_admin === true || isAdminEmail(supabaseUser.email || '')
   
   return {
     id: supabaseUser.id,
@@ -363,7 +360,7 @@ export class AuthenticationService {
 
   // Utility function to check if email is admin
   static isAdminEmail(email: string): boolean {
-    return ADMIN_EMAILS.includes(email as any)
+    return isAdminEmail(email)
   }
 
   // Utility function to get redirect path based on user role
