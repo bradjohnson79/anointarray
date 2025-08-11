@@ -1,0 +1,30 @@
+#!/bin/sh
+
+# Commit message validation
+commit_regex='^(feat|fix|docs|style|refactor|perf|test|build|ci|chore|revert|🚀|🔧|✅|📝|🎨|♻️|⚡|🔒|🐛|✨|🔥)(\(.+\))?: .{1,100}$'
+commit_msg=$(cat "$1")
+
+if ! echo "$commit_msg" | grep -qE "$commit_regex"; then
+  echo "❌ Invalid commit message format!"
+  echo ""
+  echo "Valid formats:"
+  echo "  feat: Add new feature"
+  echo "  fix: Fix bug"
+  echo "  docs: Update documentation"
+  echo "  style: Format code"
+  echo "  refactor: Refactor code"
+  echo "  perf: Improve performance"
+  echo "  test: Add tests"
+  echo "  build: Build system changes"
+  echo "  ci: CI/CD changes"
+  echo "  chore: Maintenance"
+  echo "  🚀 Deploy: Production deployment"
+  echo "  🔧 Fix: Bug fix"
+  echo "  ✨ Feature: New feature"
+  echo "  🔒 Security: Security update"
+  echo ""
+  echo "Your message: $commit_msg"
+  exit 1
+fi
+
+echo "✅ Commit message validated!"

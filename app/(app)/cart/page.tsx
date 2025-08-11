@@ -1,7 +1,7 @@
 'use client'
 
 import { useState, useEffect } from 'react'
-import { createClientComponentClient } from '@supabase/ssr'
+import { createBrowserClient } from '@supabase/ssr'
 import { useRouter } from 'next/navigation'
 import Image from 'next/image'
 import { TrashIcon, PlusIcon, MinusIcon, ShoppingBagIcon } from '@heroicons/react/24/outline'
@@ -28,7 +28,7 @@ const TAX_RATE = 0.13 // 13% HST for Ontario
 const SHIPPING_RATE = 1200 // $12 CAD
 
 export default function CartPage() {
-  const supabase = createClientComponentClient()
+  const supabase = createBrowserClient()
   const router = useRouter()
   
   const [cart, setCart] = useState<CartItem[]>([])

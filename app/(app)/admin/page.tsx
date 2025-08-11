@@ -1,7 +1,7 @@
 'use client'
 
 import { useState, useEffect } from 'react'
-import { createClientComponentClient } from '@supabase/ssr'
+import { createBrowserClient } from '@supabase/ssr'
 import { useRouter } from 'next/navigation'
 import Link from 'next/link'
 import { 
@@ -50,7 +50,7 @@ interface SystemHealth {
 }
 
 export default function AdminDashboard() {
-  const supabase = createClientComponentClient()
+  const supabase = createBrowserClient()
   const router = useRouter()
   
   const [user, setUser] = useState<any>(null)

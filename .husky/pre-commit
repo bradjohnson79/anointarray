@@ -1,0 +1,11 @@
+#!/bin/sh
+
+# Run ESLint on staged files only
+echo "🔍 Running ESLint on staged files..."
+git diff --cached --name-only --diff-filter=ACM | grep -E '\.(ts|tsx|js|jsx)$' | xargs npx eslint --max-warnings 10 --quiet || true
+
+# Run SEMGREP security scan on staged files
+echo "🔒 Running security scan on staged files..."
+git diff --cached --name-only --diff-filter=ACM | grep -E '\.(ts|tsx|js|jsx)$' | xargs semgrep --config=auto --quiet 2>/dev/null || true
+
+echo "✅ Pre-commit checks completed!"

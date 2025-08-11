@@ -1,7 +1,7 @@
 'use client'
 
 import { useState, useEffect } from 'react'
-import { createClientComponentClient } from '@supabase/ssr'
+import { createBrowserClient } from '@supabase/ssr'
 import { useRouter } from 'next/navigation'
 import Link from 'next/link'
 import { 
@@ -83,7 +83,7 @@ interface TimeSeriesData {
 }
 
 export default function AdminAnalytics() {
-  const supabase = createClientComponentClient()
+  const supabase = createBrowserClient()
   const router = useRouter()
   
   const [analytics, setAnalytics] = useState<AnalyticsData | null>(null)

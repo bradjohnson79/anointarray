@@ -1,7 +1,7 @@
 'use client'
 
 import { useState, useEffect } from 'react'
-import { createClientComponentClient } from '@supabase/ssr'
+import { createBrowserClient } from '@supabase/ssr'
 import { useRouter } from 'next/navigation'
 import Link from 'next/link'
 import { 
@@ -66,7 +66,7 @@ const FINANCIAL_STATUSES = [
 ]
 
 export default function AdminOrders() {
-  const supabase = createClientComponentClient()
+  const supabase = createBrowserClient()
   const router = useRouter()
   
   const [orders, setOrders] = useState<Order[]>([])

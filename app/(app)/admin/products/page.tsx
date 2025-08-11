@@ -1,7 +1,7 @@
 'use client'
 
 import { useState, useEffect } from 'react'
-import { createClientComponentClient } from '@supabase/ssr'
+import { createBrowserClient } from '@supabase/ssr'
 import { useRouter } from 'next/navigation'
 import Link from 'next/link'
 import Image from 'next/image'
@@ -67,7 +67,7 @@ const PRODUCT_STATUSES = [
 ]
 
 export default function AdminProducts() {
-  const supabase = createClientComponentClient()
+  const supabase = createBrowserClient()
   const router = useRouter()
   
   const [products, setProducts] = useState<Product[]>([])

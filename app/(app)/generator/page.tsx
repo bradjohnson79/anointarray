@@ -1,7 +1,7 @@
 'use client'
 
 import { useState, useEffect, useRef } from 'react'
-import { createClientComponentClient } from '@supabase/ssr'
+import { createBrowserClient } from '@supabase/ssr'
 import { useRouter } from 'next/navigation'
 import { 
   DocumentArrowUpIcon,
@@ -92,7 +92,7 @@ const COMPLEXITY_LEVELS = [
 ]
 
 export default function GeneratorPage() {
-  const supabase = createClientComponentClient()
+  const supabase = createBrowserClient()
   const router = useRouter()
   const fileInputRef = useRef<HTMLInputElement>(null)
   

@@ -1,7 +1,7 @@
 'use client'
 
 import { useState, useEffect } from 'react'
-import { createClientComponentClient } from '@supabase/ssr'
+import { createBrowserClient } from '@supabase/ssr'
 import { useRouter } from 'next/navigation'
 import Image from 'next/image'
 import { 
@@ -79,7 +79,7 @@ const CRYPTO_CURRENCIES = [
 ]
 
 export default function CheckoutPage() {
-  const supabase = createClientComponentClient()
+  const supabase = createBrowserClient()
   const router = useRouter()
   
   const [checkoutData, setCheckoutData] = useState<CheckoutData | null>(null)
