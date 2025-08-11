@@ -1,0 +1,123 @@
+{
+  "profile": {
+    "name": "backend",
+    "display_name": "Backend/API Development", 
+    "description": "API development, database operations, and server-side logic with security scanning",
+    "emoji": "🔧",
+    "keywords": ["@backend", "@api", "@database", "@server"],
+    "use_cases": [
+      "API endpoint development",
+      "Database schema design",
+      "Server-side logic implementation", 
+      "Database migrations",
+      "API documentation",
+      "Backend security hardening"
+    ]
+  },
+  "servers": {
+    "primary": [
+      {
+        "name": "supabase", 
+        "role": "Database operations, migrations, and data management",
+        "priority": "critical",
+        "activation_triggers": [
+          "database",
+          "migration",
+          "schema",
+          "sql",
+          "rpc"
+        ]
+      },
+      {
+        "name": "apidog",
+        "role": "API documentation and TypeScript interface generation",
+        "priority": "high",
+        "activation_triggers": [
+          "api",
+          "openapi",
+          "swagger",
+          "endpoints",
+          "typescript-interface"
+        ]
+      },
+      {
+        "name": "semgrep",
+        "role": "Backend security scanning and vulnerability detection",
+        "priority": "high",
+        "activation_triggers": [
+          "security",
+          "vulnerability",
+          "injection",
+          "auth"
+        ]
+      }
+    ],
+    "secondary": [
+      {
+        "name": "sequential-thinking",
+        "role": "API architecture planning and database design",
+        "priority": "medium", 
+        "activation_triggers": [
+          "architecture",
+          "planning",
+          "design",
+          "structure"
+        ]
+      },
+      {
+        "name": "git",
+        "role": "Advanced Git operations for backend code management",
+        "priority": "medium",
+        "activation_triggers": [
+          "git-ops",
+          "merge",
+          "branch", 
+          "history"
+        ]
+      },
+      {
+        "name": "context7",
+        "role": "Next.js API routes and backend framework documentation",
+        "priority": "low",
+        "activation_triggers": [
+          "api-routes",
+          "nextjs-backend",
+          "middleware"
+        ]
+      }
+    ]
+  },
+  "automation": {
+    "auto_activate_on": [
+      "app/api/**",
+      "pages/api/**",
+      "lib/api/**",
+      "supabase/**", 
+      "database/**",
+      "migrations/**"
+    ],
+    "file_extensions": [
+      ".api.ts",
+      ".sql",
+      ".migration.sql",
+      ".rpc.sql"
+    ]
+  },
+  "workflows": [
+    {
+      "name": "api-development",
+      "description": "Create new API endpoint",
+      "sequence": ["sequential-thinking", "supabase", "apidog", "semgrep"]
+    },
+    {
+      "name": "database-migration",
+      "description": "Create and apply database migration", 
+      "sequence": ["sequential-thinking", "supabase", "semgrep", "git"]
+    },
+    {
+      "name": "security-review",
+      "description": "Backend security audit",
+      "sequence": ["semgrep", "sequential-thinking", "supabase", "apidog"]
+    }
+  ]
+}

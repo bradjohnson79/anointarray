@@ -1,0 +1,37 @@
+{
+  "name": "context7",
+  "description": "Live documentation integration server that provides always-current Next.js, React, and TypeScript documentation to AI assistants, eliminating outdated API examples",
+  "transport": "http",
+  "url": "https://mcp.context7.com/mcp",
+  "env": {
+    "NODE_ENV": "development",
+    "WORKING_DIR": "/Users/bradjohnson/Documents/anoint-array/WEBSITE"
+  },
+  "capabilities": [
+    "live-documentation-access",
+    "nextjs-documentation",
+    "react-documentation", 
+    "typescript-reference",
+    "api-reference-lookup",
+    "framework-best-practices"
+  ],
+  "priority": "high",
+  "dependencies": [
+    "@context7/mcp-server",
+    "node.js"
+  ],
+  "documentation": "https://context7.ai/docs",
+  "status": "active",
+  "category": "documentation",
+  "version": "latest",
+  "benefits": [
+    "Always current Next.js App Router patterns",
+    "Latest React 18+ best practices",
+    "TypeScript 5.0+ features",
+    "Framework-specific code examples"
+  ],
+  "installation_command": "claude mcp add --transport http context7 https://mcp.context7.com/mcp",
+  "installation_date": "2025-08-11",
+  "transport_type": "HTTP",
+  "claude_config_file": "/Users/bradjohnson/.claude.json"
+}

@@ -1,0 +1,39 @@
+{
+  "name": "git",
+  "description": "Advanced Git operations server providing comprehensive version control capabilities beyond basic GitHub integration, including local repository management and Git workflows",
+  "command": "npx",
+  "args": [
+    "@modelcontextprotocol/server-git",
+    "--repository",
+    "/Users/bradjohnson/Documents/anoint-array/WEBSITE"
+  ],
+  "env": {
+    "NODE_ENV": "development",
+    "WORKING_DIR": "/Users/bradjohnson/Documents/anoint-array/WEBSITE"
+  },
+  "capabilities": [
+    "local-git-operations",
+    "commit-history-analysis",
+    "branch-management",
+    "merge-conflict-resolution",
+    "git-workflow-automation",
+    "repository-statistics"
+  ],
+  "priority": "high",
+  "dependencies": [
+    "@modelcontextprotocol/server-git",
+    "git",
+    "node.js"
+  ],
+  "documentation": "https://github.com/modelcontextprotocol/servers/tree/main/src/git",
+  "status": "recommended",
+  "category": "version-control",
+  "version": "latest",
+  "benefits": [
+    "Local Git operations without GitHub API",
+    "Advanced commit analysis and statistics",
+    "Automated Git workflows",
+    "Better merge conflict handling"
+  ],
+  "installation_command": "npm install -g @modelcontextprotocol/server-git"
+}

@@ -1,0 +1,37 @@
+{
+  "name": "apidog",
+  "description": "API development and documentation server that provides OpenAPI specification access and automatic TypeScript interface generation for faster API integration",
+  "command": "npx",
+  "args": [
+    "apidog-mcp-server"
+  ],
+  "env": {
+    "NODE_ENV": "development",
+    "WORKING_DIR": "/Users/bradjohnson/Documents/anoint-array/WEBSITE",
+    "APIDOG_PROJECT_ID": "anointarray"
+  },
+  "capabilities": [
+    "openapi-specification-access",
+    "typescript-interface-generation",
+    "api-endpoint-documentation",
+    "schema-validation",
+    "api-client-generation",
+    "mock-data-generation"
+  ],
+  "priority": "medium",
+  "dependencies": [
+    "apidog-mcp-server",
+    "node.js"
+  ],
+  "documentation": "https://apidog.com/docs",
+  "status": "recommended",
+  "category": "api-development",
+  "version": "latest",
+  "benefits": [
+    "Automatic TypeScript interfaces from APIs",
+    "Consistent API documentation",
+    "Reduced API integration errors",
+    "Faster client code generation"
+  ],
+  "installation_command": "npm install -g apidog-mcp-server"
+}

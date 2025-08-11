@@ -1,0 +1,36 @@
+{
+  "name": "github",
+  "description": "Repository management and Git operations server for GitHub integration, handling commits, pull requests, issues, and repository management for anointarray.com project",
+  "command": "node",
+  "args": [
+    "/Users/bradjohnson/Documents/anoint-array/WEBSITE/mcp/servers/github/node_modules/.bin/tsx",
+    "/Users/bradjohnson/Documents/anoint-array/WEBSITE/mcp/servers/github/index.ts"
+  ],
+  "env": {
+    "NODE_ENV": "development",
+    "WORKING_DIR": "/Users/bradjohnson/Documents/anoint-array/WEBSITE"
+  },
+  "capabilities": [
+    "repository-management",
+    "commit-operations",
+    "pull-request-management",
+    "issue-tracking",
+    "branch-management",
+    "release-management",
+    "webhook-handling",
+    "github-actions"
+  ],
+  "priority": "high",
+  "dependencies": [
+    "tsx",
+    "typescript",
+    "octokit",
+    "node.js"
+  ],
+  "documentation": "https://docs.github.com/en/rest",
+  "status": "inactive",
+  "category": "version-control",
+  "version": "1.0.0",
+  "last_updated": "2025-08-11",
+  "note": "Present in filesystem but not in Claude settings.json - needs activation"
+}

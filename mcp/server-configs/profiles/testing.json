@@ -1,0 +1,125 @@
+{
+  "profile": {
+    "name": "testing",
+    "display_name": "Quality Assurance & Testing",
+    "description": "Comprehensive testing stack including E2E, cross-browser, security, and automated testing",
+    "emoji": "🧪", 
+    "keywords": ["@testing", "@qa", "@test", "@e2e", "@automation"],
+    "use_cases": [
+      "End-to-end testing",
+      "Cross-browser compatibility testing", 
+      "Mobile responsiveness testing",
+      "Security vulnerability testing",
+      "Performance testing",
+      "Automated test generation"
+    ]
+  },
+  "servers": {
+    "primary": [
+      {
+        "name": "puppeteer",
+        "role": "E2E testing and automated browser interactions",
+        "priority": "critical",
+        "activation_triggers": [
+          "e2e",
+          "automation",
+          "user-flow",
+          "interaction",
+          "screenshot"
+        ]
+      },
+      {
+        "name": "playwright", 
+        "role": "Cross-browser testing and mobile device emulation",
+        "priority": "critical",
+        "activation_triggers": [
+          "cross-browser",
+          "mobile",
+          "webkit",
+          "firefox",
+          "visual-test"
+        ]
+      },
+      {
+        "name": "semgrep",
+        "role": "Security testing and vulnerability scanning",
+        "priority": "high",
+        "activation_triggers": [
+          "security-test",
+          "vulnerability",
+          "sast",
+          "code-scan"
+        ]
+      }
+    ],
+    "secondary": [
+      {
+        "name": "context7",
+        "role": "Testing documentation and framework best practices",
+        "priority": "medium",
+        "activation_triggers": [
+          "test-docs",
+          "jest",
+          "testing-library",
+          "cypress"
+        ]
+      },
+      {
+        "name": "sequential-thinking",
+        "role": "Test planning and strategy development", 
+        "priority": "medium",
+        "activation_triggers": [
+          "test-planning",
+          "strategy",
+          "coverage",
+          "approach"
+        ]
+      },
+      {
+        "name": "github",
+        "role": "CI/CD integration and test reporting",
+        "priority": "medium",
+        "activation_triggers": [
+          "ci-cd",
+          "github-actions",
+          "test-reports",
+          "automation"
+        ]
+      }
+    ]
+  },
+  "automation": {
+    "auto_activate_on": [
+      "__tests__/**",
+      "tests/**",
+      "cypress/**",
+      "playwright/**",
+      "*.test.ts",
+      "*.spec.ts"
+    ],
+    "file_extensions": [
+      ".test.ts",
+      ".test.tsx", 
+      ".spec.ts",
+      ".spec.tsx",
+      ".e2e.ts"
+    ]
+  },
+  "workflows": [
+    {
+      "name": "comprehensive-testing",
+      "description": "Full testing suite execution",
+      "sequence": ["sequential-thinking", "puppeteer", "playwright", "semgrep"]
+    },
+    {
+      "name": "mobile-testing",
+      "description": "Mobile responsiveness and compatibility testing", 
+      "sequence": ["playwright", "puppeteer", "context7", "sequential-thinking"]
+    },
+    {
+      "name": "security-testing",
+      "description": "Security vulnerability assessment",
+      "sequence": ["semgrep", "puppeteer", "sequential-thinking", "github"]
+    }
+  ]
+}

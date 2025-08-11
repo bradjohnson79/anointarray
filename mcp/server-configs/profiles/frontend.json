@@ -1,0 +1,133 @@
+{
+  "profile": {
+    "name": "frontend",
+    "display_name": "Frontend Development",
+    "description": "UI/UX development tools for React, Next.js, and component building with testing and documentation",
+    "emoji": "🎨",
+    "keywords": ["@frontend", "@ui", "@components", "@react", "@nextjs"],
+    "use_cases": [
+      "React component development",
+      "Next.js page creation", 
+      "Responsive design implementation",
+      "UI/UX improvements",
+      "Component testing",
+      "Frontend performance optimization"
+    ]
+  },
+  "servers": {
+    "primary": [
+      {
+        "name": "context7",
+        "role": "Live React/Next.js documentation and best practices",
+        "priority": "critical",
+        "activation_triggers": [
+          "react",
+          "nextjs",
+          "components",
+          "hooks",
+          "app-router"
+        ]
+      },
+      {
+        "name": "puppeteer",
+        "role": "Component testing and UI interaction testing",
+        "priority": "high",
+        "activation_triggers": [
+          "component-test",
+          "ui-test",
+          "interaction",
+          "screenshot"
+        ]
+      },
+      {
+        "name": "github",
+        "role": "Version control for component changes and PR reviews",
+        "priority": "high", 
+        "activation_triggers": [
+          "commit",
+          "pull-request",
+          "review",
+          "merge"
+        ]
+      }
+    ],
+    "secondary": [
+      {
+        "name": "playwright",
+        "role": "Cross-browser testing and mobile responsiveness",
+        "priority": "medium",
+        "activation_triggers": [
+          "cross-browser",
+          "mobile",
+          "responsive",
+          "visual-test"
+        ]
+      },
+      {
+        "name": "sequential-thinking",
+        "role": "Component architecture planning and design system decisions",
+        "priority": "medium",
+        "activation_triggers": [
+          "architecture",
+          "design-system",
+          "component-structure"
+        ]
+      },
+      {
+        "name": "serena",
+        "role": "Development assistance and workflow coordination",
+        "priority": "low",
+        "activation_triggers": [
+          "assistance",
+          "workflow",
+          "coordination"
+        ]
+      },
+      {
+        "name": "chatgpt-tools",
+        "role": "Documentation and content optimization for UI/UX",
+        "priority": "medium",
+        "activation_triggers": [
+          "documentation",
+          "content",
+          "copy",
+          "text",
+          "rewrite"
+        ]
+      }
+    ]
+  },
+  "automation": {
+    "auto_activate_on": [
+      "components/**",
+      "pages/**",
+      "app/**", 
+      "styles/**",
+      "public/**"
+    ],
+    "file_extensions": [
+      ".tsx",
+      ".jsx", 
+      ".css",
+      ".scss",
+      ".module.css"
+    ]
+  },
+  "workflows": [
+    {
+      "name": "component-development",
+      "description": "Create new React component",
+      "sequence": ["context7", "sequential-thinking", "puppeteer", "github"]
+    },
+    {
+      "name": "ui-improvement",
+      "description": "Improve existing UI/UX",
+      "sequence": ["puppeteer", "context7", "playwright", "sequential-thinking"]
+    },
+    {
+      "name": "responsive-design",
+      "description": "Implement responsive design",
+      "sequence": ["context7", "playwright", "puppeteer", "github"]
+    }
+  ]
+}

@@ -20,7 +20,10 @@ import {
   Zap,
   Archive,
   Star,
-  Grid
+  Grid,
+  Settings,
+  ChevronDown,
+  ChevronUp
 } from 'lucide-react'
 import { 
   Product, 
@@ -186,7 +189,7 @@ const ProductsPreviewTab = memo(({ featuredProducts, onProductChange, onImageUpl
 ProductsPreviewTab.displayName = 'ProductsPreviewTab'
 
 export default function ProductManagementPage() {
-  const [activeTab, setActiveTab] = useState<'preview' | 'products'>('preview')
+  const [activeTab, setActiveTab] = useState<'preview' | 'products' | 'variants'>('preview')
   const [products, setProducts] = useState<Product[]>([])
   const [categories, setCategories] = useState<ProductCategory[]>([])
   const [selectedProduct, setSelectedProduct] = useState<Product | null>(null)
@@ -195,6 +198,14 @@ export default function ProductManagementPage() {
   const [filterCategory, setFilterCategory] = useState('all')
   const [filterStatus, setFilterStatus] = useState('all')
   const [showDeleteModal, setShowDeleteModal] = useState(false)
+  
+  // Variants state
+  const [productVariants, setProductVariants] = useState<any[]>([])
+  const [variantOptions, setVariantOptions] = useState<any[]>([])
+  const [selectedVariantProduct, setSelectedVariantProduct] = useState<Product | null>(null)
+  const [showVariantForm, setShowVariantForm] = useState(false)
+  const [variantFormData, setVariantFormData] = useState<any>({})
+  const [showAddOptionForm, setShowAddOptionForm] = useState(false)
   
   // Featured products state
   const [featuredProducts, setFeaturedProducts] = useState<FeaturedProduct[]>([
@@ -1017,6 +1028,451 @@ export default function ProductManagementPage() {
     )
   }
 
+  const VariantsTab = () => {
+    const [expandedProducts, setExpandedProducts] = useState<Set<string>>(new Set())
+
+    const toggleProductExpansion = (productId: string) => {
+      setExpandedProducts(prev => {
+        const newSet = new Set(prev)
+        if (newSet.has(productId)) {
+          newSet.delete(productId)
+        } else {
+          newSet.add(productId)
+        }
+        return newSet
+      })
+    }
+
+    const handleCreateVariant = (product: Product) => {
+      setSelectedVariantProduct(product)
+      setVariantFormData({
+        product_id: product.id,
+        option_values: {},
+        price: product.price,
+        inventory_quantity: 0,
+        track_inventory: true,
+        is_active: true,
+        is_default: false
+      })
+      setShowVariantForm(true)
+    }
+
+    const handleAddOption = (product: Product) => {
+      setSelectedVariantProduct(product)
+      setShowAddOptionForm(true)
+    }
+
+    const saveVariantOption = async (optionData: any) => {
+      try {
+        const response = await fetch('/api/products/variant-options', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json'
+          },
+          body: JSON.stringify(optionData)
+        })
+        
+        if (response.ok) {
+          setShowAddOptionForm(false)
+          // Refresh variant options
+          loadVariantOptions()
+        }
+      } catch (error) {
+        console.error('Error saving variant option:', error)
+      }
+    }
+
+    const saveVariant = async (variantData: any) => {
+      try {
+        const response = await fetch('/api/products/variants', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json'
+          },
+          body: JSON.stringify(variantData)
+        })
+        
+        if (response.ok) {
+          setShowVariantForm(false)
+          // Refresh variants
+          loadVariants()
+        }
+      } catch (error) {
+        console.error('Error saving variant:', error)
+      }
+    }
+
+    const loadVariantOptions = async () => {
+      try {
+        const response = await fetch('/api/products/variant-options')
+        if (response.ok) {
+          const data = await response.json()
+          setVariantOptions(data.data || [])
+        }
+      } catch (error) {
+        console.error('Error loading variant options:', error)
+      }
+    }
+
+    const loadVariants = async () => {
+      try {
+        const response = await fetch('/api/products/variants')
+        if (response.ok) {
+          const data = await response.json()
+          setProductVariants(data.data || [])
+        }
+      } catch (error) {
+        console.error('Error loading variants:', error)
+      }
+    }
+
+    useEffect(() => {
+      if (activeTab === 'variants') {
+        loadVariantOptions()
+        loadVariants()
+      }
+    }, [activeTab])
+
+    return (
+      <div className="p-6">
+        <div className="max-w-6xl mx-auto">
+          <div className="flex items-center justify-between mb-8">
+            <div>
+              <h1 className="text-2xl font-bold text-white mb-2">Product Variants</h1>
+              <p className="text-gray-400">Manage product variants with different options like size, color, material, etc.</p>
+            </div>
+          </div>
+
+          {/* Products with Variant Support */}
+          <div className="space-y-4">
+            {products.map(product => {
+              const isExpanded = expandedProducts.has(product.id)
+              const productOptions = variantOptions.filter(opt => opt.product_id === product.id)
+              const productVariantsList = productVariants.filter(v => v.product_id === product.id)
+
+              return (
+                <div key={product.id} className="bg-gray-800/50 rounded-lg border border-gray-700">
+                  {/* Product Header */}
+                  <div className="p-4 border-b border-gray-700">
+                    <div className="flex items-center justify-between">
+                      <div className="flex items-center space-x-4">
+                        <button
+                          onClick={() => toggleProductExpansion(product.id)}
+                          className="text-gray-400 hover:text-white transition-colors"
+                        >
+                          {isExpanded ? <ChevronUp size={20} /> : <ChevronDown size={20} />}
+                        </button>
+                        <div className="w-12 h-12 bg-gray-600 rounded-lg flex items-center justify-center overflow-hidden">
+                          {product.images.length > 0 ? (
+                            <img
+                              src={product.images[product.mainImageIndex]}
+                              alt={product.title}
+                              className="w-full h-full object-cover"
+                            />
+                          ) : (
+                            <ImageIcon className="w-6 h-6 text-gray-400" />
+                          )}
+                        </div>
+                        <div>
+                          <h3 className="text-lg font-semibold text-white">{product.title}</h3>
+                          <p className="text-sm text-gray-400">{product.sku} • ${product.price}</p>
+                        </div>
+                      </div>
+                      <div className="flex items-center space-x-2">
+                        <span className="text-sm text-gray-400">
+                          {productOptions.length} option type{productOptions.length !== 1 ? 's' : ''}
+                        </span>
+                        <span className="text-sm text-gray-400">•</span>
+                        <span className="text-sm text-gray-400">
+                          {productVariantsList.length} variant{productVariantsList.length !== 1 ? 's' : ''}
+                        </span>
+                      </div>
+                    </div>
+                  </div>
+
+                  {/* Expanded Content */}
+                  {isExpanded && (
+                    <div className="p-4">
+                      {/* Variant Options */}
+                      <div className="mb-6">
+                        <div className="flex items-center justify-between mb-4">
+                          <h4 className="text-md font-semibold text-white">Variant Options</h4>
+                          <button
+                            onClick={() => handleAddOption(product)}
+                            className="flex items-center space-x-2 px-3 py-2 bg-blue-600 hover:bg-blue-700 text-white rounded-lg transition-colors text-sm"
+                          >
+                            <Plus size={14} />
+                            <span>Add Option</span>
+                          </button>
+                        </div>
+                        
+                        {productOptions.length > 0 ? (
+                          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+                            {productOptions.map(option => (
+                              <div key={option.id} className="bg-gray-700/50 rounded-lg p-4">
+                                <h5 className="font-medium text-white mb-2">{option.option_name}</h5>
+                                <div className="flex flex-wrap gap-2">
+                                  {option.option_values.map((value: string, index: number) => (
+                                    <span
+                                      key={index}
+                                      className="px-2 py-1 bg-gray-600/50 text-gray-300 rounded text-sm"
+                                    >
+                                      {value}
+                                    </span>
+                                  ))}
+                                </div>
+                              </div>
+                            ))}
+                          </div>
+                        ) : (
+                          <div className="text-center py-8 text-gray-400">
+                            <Settings className="w-12 h-12 mx-auto mb-4 opacity-50" />
+                            <p>No variant options defined</p>
+                            <p className="text-sm">Add options like Size, Color, Material, etc.</p>
+                          </div>
+                        )}
+                      </div>
+
+                      {/* Product Variants */}
+                      <div>
+                        <div className="flex items-center justify-between mb-4">
+                          <h4 className="text-md font-semibold text-white">Product Variants</h4>
+                          <button
+                            onClick={() => handleCreateVariant(product)}
+                            className="flex items-center space-x-2 px-3 py-2 bg-purple-600 hover:bg-purple-700 text-white rounded-lg transition-colors text-sm"
+                            disabled={productOptions.length === 0}
+                          >
+                            <Plus size={14} />
+                            <span>Create Variant</span>
+                          </button>
+                        </div>
+                        
+                        {productVariantsList.length > 0 ? (
+                          <div className="space-y-2">
+                            {productVariantsList.map(variant => (
+                              <div key={variant.id} className="bg-gray-700/30 rounded-lg p-4 border border-gray-600">
+                                <div className="flex items-center justify-between">
+                                  <div>
+                                    <div className="flex items-center space-x-2 mb-1">
+                                      <h5 className="font-medium text-white">{variant.title || variant.sku}</h5>
+                                      {variant.is_default && (
+                                        <span className="px-2 py-1 bg-purple-600/20 text-purple-300 rounded-full text-xs">
+                                          Default
+                                        </span>
+                                      )}
+                                      {!variant.is_active && (
+                                        <span className="px-2 py-1 bg-gray-600/20 text-gray-400 rounded-full text-xs">
+                                          Inactive
+                                        </span>
+                                      )}
+                                    </div>
+                                    <div className="flex items-center space-x-4 text-sm text-gray-400">
+                                      <span>SKU: {variant.sku}</span>
+                                      <span>Price: ${variant.price || 'Base price'}</span>
+                                      <span>Stock: {variant.inventory_quantity}</span>
+                                    </div>
+                                    {Object.keys(variant.option_values || {}).length > 0 && (
+                                      <div className="flex flex-wrap gap-2 mt-2">
+                                        {Object.entries(variant.option_values || {}).map(([key, value]) => (
+                                          <span key={key} className="px-2 py-1 bg-blue-600/20 text-blue-300 rounded text-xs">
+                                            {key}: {String(value)}
+                                          </span>
+                                        ))}
+                                      </div>
+                                    )}
+                                  </div>
+                                  <div className="flex items-center space-x-2">
+                                    <button className="p-2 text-gray-400 hover:text-white transition-colors">
+                                      <Edit size={16} />
+                                    </button>
+                                    <button className="p-2 text-gray-400 hover:text-red-400 transition-colors">
+                                      <Trash2 size={16} />
+                                    </button>
+                                  </div>
+                                </div>
+                              </div>
+                            ))}
+                          </div>
+                        ) : (
+                          <div className="text-center py-8 text-gray-400">
+                            <Package className="w-12 h-12 mx-auto mb-4 opacity-50" />
+                            <p>No variants created</p>
+                            <p className="text-sm">Create variants with different option combinations</p>
+                          </div>
+                        )}
+                      </div>
+                    </div>
+                  )}
+                </div>
+              )
+            })}
+          </div>
+        </div>
+
+        {/* Add Option Modal */}
+        {showAddOptionForm && selectedVariantProduct && (
+          <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50">
+            <div className="bg-gray-800 rounded-lg p-6 max-w-md w-full mx-4">
+              <h3 className="text-xl font-bold text-white mb-4">Add Variant Option</h3>
+              <div className="space-y-4">
+                <div>
+                  <label className="block text-sm font-medium text-gray-300 mb-2">
+                    Option Name (e.g., Size, Color, Material)
+                  </label>
+                  <input
+                    type="text"
+                    placeholder="Size"
+                    className="w-full px-3 py-2 bg-gray-700/50 border border-gray-600 rounded-lg text-white focus:border-blue-500 focus:outline-none"
+                    onChange={(e) => setVariantFormData(prev => ({ ...prev, option_name: e.target.value }))}
+                  />
+                </div>
+                <div>
+                  <label className="block text-sm font-medium text-gray-300 mb-2">
+                    Option Values (comma-separated)
+                  </label>
+                  <input
+                    type="text"
+                    placeholder="Small, Medium, Large, X-Large"
+                    className="w-full px-3 py-2 bg-gray-700/50 border border-gray-600 rounded-lg text-white focus:border-blue-500 focus:outline-none"
+                    onChange={(e) => {
+                      const values = e.target.value.split(',').map(v => v.trim()).filter(v => v)
+                      setVariantFormData(prev => ({ ...prev, option_values: values }))
+                    }}
+                  />
+                  <p className="text-xs text-gray-500 mt-1">Separate values with commas</p>
+                </div>
+              </div>
+              <div className="flex justify-end space-x-3 mt-6">
+                <button
+                  onClick={() => setShowAddOptionForm(false)}
+                  className="px-4 py-2 bg-gray-600 hover:bg-gray-700 text-white rounded-lg transition-colors"
+                >
+                  Cancel
+                </button>
+                <button
+                  onClick={() => {
+                    const optionData = {
+                      product_id: selectedVariantProduct.id,
+                      option_name: variantFormData.option_name,
+                      option_values: variantFormData.option_values || []
+                    }
+                    if (optionData.option_name && optionData.option_values.length > 0) {
+                      saveVariantOption(optionData)
+                    }
+                  }}
+                  className="px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white rounded-lg transition-colors"
+                >
+                  Add Option
+                </button>
+              </div>
+            </div>
+          </div>
+        )}
+
+        {/* Create Variant Modal */}
+        {showVariantForm && selectedVariantProduct && (
+          <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50">
+            <div className="bg-gray-800 rounded-lg p-6 max-w-lg w-full mx-4 max-h-[80vh] overflow-y-auto">
+              <h3 className="text-xl font-bold text-white mb-4">Create Product Variant</h3>
+              <div className="space-y-4">
+                {/* Option Values Selection */}
+                {variantOptions.filter(opt => opt.product_id === selectedVariantProduct.id).map(option => (
+                  <div key={option.id}>
+                    <label className="block text-sm font-medium text-gray-300 mb-2">
+                      {option.option_name}
+                    </label>
+                    <select
+                      className="w-full px-3 py-2 bg-gray-700/50 border border-gray-600 rounded-lg text-white focus:border-purple-500 focus:outline-none"
+                      onChange={(e) => {
+                        setVariantFormData(prev => ({
+                          ...prev,
+                          option_values: {
+                            ...prev.option_values,
+                            [option.option_name]: e.target.value
+                          }
+                        }))
+                      }}
+                    >
+                      <option value="">Select {option.option_name.toLowerCase()}</option>
+                      {option.option_values.map((value: string) => (
+                        <option key={value} value={value}>{value}</option>
+                      ))}
+                    </select>
+                  </div>
+                ))}
+                
+                <div className="grid grid-cols-2 gap-4">
+                  <div>
+                    <label className="block text-sm font-medium text-gray-300 mb-2">
+                      Price Override ($)
+                    </label>
+                    <input
+                      type="number"
+                      step="0.01"
+                      placeholder={`Base: $${selectedVariantProduct.price}`}
+                      className="w-full px-3 py-2 bg-gray-700/50 border border-gray-600 rounded-lg text-white focus:border-purple-500 focus:outline-none"
+                      onChange={(e) => setVariantFormData(prev => ({ ...prev, price: e.target.value ? parseFloat(e.target.value) : null }))}
+                    />
+                  </div>
+                  <div>
+                    <label className="block text-sm font-medium text-gray-300 mb-2">
+                      Inventory Quantity
+                    </label>
+                    <input
+                      type="number"
+                      min="0"
+                      defaultValue="0"
+                      className="w-full px-3 py-2 bg-gray-700/50 border border-gray-600 rounded-lg text-white focus:border-purple-500 focus:outline-none"
+                      onChange={(e) => setVariantFormData(prev => ({ ...prev, inventory_quantity: parseInt(e.target.value) || 0 }))}
+                    />
+                  </div>
+                </div>
+                
+                <div className="flex items-center space-x-4">
+                  <label className="flex items-center">
+                    <input
+                      type="checkbox"
+                      defaultChecked
+                      className="w-4 h-4 text-purple-600 bg-gray-700 border-gray-600 rounded focus:ring-purple-500"
+                      onChange={(e) => setVariantFormData(prev => ({ ...prev, is_active: e.target.checked }))}
+                    />
+                    <span className="ml-2 text-sm text-gray-300">Active</span>
+                  </label>
+                  <label className="flex items-center">
+                    <input
+                      type="checkbox"
+                      className="w-4 h-4 text-purple-600 bg-gray-700 border-gray-600 rounded focus:ring-purple-500"
+                      onChange={(e) => setVariantFormData(prev => ({ ...prev, is_default: e.target.checked }))}
+                    />
+                    <span className="ml-2 text-sm text-gray-300">Set as default variant</span>
+                  </label>
+                </div>
+              </div>
+              <div className="flex justify-end space-x-3 mt-6">
+                <button
+                  onClick={() => setShowVariantForm(false)}
+                  className="px-4 py-2 bg-gray-600 hover:bg-gray-700 text-white rounded-lg transition-colors"
+                >
+                  Cancel
+                </button>
+                <button
+                  onClick={() => {
+                    if (Object.keys(variantFormData.option_values || {}).length > 0) {
+                      saveVariant(variantFormData)
+                    }
+                  }}
+                  className="px-4 py-2 bg-purple-600 hover:bg-purple-700 text-white rounded-lg transition-colors"
+                >
+                  Create Variant
+                </button>
+              </div>
+            </div>
+          </div>
+        )}
+      </div>
+    )
+  }
+
   return (
     <ProtectedRoute requiredRole="admin">
       <Layout userRole="admin">
@@ -1047,6 +1503,17 @@ export default function ProductManagementPage() {
                   <Package size={18} />
                   <span>Products</span>
                 </button>
+                <button
+                  onClick={() => setActiveTab('variants')}
+                  className={`flex items-center space-x-2 px-4 py-3 rounded-t-lg transition-colors ${
+                    activeTab === 'variants'
+                      ? 'bg-gray-700 text-white border-b-2 border-purple-500'
+                      : 'text-gray-400 hover:text-white hover:bg-gray-700/50'
+                  }`}
+                >
+                  <Settings size={18} />
+                  <span>Product Variants</span>
+                </button>
               </div>
             </div>
           </div>
@@ -1060,8 +1527,10 @@ export default function ProductManagementPage() {
                 onImageUpload={handleFeaturedImageUpload}
                 onSave={saveFeaturedProducts}
               />
-            ) : (
+            ) : activeTab === 'products' ? (
               <ProductsTab />
+            ) : (
+              <VariantsTab />
             )}
           </div>
 

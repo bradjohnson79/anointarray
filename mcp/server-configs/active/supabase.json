@@ -1,0 +1,36 @@
+{
+  "name": "supabase",
+  "description": "Database operations and management server for Supabase PostgreSQL database, handling migrations, queries, and data operations for anointarray.com e-commerce platform",
+  "command": "node",
+  "args": [
+    "/Users/bradjohnson/Documents/anoint-array/WEBSITE/mcp/servers/supabase/node_modules/.bin/tsx",
+    "/Users/bradjohnson/Documents/anoint-array/WEBSITE/mcp/servers/supabase/index.ts"
+  ],
+  "env": {
+    "NODE_ENV": "development",
+    "WORKING_DIR": "/Users/bradjohnson/Documents/anoint-array/WEBSITE",
+    "SUPABASE_ACCESS_TOKEN": "sbp_f9743f80785cac29d6902f1abe95c0abe3b22632"
+  },
+  "capabilities": [
+    "database-migrations",
+    "sql-queries",
+    "table-management",
+    "user-authentication",
+    "real-time-subscriptions",
+    "edge-functions",
+    "storage-management"
+  ],
+  "priority": "high",
+  "dependencies": [
+    "tsx",
+    "typescript", 
+    "supabase-js",
+    "node.js"
+  ],
+  "documentation": "https://supabase.com/docs",
+  "status": "active",
+  "category": "database",
+  "version": "1.0.0",
+  "last_updated": "2025-08-11",
+  "project_ref": "xmnghciitiefbwxzhgrw"
+}

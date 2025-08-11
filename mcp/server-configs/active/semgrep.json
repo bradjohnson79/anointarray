@@ -1,0 +1,41 @@
+{
+  "name": "semgrep",
+  "description": "Security analysis and code scanning server using Semgrep static analysis tool for vulnerability detection, code quality checks, and security compliance",
+  "command": "node",
+  "args": [
+    "/Users/bradjohnson/Documents/anoint-array/WEBSITE/mcp/servers/semgrep/node_modules/.bin/tsx",
+    "/Users/bradjohnson/Documents/anoint-array/WEBSITE/mcp/servers/semgrep/index.ts"
+  ],
+  "env": {
+    "NODE_ENV": "development",
+    "WORKING_DIR": "/Users/bradjohnson/Documents/anoint-array/WEBSITE",
+    "PATH": "/Users/bradjohnson/.local/bin:${PATH}"
+  },
+  "capabilities": [
+    "static-code-analysis",
+    "security-vulnerability-scanning",
+    "code-quality-checks",
+    "compliance-verification",
+    "custom-rule-sets",
+    "multi-language-support"
+  ],
+  "priority": "medium",
+  "dependencies": [
+    "tsx",
+    "typescript",
+    "semgrep-binary",
+    "node.js"
+  ],
+  "documentation": "https://semgrep.dev/docs",
+  "status": "active",
+  "category": "security",
+  "version": "1.0.0",
+  "last_updated": "2025-08-11",
+  "supported_languages": [
+    "typescript",
+    "javascript", 
+    "python",
+    "go",
+    "java"
+  ]
+}

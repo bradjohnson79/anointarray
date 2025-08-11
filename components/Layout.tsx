@@ -19,7 +19,8 @@ import {
   MessageCircle,
   Package,
   ShoppingCart,
-  Database
+  Database,
+  DollarSign
 } from 'lucide-react'
 import { useState } from 'react'
 import BottomNavigation from './mobile/BottomNavigation'
@@ -44,6 +45,7 @@ export default function Layout({ children, userRole }: LayoutProps) {
     { name: 'User Management', icon: Users, path: '/admin/users' },
     { name: 'Analytics', icon: BarChart3, path: '/admin/analytics' },
     { name: 'Product Management', icon: Package, path: '/admin/products' },
+    { name: 'Tax Management', icon: DollarSign, path: '/admin/taxes' },
     { name: 'Order Management', icon: ShoppingCart, path: '/admin/orders' },
     { name: 'Generator Settings', icon: Zap, path: '/admin/generator-settings' },
     { name: 'AI Systems', icon: Shield, path: '/admin/ai-systems' },

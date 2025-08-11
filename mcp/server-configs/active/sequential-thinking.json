@@ -1,0 +1,42 @@
+{
+  "name": "sequential-thinking",
+  "description": "Advanced problem-solving server that breaks complex development tasks into logical, sequential steps for better architectural planning and system design",
+  "command": "uv",
+  "args": [
+    "tool",
+    "run",
+    "sequential-thinking-mcp"
+  ],
+  "env": {
+    "NODE_ENV": "development",
+    "WORKING_DIR": "/Users/bradjohnson/Documents/anoint-array/WEBSITE"
+  },
+  "capabilities": [
+    "complex-task-decomposition",
+    "architectural-planning",
+    "system-design-thinking",
+    "multi-phase-project-planning",
+    "dependency-analysis",
+    "risk-assessment"
+  ],
+  "priority": "high",
+  "dependencies": [
+    "sequential-thinking-mcp",
+    "python",
+    "uv"
+  ],
+  "documentation": "https://github.com/modelcontextprotocol/servers/tree/main/src/sequential-thinking",
+  "status": "active",
+  "category": "planning",
+  "version": "latest",
+  "benefits": [
+    "Better architectural decisions",
+    "Systematic approach to complex problems",
+    "Reduced technical debt",
+    "Improved project planning"
+  ],
+  "installation_command": "uv tool install sequential-thinking-mcp",
+  "claude_command": "claude mcp add sequential-thinking uv tool run sequential-thinking-mcp",
+  "installation_date": "2025-08-11",
+  "version_installed": "0.8.1"
+}

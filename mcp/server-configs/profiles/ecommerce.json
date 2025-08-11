@@ -1,0 +1,122 @@
+{
+  "profile": {
+    "name": "ecommerce",
+    "display_name": "E-commerce Development",
+    "description": "Complete e-commerce development stack for anointarray.com including payments, database operations, and security",
+    "emoji": "🛒",
+    "keywords": ["@ecommerce", "@shop", "@payments", "@orders"],
+    "use_cases": [
+      "Payment flow development",
+      "Product management features", 
+      "Order processing systems",
+      "Shopping cart functionality",
+      "Checkout process",
+      "Canadian tax calculations"
+    ]
+  },
+  "servers": {
+    "primary": [
+      {
+        "name": "supabase",
+        "role": "Database operations and order management",
+        "priority": "critical",
+        "activation_triggers": [
+          "database",
+          "orders",
+          "products",
+          "customers",
+          "inventory"
+        ]
+      },
+      {
+        "name": "stripe",
+        "role": "Payment processing and subscription management", 
+        "priority": "critical",
+        "activation_triggers": [
+          "payment",
+          "checkout",
+          "subscription",
+          "billing",
+          "invoice"
+        ]
+      },
+      {
+        "name": "semgrep",
+        "role": "Security scanning for payment and PII data",
+        "priority": "high",
+        "activation_triggers": [
+          "security",
+          "pii",
+          "payment-data",
+          "sensitive"
+        ]
+      }
+    ],
+    "secondary": [
+      {
+        "name": "puppeteer",
+        "role": "E2E testing for checkout flows and user journeys",
+        "priority": "medium",
+        "activation_triggers": [
+          "checkout-test",
+          "user-flow",
+          "e2e"
+        ]
+      },
+      {
+        "name": "context7", 
+        "role": "Next.js and React documentation for e-commerce components",
+        "priority": "medium",
+        "activation_triggers": [
+          "components",
+          "react",
+          "nextjs"
+        ]
+      },
+      {
+        "name": "sequential-thinking",
+        "role": "Complex e-commerce feature planning and architecture",
+        "priority": "medium", 
+        "activation_triggers": [
+          "planning",
+          "architecture", 
+          "complex-feature"
+        ]
+      }
+    ]
+  },
+  "automation": {
+    "auto_activate_on": [
+      "pages/checkout/**",
+      "pages/products/**", 
+      "pages/orders/**",
+      "components/Cart/**",
+      "components/Checkout/**",
+      "lib/stripe/**",
+      "lib/payments/**"
+    ],
+    "file_extensions": [
+      ".payment.ts",
+      ".checkout.tsx",
+      ".cart.tsx",
+      ".order.ts"
+    ]
+  },
+  "workflows": [
+    {
+      "name": "payment-integration",
+      "description": "Integrate new payment method",
+      "sequence": ["sequential-thinking", "stripe", "supabase", "semgrep", "puppeteer"]
+    },
+    {
+      "name": "checkout-optimization",
+      "description": "Optimize checkout flow", 
+      "sequence": ["puppeteer", "context7", "sequential-thinking", "stripe", "semgrep"]
+    },
+    {
+      "name": "inventory-management",
+      "description": "Build inventory features",
+      "sequence": ["sequential-thinking", "supabase", "context7", "puppeteer", "semgrep"]
+    }
+  ]
+}
