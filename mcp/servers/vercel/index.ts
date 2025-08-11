@@ -24,7 +24,7 @@ class VercelMCPServer {
   private teamId?: string;
 
   constructor() {
-    this.apiToken = process.env.VERCEL_API_TOKEN || '';
+    this.apiToken = process.env.VERCEL_API_TOKEN || process.env.VERCEL_TOKEN || '';
     this.teamId = process.env.VERCEL_TEAM_ID;
 
     if (!this.apiToken) {
