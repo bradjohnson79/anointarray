@@ -1,0 +1,76 @@
+{
+  "name": "chatgpt-tools",
+  "display_name": "ChatGPT Tools",
+  "description": "ChatGPT-backed MCP server providing summarize, rewrite, and code_review tools",
+  "category": "ai-tools",
+  "priority": "high",
+  "transport": {
+    "type": "http",
+    "endpoint": "http://localhost:4312"
+  },
+  "manifest_url": "http://localhost:4312/manifest",
+  "health_check": "http://localhost:4312/health",
+  "tools": [
+    {
+      "name": "summarize",
+      "description": "Summarize text with configurable sentence limit",
+      "parameters": {
+        "text": "string (required)",
+        "max_sentences": "number (optional, default: 5)"
+      }
+    },
+    {
+      "name": "rewrite",
+      "description": "Rewrite text with specified tone and length",
+      "parameters": {
+        "text": "string (required)",
+        "tone": "string (optional, default: neutral)",
+        "length": "enum: short, medium, long (optional, default: medium)"
+      }
+    },
+    {
+      "name": "code_review",
+      "description": "Lightweight code review with improvement suggestions",
+      "parameters": {
+        "code": "string (required)",
+        "language": "string (optional, default: auto)"
+      }
+    }
+  ],
+  "setup": {
+    "requirements": [
+      "Node.js",
+      "OpenAI API key"
+    ],
+    "installation": [
+      "mkdir -p mcp/chatgpt-tools && cd mcp/chatgpt-tools",
+      "Create package.json, server.js, .env files",
+      "npm install",
+      "export OPENAI_API_KEY=your_key_here",
+      "npm start"
+    ],
+    "port": 4311,
+    "environment_variables": {
+      "OPENAI_API_KEY": "Your OpenAI API key",
+      "OPENAI_MODEL": "gpt-4o-mini (optional)",
+      "PORT": "4311 (optional)"
+    }
+  },
+  "use_cases": [
+    "Text summarization",
+    "Content rewriting with tone control",
+    "Code review and improvement suggestions",
+    "Documentation enhancement",
+    "Content optimization"
+  ],
+  "claude_config": {
+    "mcp_server": {
+      "command": "node",
+      "args": ["server.js"],
+      "cwd": "./mcp/chatgpt-tools",
+      "env": {
+        "OPENAI_API_KEY": "{{ OPENAI_API_KEY }}"
+      }
+    }
+  }
+}

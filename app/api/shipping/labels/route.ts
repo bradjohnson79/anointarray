@@ -391,7 +391,7 @@ export async function POST(request: NextRequest) {
     }
 
     // Log the shipping label generation for audit purposes
-    console.log(`Shipping label generated for order ${body.orderId}:`, {
+    console.log('Shipping label generated for order:', body.orderId, {
       carrier: body.carrier,
       service: body.service,
       trackingNumber: result.trackingNumber,

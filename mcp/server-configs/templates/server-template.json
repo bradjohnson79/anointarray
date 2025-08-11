@@ -1,0 +1,36 @@
+{
+  "name": "server-name",
+  "description": "Brief description of what this server does and its purpose in the development workflow",
+  "command": "command-to-execute",
+  "args": [
+    "argument1",
+    "argument2"
+  ],
+  "env": {
+    "NODE_ENV": "development",
+    "WORKING_DIR": "/Users/bradjohnson/Documents/anoint-array/WEBSITE",
+    "CUSTOM_ENV_VAR": "value"
+  },
+  "capabilities": [
+    "capability-1",
+    "capability-2",
+    "capability-3"
+  ],
+  "priority": "high|medium|low",
+  "dependencies": [
+    "dependency1",
+    "dependency2"
+  ],
+  "documentation": "https://docs.example.com",
+  "status": "active|inactive|recommended",
+  "category": "development|testing|deployment|security|documentation|etc",
+  "version": "1.0.0",
+  "last_updated": "YYYY-MM-DD",
+  "benefits": [
+    "Benefit 1: What this server provides",
+    "Benefit 2: How it improves workflow",
+    "Benefit 3: Integration advantages"
+  ],
+  "installation_command": "npm install -g package-name",
+  "notes": "Any additional notes about configuration, setup, or usage"
+}

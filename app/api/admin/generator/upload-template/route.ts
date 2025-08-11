@@ -2,6 +2,7 @@ import { NextRequest, NextResponse } from 'next/server'
 import { promises as fs } from 'fs'
 import path from 'path'
 import { findOrCreateTemplatesDirectory } from '@/lib/path-utils'
+import { safeTemplatePath } from '../../../../../lib/security/path-utils'
 
 // Valid template types and their expected filenames
 const TEMPLATE_MAPPING: { [key: string]: string } = {
@@ -54,9 +55,9 @@ export async function POST(request: NextRequest) {
     const arrayBuffer = await file.arrayBuffer()
     const buffer = Buffer.from(arrayBuffer)
 
-    // Save the template file with correct name
+    // Save the template file with correct name (using safe path handling)
     const filename = TEMPLATE_MAPPING[templateType]
-    const filePath = path.join(templatesDir, filename)
+    const filePath = safeTemplatePath(filename)
     await fs.writeFile(filePath, buffer)
 
     console.log(`Successfully uploaded template: ${filename}`)

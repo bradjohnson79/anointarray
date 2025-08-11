@@ -1,0 +1,15 @@
+{
+  "schema": "mcp+http-1.0",
+  "name": "chatgpt-tools",
+  "description": "ChatGPT-backed tools: summarize, rewrite, code_review",
+  "transport": { "type": "http", "url": "http://localhost:4311" },
+  "endpoints": {
+    "health": "/health",
+    "manifest": "/manifest",
+    "tools": {
+      "summarize":   { "method": "POST", "path": "/tools/summarize" },
+      "rewrite":     { "method": "POST", "path": "/tools/rewrite" },
+      "code_review": { "method": "POST", "path": "/tools/code_review" }
+    }
+  }
+}

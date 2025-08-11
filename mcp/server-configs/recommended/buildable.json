@@ -1,0 +1,37 @@
+{
+  "name": "buildable", 
+  "description": "AI-powered project management and development tracking server that helps manage tasks, track progress, and collaborate on software projects with intelligent assistance",
+  "command": "npx",
+  "args": [
+    "buildable-mcp-server"
+  ],
+  "env": {
+    "NODE_ENV": "development",
+    "WORKING_DIR": "/Users/bradjohnson/Documents/anoint-array/WEBSITE",
+    "BUILDABLE_PROJECT_ID": "anointarray"
+  },
+  "capabilities": [
+    "task-management",
+    "progress-tracking", 
+    "project-collaboration",
+    "development-metrics",
+    "automated-reporting",
+    "team-coordination"
+  ],
+  "priority": "medium",
+  "dependencies": [
+    "buildable-mcp-server",
+    "node.js"
+  ],
+  "documentation": "https://buildable.ai/docs",
+  "status": "recommended",
+  "category": "project-management",
+  "version": "latest",
+  "benefits": [
+    "Intelligent task prioritization",
+    "Automated progress reporting",
+    "Better project visibility",
+    "AI-powered development insights"
+  ],
+  "installation_command": "npm install -g buildable-mcp-server"
+}

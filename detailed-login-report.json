@@ -1,0 +1,100 @@
+{
+  "timestamp": "2025-08-11T00:36:00.442Z",
+  "url": "http://localhost:3000/auth/login?redirectTo=%2Flogin",
+  "pageAnalysis": {
+    "auroraElements": [
+      {
+        "selector": "[class*=\"bg-\"]",
+        "count": 7,
+        "classes": [
+          "min-h-screen flex items-center justify-center p-4 bg-gradient-to-br from-bg via-panel-2 to-bg",
+          "rounded-lg border border-border bg-panel text-text shadow-1 w-full max-w-md",
+          "flex items-center justify-center w-16 h-16 rounded-full bg-gradient-anoint",
+          "flex h-10 w-full rounded-md border border-border bg-panel px-3 py-2 text-sm ring-offset-bg file:border-0 file:bg-transparent file:text-sm file:font-medium placeholder:text-text-dim focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50",
+          "flex h-10 w-full rounded-md border border-border bg-panel px-3 py-2 text-sm ring-offset-bg file:border-0 file:bg-transparent file:text-sm file:font-medium placeholder:text-text-dim focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50",
+          "rounded border-border bg-panel text-accent focus:ring-accent",
+          "inline-flex items-center justify-center whitespace-nowrap rounded-md text-sm font-medium ring-offset-bg transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 bg-gradient-anoint text-white hover:bg-gradient-anoint-hover h-10 px-4 py-2 w-full"
+        ]
+      },
+      {
+        "selector": "[class*=\"gradient\"]",
+        "count": 4,
+        "classes": [
+          "min-h-screen flex items-center justify-center p-4 bg-gradient-to-br from-bg via-panel-2 to-bg",
+          "flex items-center justify-center w-16 h-16 rounded-full bg-gradient-anoint",
+          "font-semibold tracking-tight text-2xl text-gradient",
+          "inline-flex items-center justify-center whitespace-nowrap rounded-md text-sm font-medium ring-offset-bg transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 bg-gradient-anoint text-white hover:bg-gradient-anoint-hover h-10 px-4 py-2 w-full"
+        ]
+      }
+    ],
+    "formElements": {
+      "forms": 1,
+      "emailInputs": 1,
+      "passwordInputs": 1,
+      "buttons": 2,
+      "inputs": 3
+    },
+    "reactIndicators": {
+      "hasReactRoot": false,
+      "hasReactElements": 0,
+      "totalDivs": 13,
+      "hasNextjsElements": false,
+      "bodyChildren": 13
+    },
+    "backgroundInfo": {
+      "backgroundColor": "rgb(11, 15, 20)",
+      "backgroundImage": "none",
+      "background": "rgb(11, 15, 20) none repeat scroll 0% 0% / auto padding-box border-box"
+    },
+    "animatedElements": 1,
+    "totalElements": 75,
+    "title": "ANOINT Oracle",
+    "url": "http://localhost:3000/auth/login?redirectTo=%2Flogin"
+  },
+  "consoleMessages": [
+    {
+      "type": "verbose",
+      "text": "[DOM] Input elements should have autocomplete attributes (suggested: \"current-password\"): (More info: https://goo.gl/9p2vKq) %o",
+      "timestamp": "2025-08-11T00:35:54.560Z"
+    },
+    {
+      "type": "info",
+      "text": "%cDownload the React DevTools for a better development experience: https://reactjs.org/link/react-devtools font-weight:bold",
+      "timestamp": "2025-08-11T00:35:54.720Z"
+    },
+    {
+      "type": "error",
+      "text": "Failed to load resource: the server responded with a status of 404 (Not Found)",
+      "timestamp": "2025-08-11T00:35:54.771Z"
+    },
+    {
+      "type": "error",
+      "text": "Manifest: Line: 1, column: 1, Syntax error.",
+      "timestamp": "2025-08-11T00:35:54.790Z"
+    }
+  ],
+  "errorSummary": {
+    "hydrationErrors": 0,
+    "reactErrors": 0,
+    "generalErrors": 2,
+    "totalConsoleMessages": 4
+  },
+  "errors": {
+    "hydration": [],
+    "react": [],
+    "general": [
+      {
+        "type": "error",
+        "text": "Failed to load resource: the server responded with a status of 404 (Not Found)",
+        "timestamp": "2025-08-11T00:35:54.771Z"
+      },
+      {
+        "type": "error",
+        "text": "Manifest: Line: 1, column: 1, Syntax error.",
+        "timestamp": "2025-08-11T00:35:54.790Z"
+      }
+    ]
+  },
+  "hydrationStatus": "NO_HYDRATION_ERRORS",
+  "screenshot": "/Users/bradjohnson/Documents/anoint-array/WEBSITE/detailed-login-screenshot.png"
+}

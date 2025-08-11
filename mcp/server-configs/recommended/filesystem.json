@@ -1,0 +1,43 @@
+{
+  "name": "filesystem",
+  "description": "Enhanced file system operations server with security controls, safe file manipulation, and advanced file management capabilities for development workflows",
+  "command": "npx",
+  "args": [
+    "@modelcontextprotocol/server-filesystem",
+    "/Users/bradjohnson/Documents/anoint-array/WEBSITE"
+  ],
+  "env": {
+    "NODE_ENV": "development",
+    "WORKING_DIR": "/Users/bradjohnson/Documents/anoint-array/WEBSITE"
+  },
+  "capabilities": [
+    "secure-file-operations",
+    "directory-traversal-protection",
+    "file-permission-management",
+    "bulk-file-operations",
+    "file-search-and-filtering",
+    "safe-file-modification"
+  ],
+  "priority": "medium",
+  "dependencies": [
+    "@modelcontextprotocol/server-filesystem",
+    "node.js"
+  ],
+  "documentation": "https://github.com/modelcontextprotocol/servers/tree/main/src/filesystem",
+  "status": "recommended",
+  "category": "file-management",
+  "version": "latest",
+  "benefits": [
+    "Enhanced security for file operations",
+    "Bulk file processing capabilities",
+    "Advanced search and filtering",
+    "Protection against unsafe operations"
+  ],
+  "installation_command": "npm install -g @modelcontextprotocol/server-filesystem",
+  "security_features": [
+    "path-sanitization",
+    "access-control",
+    "operation-logging",
+    "safe-mode-operations"
+  ]
+}

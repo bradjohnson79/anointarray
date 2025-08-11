@@ -1,0 +1,34 @@
+{
+  "name": "puppeteer",
+  "description": "Browser automation and testing server using Puppeteer for end-to-end testing, web scraping, and automated browser interactions for anointarray.com",
+  "command": "/Users/bradjohnson/.npm-global/bin/puppeteer-mcp-server",
+  "args": [],
+  "env": {
+    "WORKING_DIR": "/Users/bradjohnson/Documents/anoint-array/WEBSITE"
+  },
+  "capabilities": [
+    "browser-automation",
+    "end-to-end-testing",
+    "web-scraping",
+    "screenshot-capture",
+    "pdf-generation",
+    "performance-testing",
+    "ui-interaction-testing"
+  ],
+  "priority": "medium",
+  "dependencies": [
+    "puppeteer",
+    "chromium",
+    "puppeteer-mcp-server"
+  ],
+  "documentation": "https://pptr.dev/",
+  "status": "active",
+  "category": "testing",
+  "version": "1.0.0",
+  "last_updated": "2025-08-11",
+  "browser_support": [
+    "chromium",
+    "chrome",
+    "firefox"
+  ]
+}

@@ -1,7 +1,7 @@
 import { NextResponse } from 'next/server'
 import { existsSync, statSync } from 'fs'
-import { join } from 'path'
 import { promises as fs } from 'fs'
+import { validateBackupId, safeBackupPath } from '../../../../../../lib/security/path-utils'
 
 export async function GET(
   request: Request,
@@ -9,9 +9,9 @@ export async function GET(
 ) {
   const params = await context.params
   try {
-    const backupId = params.id
-    const backupDir = join(process.cwd(), 'backups')
-    const backupPath = join(backupDir, `${backupId}.json`)
+    // Validate and sanitize the backup ID to prevent path traversal
+    const backupId = validateBackupId(params.id)
+    const backupPath = safeBackupPath(backupId)
 
     if (!existsSync(backupPath)) {
       return NextResponse.json(

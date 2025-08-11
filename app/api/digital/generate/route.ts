@@ -212,7 +212,7 @@ export async function POST(request: NextRequest) {
           downloadLinks.push(downloadLink)
         }
       } catch (error) {
-        console.error(`Error generating download for ${item.productTitle}:`, error)
+        console.error('Error generating download for product:', item.productTitle, error)
         errors.push(`Failed to generate download for: ${item.productTitle}`)
       }
     }

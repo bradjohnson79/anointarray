@@ -6,6 +6,7 @@ import { CallToolRequestSchema, ListToolsRequestSchema } from '@modelcontextprot
 import { config } from 'dotenv';
 
 // Load environment variables
+config({ path: '.env' });
 config({ path: '.env.local' });
 config({ path: '.env.mcp.local' });
 config({ path: '.env.mcp' });
@@ -24,11 +25,11 @@ class VercelMCPServer {
   private teamId?: string;
 
   constructor() {
-    this.apiToken = process.env.VERCEL_API_TOKEN || '';
-    this.teamId = process.env.VERCEL_TEAM_ID;
+    this.apiToken = process.env.VERCEL_TOKEN || process.env.VERCEL_API_TOKEN || '';
+    this.teamId = process.env.VERCEL_TEAM_ID; // Optional for personal accounts
 
     if (!this.apiToken) {
-      throw new Error('VERCEL_API_TOKEN is required');
+      throw new Error('VERCEL_TOKEN is required');
     }
 
     this.server = new Server(

@@ -1,0 +1,40 @@
+{
+  "name": "stripe",
+  "description": "Stripe payment processing server for e-commerce integration, handling payments, subscriptions, and financial operations for anointarray.com store",
+  "command": "npx",
+  "args": [
+    "stripe-mcp-server"
+  ],
+  "env": {
+    "NODE_ENV": "development",
+    "WORKING_DIR": "/Users/bradjohnson/Documents/anoint-array/WEBSITE",
+    "STRIPE_SECRET_KEY": "sk_test_...",
+    "STRIPE_WEBHOOK_SECRET": "whsec_..."
+  },
+  "capabilities": [
+    "payment-processing",
+    "subscription-management",
+    "customer-management",
+    "invoice-generation",
+    "webhook-handling",
+    "financial-reporting"
+  ],
+  "priority": "high",
+  "dependencies": [
+    "stripe-mcp-server",
+    "stripe",
+    "node.js"
+  ],
+  "documentation": "https://stripe.com/docs",
+  "status": "recommended",
+  "category": "payments",
+  "version": "latest",
+  "benefits": [
+    "Automated payment processing",
+    "Subscription billing management",
+    "Customer lifecycle management",
+    "Financial analytics integration"
+  ],
+  "installation_command": "npm install -g stripe-mcp-server",
+  "note": "Requires Stripe API keys configuration"
+}

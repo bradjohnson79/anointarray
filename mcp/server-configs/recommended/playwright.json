@@ -1,0 +1,47 @@
+{
+  "name": "playwright",
+  "description": "Advanced browser testing server using Playwright for comprehensive end-to-end testing with better cross-browser support and modern testing capabilities",
+  "command": "npx",
+  "args": [
+    "playwright-mcp-server"
+  ],
+  "env": {
+    "NODE_ENV": "development",
+    "WORKING_DIR": "/Users/bradjohnson/Documents/anoint-array/WEBSITE"
+  },
+  "capabilities": [
+    "cross-browser-testing",
+    "mobile-device-emulation",
+    "network-interception",
+    "visual-regression-testing",
+    "accessibility-testing",
+    "performance-monitoring",
+    "parallel-test-execution"
+  ],
+  "priority": "medium",
+  "dependencies": [
+    "playwright-mcp-server",
+    "@playwright/test",
+    "playwright",
+    "node.js"
+  ],
+  "documentation": "https://playwright.dev/",
+  "status": "recommended",
+  "category": "testing",
+  "version": "latest",
+  "benefits": [
+    "Better cross-browser compatibility testing",
+    "Mobile-responsive testing",
+    "Advanced debugging capabilities",
+    "Visual comparison testing",
+    "Complements existing Puppeteer setup"
+  ],
+  "installation_command": "npm install -g playwright-mcp-server",
+  "browser_support": [
+    "chromium",
+    "firefox",
+    "webkit",
+    "mobile-safari",
+    "mobile-chrome"
+  ]
+}

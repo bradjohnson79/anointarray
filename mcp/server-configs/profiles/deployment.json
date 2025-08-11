@@ -1,0 +1,124 @@
+{
+  "profile": {
+    "name": "deployment",
+    "display_name": "DevOps & Deployment",
+    "description": "Complete deployment pipeline with CI/CD, monitoring, and infrastructure management",
+    "emoji": "🚀",
+    "keywords": ["@deploy", "@devops", "@cicd", "@infrastructure"],
+    "use_cases": [
+      "Application deployment",
+      "Environment management",
+      "CI/CD pipeline setup",
+      "Performance monitoring",
+      "Build optimization",
+      "Infrastructure as code"
+    ]
+  },
+  "servers": {
+    "primary": [
+      {
+        "name": "vercel",
+        "role": "Deployment management and hosting operations",
+        "priority": "critical",
+        "activation_triggers": [
+          "deploy", 
+          "hosting",
+          "environment",
+          "build",
+          "performance"
+        ]
+      },
+      {
+        "name": "github", 
+        "role": "CI/CD pipelines and automated workflows",
+        "priority": "critical",
+        "activation_triggers": [
+          "ci-cd",
+          "actions",
+          "workflow",
+          "pipeline",
+          "automation"
+        ]
+      },
+      {
+        "name": "semgrep",
+        "role": "Pre-deployment security scanning",
+        "priority": "high",
+        "activation_triggers": [
+          "security-scan",
+          "pre-deploy",
+          "vulnerability",
+          "compliance"
+        ]
+      }
+    ],
+    "secondary": [
+      {
+        "name": "memory-bank",
+        "role": "Deployment history and decision tracking",
+        "priority": "medium",
+        "activation_triggers": [
+          "deployment-history",
+          "rollback",
+          "decision-log",
+          "incident"
+        ]
+      },
+      {
+        "name": "filesystem",
+        "role": "Build artifact management and file operations",
+        "priority": "medium", 
+        "activation_triggers": [
+          "build-artifacts",
+          "file-ops",
+          "cleanup",
+          "optimization"
+        ]
+      },
+      {
+        "name": "sequential-thinking",
+        "role": "Deployment strategy planning and troubleshooting",
+        "priority": "medium",
+        "activation_triggers": [
+          "deploy-strategy",
+          "troubleshoot",
+          "planning",
+          "rollout"
+        ]
+      }
+    ]
+  },
+  "automation": {
+    "auto_activate_on": [
+      ".github/**",
+      ".vercel/**",
+      "vercel.json",
+      "next.config.js", 
+      "Dockerfile",
+      "docker-compose.yml"
+    ],
+    "file_extensions": [
+      ".yml",
+      ".yaml",
+      ".json",
+      "Dockerfile"
+    ]
+  },
+  "workflows": [
+    {
+      "name": "production-deploy",
+      "description": "Full production deployment pipeline",
+      "sequence": ["semgrep", "github", "vercel", "memory-bank"]
+    },
+    {
+      "name": "rollback-procedure", 
+      "description": "Emergency rollback and recovery",
+      "sequence": ["memory-bank", "sequential-thinking", "vercel", "github"]
+    },
+    {
+      "name": "environment-setup",
+      "description": "New environment configuration",
+      "sequence": ["sequential-thinking", "vercel", "github", "filesystem"]
+    }
+  ]
+}

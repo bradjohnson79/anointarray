@@ -1,0 +1,38 @@
+{
+  "name": "vercel",
+  "description": "Deployment and hosting management server for Vercel platform, handling deployments, environment variables, and domain management for anointarray.com",
+  "command": "node",
+  "args": [
+    "/Users/bradjohnson/Documents/anoint-array/WEBSITE/mcp/servers/vercel/node_modules/.bin/tsx",
+    "/Users/bradjohnson/Documents/anoint-array/WEBSITE/mcp/servers/vercel/index.ts"
+  ],
+  "env": {
+    "NODE_ENV": "development",
+    "WORKING_DIR": "/Users/bradjohnson/Documents/anoint-array/WEBSITE",
+    "VERCEL_TOKEN": "TCVidCUpIdBpM3NE6wHghz93",
+    "VERCEL_PROJECT_ID": "prj_rc4JpBUeOGNDdts7FApnqxopbeC0",
+    "VERCEL_PROJECT_NAME": "anointarray"
+  },
+  "capabilities": [
+    "deployment-management",
+    "environment-variables",
+    "domain-management",
+    "edge-functions",
+    "analytics",
+    "preview-deployments",
+    "build-logs"
+  ],
+  "priority": "high",
+  "dependencies": [
+    "tsx",
+    "typescript",
+    "vercel-sdk",
+    "node.js"
+  ],
+  "documentation": "https://vercel.com/docs",
+  "status": "active",
+  "category": "deployment",
+  "version": "1.0.0",
+  "last_updated": "2025-08-11",
+  "project_url": "anointarray-kp28q16ru-anoint.vercel.app"
+}

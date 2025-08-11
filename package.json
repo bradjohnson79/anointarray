@@ -17,10 +17,13 @@
     "mcp:dev": "./mcp/scripts/dev.sh",
     "mcp:dev:stop": "./mcp/scripts/stop-dev.sh",
     "mcp:dev:status": "./mcp/scripts/status-dev.sh",
-    "mcp:health": "./mcp/scripts/health-check.sh"
+    "mcp:health": "./mcp/scripts/health-check.sh",
+    "verify:profiles": "tsx scripts/verify-profiles.ts",
+    "prepare": "husky"
   },
   "dependencies": {
     "@anthropic-ai/sdk": "^0.57.0",
+    "@heroicons/react": "^2.2.0",
     "@modelcontextprotocol/sdk": "^1.17.2",
     "@radix-ui/react-slot": "^1.2.3",
     "@radix-ui/react-switch": "^1.2.5",
@@ -39,6 +42,7 @@
     "next": "15.4.5",
     "nodemon": "^3.1.10",
     "openai": "^5.11.0",
+    "pg": "^8.16.3",
     "react": "19.1.0",
     "react-dom": "19.1.0",
     "stripe": "^18.4.0",
@@ -53,6 +57,7 @@
     "autoprefixer": "^10.4.16",
     "eslint": "^9",
     "eslint-config-next": "15.4.5",
+    "husky": "^9.1.7",
     "postcss": "^8.4.31",
     "puppeteer": "^24.16.0",
     "tailwindcss": "^3.4.1",

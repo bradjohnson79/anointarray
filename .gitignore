@@ -33,6 +33,8 @@ next-env.d.ts
 *test-report*
 *credentials*
 *secrets*
+*RESET_SUMMARY*
+*SUPABASE_RESET*
 *.key
 *.pem
 *.p12

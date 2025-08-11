@@ -43,6 +43,22 @@ const nextConfig: NextConfig = {
             key: 'X-XSS-Protection',
             value: '1; mode=block',
           },
+          {
+            key: 'Strict-Transport-Security',
+            value: 'max-age=31536000; includeSubDomains; preload',
+          },
+          {
+            key: 'Content-Security-Policy',
+            value: "default-src 'self'; script-src 'self' 'unsafe-inline' 'unsafe-eval' https://js.stripe.com https://www.paypal.com https://c.paypal.com; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src 'self' https://fonts.gstatic.com; img-src 'self' data: blob: https:; connect-src 'self' https://api.stripe.com https://www.paypal.com https://*.supabase.co wss://*.supabase.co; frame-src https://js.stripe.com https://www.paypal.com; object-src 'none'; base-uri 'self'; form-action 'self';",
+          },
+          {
+            key: 'Referrer-Policy',
+            value: 'strict-origin-when-cross-origin',
+          },
+          {
+            key: 'Permissions-Policy',
+            value: 'camera=(), microphone=(), geolocation=()',
+          },
         ],
       },
     ];
@@ -61,12 +77,14 @@ const nextConfig: NextConfig = {
   // Static export optimization
   trailingSlash: false,
   
-  // Mobile-first webpack optimization
+  // Advanced webpack optimization
   webpack: (config, { dev, isServer }) => {
-    // Optimize for mobile performance
+    // Optimize for performance and security
     if (!dev && !isServer) {
       config.optimization.splitChunks = {
         chunks: 'all',
+        minSize: 20000,
+        maxSize: 244000,
         cacheGroups: {
           default: {
             minChunks: 1,
@@ -79,6 +97,18 @@ const nextConfig: NextConfig = {
             priority: -10,
             reuseExistingChunk: true,
           },
+          admin: {
+            test: /[\\/]app[\\/]\(app\)[\\/]admin[\\/]/,
+            name: 'admin',
+            priority: 10,
+            reuseExistingChunk: true,
+          },
+          payment: {
+            test: /[\\/]app[\\/]api[\\/](payments|webhooks)[\\/]/,
+            name: 'payment',
+            priority: 5,
+            reuseExistingChunk: true,
+          },
           common: {
             minChunks: 2,
             priority: -30,
@@ -86,6 +116,10 @@ const nextConfig: NextConfig = {
           },
         },
       };
+
+      // Tree shaking optimization
+      config.optimization.usedExports = true;
+      config.optimization.sideEffects = false;
     }
     
     return config;

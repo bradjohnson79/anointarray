@@ -1,0 +1,158 @@
+{
+  "profile": {
+    "name": "all",
+    "display_name": "Complete Development Stack",
+    "description": "Full anointarray.com development ecosystem with all MCP servers activated for maximum capability",
+    "emoji": "🏗️",
+    "keywords": ["@all", "@complete", "@full-stack", "@everything"],
+    "use_cases": [
+      "Complex feature development",
+      "Full-stack implementation",
+      "System-wide changes", 
+      "Major architectural updates",
+      "Cross-domain development",
+      "Comprehensive project work"
+    ]
+  },
+  "servers": {
+    "core_infrastructure": [
+      {
+        "name": "serena",
+        "role": "Overall development coordination and workflow orchestration",
+        "priority": "critical"
+      },
+      {
+        "name": "supabase", 
+        "role": "Database operations and data management",
+        "priority": "critical"
+      },
+      {
+        "name": "vercel",
+        "role": "Deployment and hosting management",
+        "priority": "critical"
+      },
+      {
+        "name": "github",
+        "role": "Version control and CI/CD operations",
+        "priority": "critical"
+      }
+    ],
+    "development_acceleration": [
+      {
+        "name": "context7",
+        "role": "Live documentation and framework best practices",
+        "priority": "high"
+      },
+      {
+        "name": "sequential-thinking", 
+        "role": "Complex problem solving and architectural planning",
+        "priority": "high"
+      },
+      {
+        "name": "memory-bank",
+        "role": "Persistent project knowledge and context management",
+        "priority": "high"
+      },
+      {
+        "name": "chatgpt-tools",
+        "role": "AI-powered text processing: summarize, rewrite, and code review",
+        "priority": "high"
+      }
+    ],
+    "quality_and_security": [
+      {
+        "name": "semgrep",
+        "role": "Security scanning and vulnerability detection", 
+        "priority": "high"
+      },
+      {
+        "name": "puppeteer",
+        "role": "E2E testing and browser automation",
+        "priority": "medium"
+      },
+      {
+        "name": "playwright",
+        "role": "Cross-browser testing and visual regression",
+        "priority": "medium"
+      }
+    ],
+    "specialized_tools": [
+      {
+        "name": "stripe",
+        "role": "Payment processing and financial operations",
+        "priority": "medium"
+      },
+      {
+        "name": "apidog",
+        "role": "API documentation and TypeScript generation", 
+        "priority": "medium"
+      },
+      {
+        "name": "git",
+        "role": "Advanced Git operations and repository management",
+        "priority": "medium"
+      },
+      {
+        "name": "filesystem",
+        "role": "Enhanced file operations and management",
+        "priority": "low"
+      },
+      {
+        "name": "buildable",
+        "role": "AI-powered project management",
+        "priority": "low"
+      }
+    ]
+  },
+  "automation": {
+    "auto_activate_on": [
+      "**/*"
+    ],
+    "file_extensions": [
+      "*"
+    ]
+  },
+  "workflows": [
+    {
+      "name": "major-feature",
+      "description": "Major feature development with full stack involvement",
+      "sequence": [
+        "sequential-thinking",
+        "memory-bank", 
+        "context7",
+        "supabase",
+        "stripe",
+        "semgrep",
+        "puppeteer", 
+        "github",
+        "vercel"
+      ]
+    },
+    {
+      "name": "system-architecture",
+      "description": "System-wide architectural changes",
+      "sequence": [
+        "sequential-thinking",
+        "memory-bank",
+        "supabase", 
+        "apidog",
+        "semgrep",
+        "git",
+        "github"
+      ]
+    },
+    {
+      "name": "comprehensive-audit",
+      "description": "Complete system audit and optimization",
+      "sequence": [
+        "memory-bank",
+        "sequential-thinking",
+        "semgrep",
+        "puppeteer",
+        "playwright",
+        "vercel",
+        "github"
+      ]
+    }
+  ]
+}

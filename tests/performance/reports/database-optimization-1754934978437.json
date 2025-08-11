@@ -1,0 +1,599 @@
+{
+  "timestamp": "2025-08-11T17:56:18.429Z",
+  "queryAnalysis": [
+    {
+      "file": "app/api/admin/cache/status/route.ts",
+      "type": "SELECT",
+      "table": "user_profiles",
+      "performance": "GOOD",
+      "line": 36,
+      "query": ".from('user_profiles')"
+    },
+    {
+      "file": "app/api/admin/cache/status/route.ts",
+      "type": "SELECT",
+      "table": "user_profiles",
+      "performance": "GOOD",
+      "line": 112,
+      "query": ".from('user_profiles')"
+    },
+    {
+      "file": "app/api/digital/download/[token]/route.ts",
+      "type": "UPDATE",
+      "table": "unknown",
+      "performance": "GOOD",
+      "line": 78,
+      "query": ".update("
+    },
+    {
+      "file": "app/api/digital/generate/route.ts",
+      "type": "UPDATE",
+      "table": "unknown",
+      "performance": "GOOD",
+      "line": 60,
+      "query": ".update("
+    },
+    {
+      "file": "app/api/orders/route.ts",
+      "type": "SELECT",
+      "table": "orders",
+      "performance": "GOOD",
+      "line": 16,
+      "query": ".from('orders')"
+    },
+    {
+      "file": "app/api/orders/route.ts",
+      "type": "SELECT",
+      "table": "orders",
+      "performance": "GOOD",
+      "line": 148,
+      "query": ".from('orders')"
+    },
+    {
+      "file": "app/api/orders/route.ts",
+      "type": "SELECT",
+      "table": "order_items",
+      "performance": "GOOD",
+      "line": 176,
+      "query": ".from('order_items')"
+    },
+    {
+      "file": "app/api/orders/route.ts",
+      "type": "SELECT",
+      "table": "orders",
+      "performance": "GOOD",
+      "line": 181,
+      "query": ".from('orders')"
+    },
+    {
+      "file": "app/api/orders/route.ts",
+      "type": "SELECT",
+      "table": "orders",
+      "performance": "GOOD",
+      "line": 192,
+      "query": ".from('orders')"
+    },
+    {
+      "file": "app/api/orders/route.ts",
+      "type": "INSERT",
+      "table": "unknown",
+      "performance": "GOOD",
+      "line": 149,
+      "query": ".insert("
+    },
+    {
+      "file": "app/api/orders/route.ts",
+      "type": "INSERT",
+      "table": "unknown",
+      "performance": "GOOD",
+      "line": 177,
+      "query": ".insert("
+    },
+    {
+      "file": "app/api/orders/route.ts",
+      "type": "DELETE",
+      "table": "unknown",
+      "performance": "GOOD",
+      "line": 181,
+      "query": ".delete("
+    },
+    {
+      "file": "app/api/orders/route.ts",
+      "type": "SELECT_ALL",
+      "table": "unknown",
+      "performance": "NEEDS_REVIEW",
+      "line": 150,
+      "query": ".select('*')"
+    },
+    {
+      "file": "app/api/products/[id]/route.ts",
+      "type": "SELECT",
+      "table": "products",
+      "performance": "GOOD",
+      "line": 11,
+      "query": ".from('products')"
+    },
+    {
+      "file": "app/api/products/[id]/route.ts",
+      "type": "SELECT",
+      "table": "products",
+      "performance": "GOOD",
+      "line": 74,
+      "query": ".from('products')"
+    },
+    {
+      "file": "app/api/products/[id]/route.ts",
+      "type": "SELECT",
+      "table": "order_items",
+      "performance": "GOOD",
+      "line": 117,
+      "query": ".from('order_items')"
+    },
+    {
+      "file": "app/api/products/[id]/route.ts",
+      "type": "SELECT",
+      "table": "products",
+      "performance": "GOOD",
+      "line": 141,
+      "query": ".from('products')"
+    },
+    {
+      "file": "app/api/products/[id]/route.ts",
+      "type": "UPDATE",
+      "table": "unknown",
+      "performance": "GOOD",
+      "line": 75,
+      "query": ".update("
+    },
+    {
+      "file": "app/api/products/[id]/route.ts",
+      "type": "DELETE",
+      "table": "unknown",
+      "performance": "GOOD",
+      "line": 142,
+      "query": ".delete("
+    },
+    {
+      "file": "app/api/products/[id]/route.ts",
+      "type": "SELECT_ALL",
+      "table": "unknown",
+      "performance": "NEEDS_REVIEW",
+      "line": 77,
+      "query": ".select('*')"
+    },
+    {
+      "file": "app/api/products/categories/route.ts",
+      "type": "SELECT",
+      "table": "product_categories",
+      "performance": "GOOD",
+      "line": 12,
+      "query": ".from('product_categories')"
+    },
+    {
+      "file": "app/api/products/categories/route.ts",
+      "type": "SELECT",
+      "table": "product_categories",
+      "performance": "GOOD",
+      "line": 86,
+      "query": ".from('product_categories')"
+    },
+    {
+      "file": "app/api/products/categories/route.ts",
+      "type": "INSERT",
+      "table": "unknown",
+      "performance": "GOOD",
+      "line": 87,
+      "query": ".insert("
+    },
+    {
+      "file": "app/api/products/categories/route.ts",
+      "type": "SELECT_ALL",
+      "table": "unknown",
+      "performance": "NEEDS_REVIEW",
+      "line": 13,
+      "query": ".select('*')"
+    },
+    {
+      "file": "app/api/products/categories/route.ts",
+      "type": "SELECT_ALL",
+      "table": "unknown",
+      "performance": "NEEDS_REVIEW",
+      "line": 88,
+      "query": ".select('*')"
+    },
+    {
+      "file": "app/api/products/route.ts",
+      "type": "SELECT",
+      "table": "products",
+      "performance": "GOOD",
+      "line": 17,
+      "query": ".from('products')"
+    },
+    {
+      "file": "app/api/products/route.ts",
+      "type": "SELECT",
+      "table": "products",
+      "performance": "GOOD",
+      "line": 134,
+      "query": ".from('products')"
+    },
+    {
+      "file": "app/api/products/route.ts",
+      "type": "INSERT",
+      "table": "unknown",
+      "performance": "GOOD",
+      "line": 135,
+      "query": ".insert("
+    },
+    {
+      "file": "app/api/products/route.ts",
+      "type": "SELECT_ALL",
+      "table": "unknown",
+      "performance": "NEEDS_REVIEW",
+      "line": 136,
+      "query": ".select('*')"
+    },
+    {
+      "file": "app/api/products/variant-options/route.ts",
+      "type": "SELECT",
+      "table": "product_variant_options",
+      "performance": "GOOD",
+      "line": 12,
+      "query": ".from('product_variant_options')"
+    },
+    {
+      "file": "app/api/products/variant-options/route.ts",
+      "type": "SELECT",
+      "table": "product_variant_options",
+      "performance": "GOOD",
+      "line": 85,
+      "query": ".from('product_variant_options')"
+    },
+    {
+      "file": "app/api/products/variant-options/route.ts",
+      "type": "SELECT",
+      "table": "product_variant_options",
+      "performance": "GOOD",
+      "line": 140,
+      "query": ".from('product_variant_options')"
+    },
+    {
+      "file": "app/api/products/variant-options/route.ts",
+      "type": "SELECT",
+      "table": "product_variant_options",
+      "performance": "GOOD",
+      "line": 190,
+      "query": ".from('product_variant_options')"
+    },
+    {
+      "file": "app/api/products/variant-options/route.ts",
+      "type": "INSERT",
+      "table": "unknown",
+      "performance": "GOOD",
+      "line": 86,
+      "query": ".insert("
+    },
+    {
+      "file": "app/api/products/variant-options/route.ts",
+      "type": "UPDATE",
+      "table": "unknown",
+      "performance": "GOOD",
+      "line": 141,
+      "query": ".update("
+    },
+    {
+      "file": "app/api/products/variant-options/route.ts",
+      "type": "DELETE",
+      "table": "unknown",
+      "performance": "GOOD",
+      "line": 191,
+      "query": ".delete("
+    },
+    {
+      "file": "app/api/products/variants/[id]/route.ts",
+      "type": "SELECT",
+      "table": "product_variants",
+      "performance": "GOOD",
+      "line": 13,
+      "query": ".from('product_variants')"
+    },
+    {
+      "file": "app/api/products/variants/[id]/route.ts",
+      "type": "SELECT",
+      "table": "product_variants",
+      "performance": "GOOD",
+      "line": 65,
+      "query": ".from('product_variants')"
+    },
+    {
+      "file": "app/api/products/variants/[id]/route.ts",
+      "type": "SELECT",
+      "table": "product_variants",
+      "performance": "GOOD",
+      "line": 111,
+      "query": ".from('product_variants')"
+    },
+    {
+      "file": "app/api/products/variants/[id]/route.ts",
+      "type": "UPDATE",
+      "table": "unknown",
+      "performance": "GOOD",
+      "line": 66,
+      "query": ".update("
+    },
+    {
+      "file": "app/api/products/variants/[id]/route.ts",
+      "type": "DELETE",
+      "table": "unknown",
+      "performance": "GOOD",
+      "line": 112,
+      "query": ".delete("
+    },
+    {
+      "file": "app/api/products/variants/route.ts",
+      "type": "SELECT",
+      "table": "product_variants",
+      "performance": "GOOD",
+      "line": 17,
+      "query": ".from('product_variants')"
+    },
+    {
+      "file": "app/api/products/variants/route.ts",
+      "type": "SELECT",
+      "table": "products",
+      "performance": "GOOD",
+      "line": 92,
+      "query": ".from('products')"
+    },
+    {
+      "file": "app/api/products/variants/route.ts",
+      "type": "SELECT",
+      "table": "product_variants",
+      "performance": "GOOD",
+      "line": 158,
+      "query": ".from('product_variants')"
+    },
+    {
+      "file": "app/api/products/variants/route.ts",
+      "type": "SELECT",
+      "table": "product_variants",
+      "performance": "GOOD",
+      "line": 214,
+      "query": ".from('product_variants')"
+    },
+    {
+      "file": "app/api/products/variants/route.ts",
+      "type": "SELECT",
+      "table": "product_variants",
+      "performance": "GOOD",
+      "line": 265,
+      "query": ".from('product_variants')"
+    },
+    {
+      "file": "app/api/products/variants/route.ts",
+      "type": "INSERT",
+      "table": "unknown",
+      "performance": "GOOD",
+      "line": 159,
+      "query": ".insert("
+    },
+    {
+      "file": "app/api/products/variants/route.ts",
+      "type": "UPDATE",
+      "table": "unknown",
+      "performance": "GOOD",
+      "line": 215,
+      "query": ".update("
+    },
+    {
+      "file": "app/api/products/variants/route.ts",
+      "type": "DELETE",
+      "table": "unknown",
+      "performance": "GOOD",
+      "line": 266,
+      "query": ".delete("
+    },
+    {
+      "file": "app/api/products/variants/route.ts",
+      "type": "RPC",
+      "table": "generate_variant_sku",
+      "performance": "GOOD",
+      "line": 106,
+      "query": ".rpc('generate_variant_sku'"
+    },
+    {
+      "file": "app/api/taxes/calculate/route.ts",
+      "type": "SELECT",
+      "table": "tax_rates",
+      "performance": "GOOD",
+      "line": 51,
+      "query": ".from('tax_rates')"
+    },
+    {
+      "file": "app/api/taxes/calculate/route.ts",
+      "type": "SELECT_ALL",
+      "table": "unknown",
+      "performance": "NEEDS_REVIEW",
+      "line": 52,
+      "query": ".select('*')"
+    },
+    {
+      "file": "app/api/taxes/rates/route.ts",
+      "type": "SELECT",
+      "table": "tax_rates",
+      "performance": "GOOD",
+      "line": 12,
+      "query": ".from('tax_rates')"
+    },
+    {
+      "file": "app/api/taxes/rates/route.ts",
+      "type": "SELECT",
+      "table": "tax_rates",
+      "performance": "GOOD",
+      "line": 79,
+      "query": ".from('tax_rates')"
+    },
+    {
+      "file": "app/api/taxes/rates/route.ts",
+      "type": "UPDATE",
+      "table": "unknown",
+      "performance": "GOOD",
+      "line": 80,
+      "query": ".update("
+    },
+    {
+      "file": "app/api/taxes/rates/route.ts",
+      "type": "SELECT_ALL",
+      "table": "unknown",
+      "performance": "NEEDS_REVIEW",
+      "line": 13,
+      "query": ".select('*')"
+    },
+    {
+      "file": "app/api/taxes/rates/route.ts",
+      "type": "SELECT_ALL",
+      "table": "unknown",
+      "performance": "NEEDS_REVIEW",
+      "line": 82,
+      "query": ".select('*')"
+    },
+    {
+      "file": "app/api/webhooks/nowpayments/route.ts",
+      "type": "UPDATE",
+      "table": "unknown",
+      "performance": "GOOD",
+      "line": 292,
+      "query": ".update("
+    }
+  ],
+  "rlsAnalysis": [],
+  "indexRecommendations": [
+    {
+      "table": "unknown",
+      "type": "INDEX",
+      "priority": "HIGH",
+      "recommendation": "Consider adding indexes on commonly queried columns in unknown table",
+      "reasoning": "Table accessed 8 times for SELECT operations"
+    },
+    {
+      "table": "orders",
+      "type": "INDEX",
+      "priority": "HIGH",
+      "recommendation": "Consider adding indexes on commonly queried columns in orders table",
+      "reasoning": "Table accessed 4 times for SELECT operations"
+    },
+    {
+      "table": "products",
+      "type": "INDEX",
+      "priority": "HIGH",
+      "recommendation": "Consider adding indexes on commonly queried columns in products table",
+      "reasoning": "Table accessed 6 times for SELECT operations"
+    },
+    {
+      "table": "product_variant_options",
+      "type": "INDEX",
+      "priority": "HIGH",
+      "recommendation": "Consider adding indexes on commonly queried columns in product_variant_options table",
+      "reasoning": "Table accessed 4 times for SELECT operations"
+    },
+    {
+      "table": "product_variants",
+      "type": "INDEX",
+      "priority": "HIGH",
+      "recommendation": "Consider adding indexes on commonly queried columns in product_variants table",
+      "reasoning": "Table accessed 7 times for SELECT operations"
+    },
+    {
+      "table": "products",
+      "type": "INDEX",
+      "priority": "MEDIUM",
+      "recommendation": "CREATE INDEX ON products(category_id)",
+      "reasoning": "Category filtering"
+    },
+    {
+      "table": "products",
+      "type": "INDEX",
+      "priority": "MEDIUM",
+      "recommendation": "CREATE INDEX ON products(status)",
+      "reasoning": "Active product queries"
+    },
+    {
+      "table": "orders",
+      "type": "INDEX",
+      "priority": "MEDIUM",
+      "recommendation": "CREATE INDEX ON orders(user_id)",
+      "reasoning": "User order history"
+    },
+    {
+      "table": "orders",
+      "type": "INDEX",
+      "priority": "MEDIUM",
+      "recommendation": "CREATE INDEX ON orders(status)",
+      "reasoning": "Order status filtering"
+    },
+    {
+      "table": "orders",
+      "type": "INDEX",
+      "priority": "MEDIUM",
+      "recommendation": "CREATE INDEX ON orders(created_at)",
+      "reasoning": "Date range queries"
+    },
+    {
+      "table": "order_items",
+      "type": "INDEX",
+      "priority": "MEDIUM",
+      "recommendation": "CREATE INDEX ON order_items(order_id)",
+      "reasoning": "Order details lookup"
+    },
+    {
+      "table": "user_profiles",
+      "type": "INDEX",
+      "priority": "MEDIUM",
+      "recommendation": "CREATE INDEX ON user_profiles(user_id)",
+      "reasoning": "Profile lookups"
+    },
+    {
+      "table": "shopping_cart",
+      "type": "INDEX",
+      "priority": "MEDIUM",
+      "recommendation": "CREATE INDEX ON shopping_cart(user_id)",
+      "reasoning": "Cart retrieval"
+    }
+  ],
+  "optimizations": [
+    {
+      "priority": "HIGH",
+      "category": "Query Optimization",
+      "issue": "Found 8 SELECT * queries",
+      "recommendation": "Replace SELECT * with specific column selection to reduce bandwidth",
+      "files": [
+        "app/api/orders/route.ts",
+        "app/api/products/[id]/route.ts",
+        "app/api/products/categories/route.ts",
+        "app/api/products/route.ts",
+        "app/api/taxes/calculate/route.ts",
+        "app/api/taxes/rates/route.ts"
+      ]
+    },
+    {
+      "priority": "MEDIUM",
+      "category": "Caching",
+      "issue": "High-access tables detected: unknown, products, product_variants",
+      "recommendation": "Implement Redis caching for frequently accessed data",
+      "tables": [
+        {
+          "table": "unknown",
+          "accessCount": 27
+        },
+        {
+          "table": "products",
+          "accessCount": 6
+        },
+        {
+          "table": "product_variants",
+          "accessCount": 7
+        }
+      ]
+    }
+  ]
+}

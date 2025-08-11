@@ -1,0 +1,37 @@
+{
+  "name": "memory-bank",
+  "description": "Persistent knowledge and context management server that maintains project memory across development sessions, tracking decisions, patterns, and codebase relationships",
+  "command": "npx",
+  "args": [
+    "memory-bank-mcp"
+  ],
+  "env": {
+    "NODE_ENV": "development",
+    "WORKING_DIR": "/Users/bradjohnson/Documents/anoint-array/WEBSITE",
+    "MEMORY_BANK_PATH": "/Users/bradjohnson/Documents/anoint-array/WEBSITE/.memory-bank"
+  },
+  "capabilities": [
+    "persistent-project-memory",
+    "cross-session-context",
+    "decision-tracking",
+    "codebase-relationship-mapping",
+    "pattern-recognition",
+    "knowledge-graph-building"
+  ],
+  "priority": "high",
+  "dependencies": [
+    "memory-bank-mcp",
+    "node.js"
+  ],
+  "documentation": "https://github.com/modelcontextprotocol/servers/tree/main/src/memory",
+  "status": "recommended",
+  "category": "knowledge-management",
+  "version": "latest",
+  "benefits": [
+    "Consistent context across sessions",
+    "Better understanding of project evolution",
+    "Reduced need to re-explain project structure",
+    "Improved long-term development efficiency"
+  ],
+  "installation_command": "npm install -g memory-bank-mcp"
+}

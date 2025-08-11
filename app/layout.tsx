@@ -2,6 +2,7 @@ import type { Metadata, Viewport } from "next";
 import { Geist, Geist_Mono } from "next/font/google";
 import "./globals.css";
 import { AuthProvider } from "../contexts/auth-context";
+import NetworkStatus from "../components/NetworkStatus";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -68,6 +69,7 @@ export default function RootLayout({
         <AuthProvider>
           {children}
         </AuthProvider>
+        <NetworkStatus />
         
         {/* Service Worker Unregistration - Clean up stale service workers */}
         <script
@@ -92,21 +94,6 @@ export default function RootLayout({
                     });
                 });
               }
-              
-              // Network status detection
-              function updateNetworkStatus() {
-                if (navigator.onLine) {
-                  document.documentElement.classList.remove('offline');
-                  document.documentElement.classList.add('online');
-                } else {
-                  document.documentElement.classList.remove('online');
-                  document.documentElement.classList.add('offline');
-                }
-              }
-              
-              window.addEventListener('online', updateNetworkStatus);
-              window.addEventListener('offline', updateNetworkStatus);
-              updateNetworkStatus();
             `,
           }}
         />
