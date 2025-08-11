@@ -2,6 +2,7 @@ import { NextResponse } from 'next/server'
 import { existsSync, createWriteStream, createReadStream } from 'fs'
 import { join } from 'path'
 import { promises as fs } from 'fs'
+import { sanitizeFilename, validateBackupId, safeBackupPath } from '../../../../../lib/security/path-utils'
 
 export async function POST(request: Request) {
   try {
@@ -32,8 +33,9 @@ export async function POST(request: Request) {
     // Create temp directory for extraction
     await fs.mkdir(tempDir, { recursive: true })
 
-    // Save uploaded file temporarily
-    const uploadPath = join(tempDir, backupFile.name)
+    // Save uploaded file temporarily with sanitized filename
+    const safeFilename = sanitizeFilename(backupFile.name)
+    const uploadPath = join(tempDir, safeFilename)
     const bytes = await backupFile.arrayBuffer()
     await fs.writeFile(uploadPath, Buffer.from(bytes))
 
@@ -124,8 +126,9 @@ export async function GET(request: Request) {
       )
     }
 
-    const backupDir = join(process.cwd(), 'backups')
-    const backupPath = join(backupDir, `${backupId}.json`)
+    // Validate and sanitize backup ID to prevent path traversal
+    const validatedBackupId = validateBackupId(backupId)
+    const backupPath = safeBackupPath(validatedBackupId)
 
     if (!existsSync(backupPath)) {
       return NextResponse.json(

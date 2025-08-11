@@ -1,0 +1,40 @@
+{
+  "summary": {
+    "timestamp": "2025-08-11T17:25:01.150Z",
+    "scan_config": {
+      "rules": [
+        "auto"
+      ],
+      "scanPaths": [
+        "app/api",
+        "supabase/functions",
+        "middleware.ts"
+      ],
+      "outputFormat": "json"
+    },
+    "total_findings": 0,
+    "payment_specific_findings": 0,
+    "severity_breakdown": {
+      "critical": 0,
+      "warning": 0,
+      "info": 0
+    },
+    "top_security_issues": [],
+    "payment_security_analysis": {
+      "authentication_issues": 0,
+      "input_validation_issues": 0,
+      "crypto_issues": 0,
+      "session_issues": 0
+    },
+    "recommendations": [
+      {
+        "priority": "INFO",
+        "category": "General",
+        "issue": "No major security issues detected",
+        "recommendation": "Continue following security best practices and regular security reviews"
+      }
+    ]
+  },
+  "all_findings": [],
+  "report_path": "tests/security/reports/semgrep-payment-1754933101151.json"
+}

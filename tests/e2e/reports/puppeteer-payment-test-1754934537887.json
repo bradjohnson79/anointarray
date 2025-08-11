@@ -1,0 +1,90 @@
+{
+  "timestamp": "2025-08-11T17:48:51.042Z",
+  "tests": {
+    "cartFunctionality": {
+      "status": "SUCCESS",
+      "productsVisible": false,
+      "cartEmpty": false,
+      "cartItemsCount": 0,
+      "message": "Cart contains 0 items"
+    },
+    "checkoutFlow": {
+      "status": "AUTH_REQUIRED",
+      "message": "Checkout requires user authentication (expected security behavior)",
+      "authProtected": true
+    },
+    "paymentMethods": {
+      "status": "SUCCESS",
+      "availableMethods": {
+        "stripe": false,
+        "paypal": false,
+        "crypto": false
+      },
+      "totalMethods": 0,
+      "message": "0/3 payment methods available"
+    },
+    "adminSecurity": {
+      "status": "SUCCESS",
+      "protected": true,
+      "redirectedToAuth": true,
+      "message": "Admin panel properly protected with authentication"
+    },
+    "securityHeaders": {
+      "status": "SUCCESS",
+      "headers": {
+        "content-security-policy": true,
+        "x-frame-options": true,
+        "x-content-type-options": true,
+        "strict-transport-security": true,
+        "x-xss-protection": true
+      },
+      "score": "5/5",
+      "message": "5 out of 5 security headers present"
+    }
+  },
+  "summary": {
+    "totalTests": 5,
+    "successfulTests": 4,
+    "failedTests": 1,
+    "successRate": "80%",
+    "overallStatus": "MOSTLY_PASS"
+  },
+  "screenshots": [
+    {
+      "name": "catalog-page",
+      "filename": "catalog-page-1754934534340.png",
+      "filepath": "tests/e2e/screenshots/catalog-page-1754934534340.png",
+      "timestamp": "2025-08-11T17:48:54.403Z"
+    },
+    {
+      "name": "cart-page",
+      "filename": "cart-page-1754934535198.png",
+      "filepath": "tests/e2e/screenshots/cart-page-1754934535198.png",
+      "timestamp": "2025-08-11T17:48:55.259Z"
+    },
+    {
+      "name": "checkout-start",
+      "filename": "checkout-start-1754934535874.png",
+      "filepath": "tests/e2e/screenshots/checkout-start-1754934535874.png",
+      "timestamp": "2025-08-11T17:48:55.938Z"
+    },
+    {
+      "name": "auth-required",
+      "filename": "auth-required-1754934535938.png",
+      "filepath": "tests/e2e/screenshots/auth-required-1754934535938.png",
+      "timestamp": "2025-08-11T17:48:55.990Z"
+    },
+    {
+      "name": "payment-methods",
+      "filename": "payment-methods-1754934535995.png",
+      "filepath": "tests/e2e/screenshots/payment-methods-1754934535995.png",
+      "timestamp": "2025-08-11T17:48:56.035Z"
+    },
+    {
+      "name": "admin-access",
+      "filename": "admin-access-1754934536641.png",
+      "filepath": "tests/e2e/screenshots/admin-access-1754934536641.png",
+      "timestamp": "2025-08-11T17:48:56.697Z"
+    }
+  ]
+}

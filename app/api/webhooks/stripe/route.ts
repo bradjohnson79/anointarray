@@ -39,7 +39,7 @@ async function updateOrderStatus(orderData: OrderUpdateData): Promise<boolean> {
     const { orderId, paymentStatus, paymentIntentId, amount, currency, customerEmail, receiptUrl } = orderData
     
     // In production, this would update the actual database
-    console.log(`Updating order ${orderId}:`, {
+    console.log('Updating order:', orderId, {
       paymentStatus,
       paymentIntentId,
       amount: amount / 100, // Convert from cents
@@ -174,9 +174,9 @@ async function triggerFulfillmentWorkflow(orderId: string, customerEmail?: strin
       fulfillmentTriggeredAt: new Date().toISOString()
     }
 
-    console.log(`Fulfillment workflow completed for order ${orderId}`)
+    console.log('Fulfillment workflow completed for order:', orderId)
   } catch (error) {
-    console.error(`Fulfillment workflow failed for order ${orderId}:`, error)
+    console.error('Fulfillment workflow failed for order:', orderId, error)
   }
 }
 

@@ -1,0 +1,77 @@
+{
+  "timestamp": "2025-08-11T16:57:56.468Z",
+  "tests": {
+    "cartFunctionality": {
+      "status": "ERROR",
+      "error": "this.page.$x is not a function",
+      "message": "Failed to test cart functionality"
+    },
+    "checkoutFlow": {
+      "status": "AUTH_REQUIRED",
+      "message": "Checkout requires user authentication (expected security behavior)",
+      "authProtected": true
+    },
+    "paymentMethods": {
+      "status": "ERROR",
+      "error": "this.page.$x is not a function",
+      "message": "Failed to test payment methods"
+    },
+    "adminSecurity": {
+      "status": "SUCCESS",
+      "protected": true,
+      "redirectedToAuth": true,
+      "message": "Admin panel properly protected with authentication"
+    },
+    "securityHeaders": {
+      "status": "SUCCESS",
+      "headers": {
+        "content-security-policy": false,
+        "x-frame-options": true,
+        "x-content-type-options": true,
+        "strict-transport-security": false,
+        "x-xss-protection": true
+      },
+      "score": "3/5",
+      "message": "3 out of 5 security headers present"
+    }
+  },
+  "summary": {
+    "totalTests": 5,
+    "successfulTests": 2,
+    "failedTests": 3,
+    "successRate": "40%",
+    "overallStatus": "NEEDS_ATTENTION"
+  },
+  "screenshots": [
+    {
+      "name": "catalog-page",
+      "filename": "catalog-page-1754931477830.png",
+      "filepath": "tests/e2e/screenshots/catalog-page-1754931477830.png",
+      "timestamp": "2025-08-11T16:57:57.971Z"
+    },
+    {
+      "name": "cart-page",
+      "filename": "cart-page-1754931478941.png",
+      "filepath": "tests/e2e/screenshots/cart-page-1754931478941.png",
+      "timestamp": "2025-08-11T16:57:59.078Z"
+    },
+    {
+      "name": "checkout-start",
+      "filename": "checkout-start-1754931479733.png",
+      "filepath": "tests/e2e/screenshots/checkout-start-1754931479733.png",
+      "timestamp": "2025-08-11T16:57:59.886Z"
+    },
+    {
+      "name": "auth-required",
+      "filename": "auth-required-1754931479887.png",
+      "filepath": "tests/e2e/screenshots/auth-required-1754931479887.png",
+      "timestamp": "2025-08-11T16:58:00.020Z"
+    },
+    {
+      "name": "admin-access",
+      "filename": "admin-access-1754931480664.png",
+      "filepath": "tests/e2e/screenshots/admin-access-1754931480664.png",
+      "timestamp": "2025-08-11T16:58:00.807Z"
+    }
+  ]
+}

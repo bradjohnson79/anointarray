@@ -57,7 +57,7 @@ async function updateOrderStatus(orderData: OrderUpdateData): Promise<boolean> {
       network
     } = orderData
     
-    console.log(`Updating crypto order ${orderId}:`, {
+    console.log('Updating crypto order:', orderId, {
       paymentStatus,
       paymentId,
       amount,
@@ -151,9 +151,9 @@ async function triggerFulfillmentWorkflow(orderId: string): Promise<void> {
       fulfillmentTriggeredAt: new Date().toISOString()
     }
 
-    console.log(`Crypto fulfillment workflow completed for order ${orderId}`)
+    console.log('Crypto fulfillment workflow completed for order:', orderId)
   } catch (error) {
-    console.error(`Crypto fulfillment workflow failed for order ${orderId}:`, error)
+    console.error('Crypto fulfillment workflow failed for order:', orderId, error)
   }
 }
 

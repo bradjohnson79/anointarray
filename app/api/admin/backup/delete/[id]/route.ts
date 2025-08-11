@@ -1,6 +1,6 @@
 import { NextResponse } from 'next/server'
 import { existsSync, unlinkSync } from 'fs'
-import { join } from 'path'
+import { validateBackupId, safeBackupPath } from '../../../../../../lib/security/path-utils'
 
 export async function DELETE(
   request: Request,
@@ -8,9 +8,9 @@ export async function DELETE(
 ) {
   const params = await context.params
   try {
-    const backupId = params.id
-    const backupDir = join(process.cwd(), 'backups')
-    const backupPath = join(backupDir, `${backupId}.json`)
+    // Validate and sanitize the backup ID to prevent path traversal
+    const backupId = validateBackupId(params.id)
+    const backupPath = safeBackupPath(backupId)
 
     if (!existsSync(backupPath)) {
       return NextResponse.json(

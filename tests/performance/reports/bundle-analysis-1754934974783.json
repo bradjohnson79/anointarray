@@ -1,0 +1,468 @@
+{
+  "timestamp": "2025-08-11T17:56:06.628Z",
+  "buildStats": {
+    "routes": [
+      {
+        "route": "/_not-found",
+        "size": 247,
+        "firstLoadJS": 268288
+      },
+      {
+        "route": "/admin",
+        "size": 503,
+        "firstLoadJS": 279552
+      },
+      {
+        "route": "/admin/analytics",
+        "size": 434,
+        "firstLoadJS": 278528
+      },
+      {
+        "route": "/admin/orders",
+        "size": 493,
+        "firstLoadJS": 279552
+      },
+      {
+        "route": "/admin/products",
+        "size": 460,
+        "firstLoadJS": 279552
+      },
+      {
+        "route": "/admin/users",
+        "size": 484,
+        "firstLoadJS": 279552
+      },
+      {
+        "route": "/api/admin/backup/create",
+        "size": 292,
+        "firstLoadJS": 268288
+      },
+      {
+        "route": "/api/admin/backup/delete/[id]",
+        "size": 292,
+        "firstLoadJS": 268288
+      },
+      {
+        "route": "/api/admin/backup/download/[id]",
+        "size": 292,
+        "firstLoadJS": 268288
+      },
+      {
+        "route": "/api/admin/backup/restore",
+        "size": 292,
+        "firstLoadJS": 268288
+      },
+      {
+        "route": "/api/admin/cache/status",
+        "size": 292,
+        "firstLoadJS": 268288
+      },
+      {
+        "route": "/api/admin/generator/get-sample-array",
+        "size": 292,
+        "firstLoadJS": 268288
+      },
+      {
+        "route": "/api/admin/generator/test-ai",
+        "size": 292,
+        "firstLoadJS": 268288
+      },
+      {
+        "route": "/api/admin/generator/test-payments",
+        "size": 292,
+        "firstLoadJS": 268288
+      },
+      {
+        "route": "/api/admin/generator/upload-csv",
+        "size": 292,
+        "firstLoadJS": 268288
+      },
+      {
+        "route": "/api/admin/generator/upload-diamond-star-ward",
+        "size": 292,
+        "firstLoadJS": 268288
+      },
+      {
+        "route": "/api/admin/generator/upload-sample-array",
+        "size": 292,
+        "firstLoadJS": 268288
+      },
+      {
+        "route": "/api/admin/generator/upload-template",
+        "size": 292,
+        "firstLoadJS": 268288
+      },
+      {
+        "route": "/api/admin/generator/verify-assets",
+        "size": 292,
+        "firstLoadJS": 268288
+      },
+      {
+        "route": "/api/ai-collaboration",
+        "size": 292,
+        "firstLoadJS": 268288
+      },
+      {
+        "route": "/api/ai-status",
+        "size": 292,
+        "firstLoadJS": 268288
+      },
+      {
+        "route": "/api/auth/change-password",
+        "size": 292,
+        "firstLoadJS": 268288
+      },
+      {
+        "route": "/api/claude-fixer",
+        "size": 292,
+        "firstLoadJS": 268288
+      },
+      {
+        "route": "/api/digital/download/[token]",
+        "size": 292,
+        "firstLoadJS": 268288
+      },
+      {
+        "route": "/api/digital/generate",
+        "size": 292,
+        "firstLoadJS": 268288
+      },
+      {
+        "route": "/api/fourthwall/create-merchandise",
+        "size": 292,
+        "firstLoadJS": 268288
+      },
+      {
+        "route": "/api/fourthwall/pricing",
+        "size": 292,
+        "firstLoadJS": 268288
+      },
+      {
+        "route": "/api/fourthwall/test-connection",
+        "size": 292,
+        "firstLoadJS": 268288
+      },
+      {
+        "route": "/api/generator/create-payment",
+        "size": 292,
+        "firstLoadJS": 268288
+      },
+      {
+        "route": "/api/generator/generate",
+        "size": 292,
+        "firstLoadJS": 268288
+      },
+      {
+        "route": "/api/generator/verify-payment",
+        "size": 292,
+        "firstLoadJS": 268288
+      },
+      {
+        "route": "/api/member/export-data",
+        "size": 292,
+        "firstLoadJS": 268288
+      },
+      {
+        "route": "/api/merchandise/checkout",
+        "size": 292,
+        "firstLoadJS": 268288
+      },
+      {
+        "route": "/api/merchandise/payment",
+        "size": 292,
+        "firstLoadJS": 268288
+      },
+      {
+        "route": "/api/merchandise/send-email",
+        "size": 292,
+        "firstLoadJS": 268288
+      },
+      {
+        "route": "/api/orders",
+        "size": 292,
+        "firstLoadJS": 268288
+      },
+      {
+        "route": "/api/payments/nowpayments",
+        "size": 292,
+        "firstLoadJS": 268288
+      },
+      {
+        "route": "/api/payments/paypal",
+        "size": 292,
+        "firstLoadJS": 268288
+      },
+      {
+        "route": "/api/payments/stripe",
+        "size": 292,
+        "firstLoadJS": 268288
+      },
+      {
+        "route": "/api/products",
+        "size": 292,
+        "firstLoadJS": 268288
+      },
+      {
+        "route": "/api/products/[id]",
+        "size": 292,
+        "firstLoadJS": 268288
+      },
+      {
+        "route": "/api/products/categories",
+        "size": 292,
+        "firstLoadJS": 268288
+      },
+      {
+        "route": "/api/products/variant-options",
+        "size": 292,
+        "firstLoadJS": 268288
+      },
+      {
+        "route": "/api/products/variants",
+        "size": 292,
+        "firstLoadJS": 268288
+      },
+      {
+        "route": "/api/products/variants/[id]",
+        "size": 292,
+        "firstLoadJS": 268288
+      },
+      {
+        "route": "/api/self-healing-ai",
+        "size": 292,
+        "firstLoadJS": 268288
+      },
+      {
+        "route": "/api/shipping/labels",
+        "size": 292,
+        "firstLoadJS": 268288
+      },
+      {
+        "route": "/api/shipping/labels/download/[trackingNumber]",
+        "size": 292,
+        "firstLoadJS": 268288
+      },
+      {
+        "route": "/api/shipping/rates",
+        "size": 292,
+        "firstLoadJS": 268288
+      },
+      {
+        "route": "/api/taxes/calculate",
+        "size": 292,
+        "firstLoadJS": 268288
+      },
+      {
+        "route": "/api/taxes/rates",
+        "size": 292,
+        "firstLoadJS": 268288
+      },
+      {
+        "route": "/api/test-payments",
+        "size": 292,
+        "firstLoadJS": 268288
+      },
+      {
+        "route": "/api/test-stripe",
+        "size": 292,
+        "firstLoadJS": 268288
+      },
+      {
+        "route": "/api/webhooks/nowpayments",
+        "size": 292,
+        "firstLoadJS": 268288
+      },
+      {
+        "route": "/api/webhooks/stripe",
+        "size": 292,
+        "firstLoadJS": 268288
+      },
+      {
+        "route": "/cart",
+        "size": 3020.8,
+        "firstLoadJS": 270336
+      },
+      {
+        "route": "/catalog",
+        "size": 3655.68,
+        "firstLoadJS": 271360
+      },
+      {
+        "route": "/checkout",
+        "size": 4864,
+        "firstLoadJS": 272384
+      },
+      {
+        "route": "/generator",
+        "size": 6256.64,
+        "firstLoadJS": 273408
+      },
+      {
+        "route": "/member/dashboard",
+        "size": 2979.84,
+        "firstLoadJS": 270336
+      }
+    ],
+    "totalRoutes": 60,
+    "buildOutput": "\n> anoint-array@0.1.1 prebuild\n> echo 'Starting Next.js build...' && node -v && npm -v\n\nStarting Next.js build...\nv22.17.1\n10.9.2\n\n> anoint-array@0.1.1 build\n> next build\n\n   ▲ Next.js 15.4.5\n   - Environments: .env.local, .env.production, .env\n   - Experiments (use with caution):\n     ✓ webpackBuildWorker\n\n   Creating an optimized production build ...\n ✓ Compiled successfully in 1000ms\n   Skipping validation of types\n   Skipping linting\n   Collecting page data ...\n✅ Redis client initialized successfully\n✅ Redis client initialized successfully\n✅ Redis client initialized successfully\n   Generating static pages (0/58) ...\n✅ Redis client initialized successfully\n   Generating static pages (14/58) \r\n   Generating static pages (28/58) \r\n   Generating static pages (43/58) \r\n ✓ Generating static pages (58/58)\n   Finalizing page optimization ...\n   Collecting build traces ...\n\nRoute (app)                                            Size  First Load JS\n┌ ○ /                                      "
+  },
+  "bundleAnalysis": {
+    "static": {
+      "totalFiles": 98,
+      "totalSize": 1393696,
+      "largestFiles": [
+        {
+          "file": ".next/static/chunks/vendors-ff30e0d3-ceb0760081136dfa.js",
+          "size": 172730
+        },
+        {
+          "file": ".next/static/chunks/vendors-36598b9c-6d48b2352036f757.js",
+          "size": 167665
+        },
+        {
+          "file": ".next/static/chunks/polyfills-42372ed130431b0a.js",
+          "size": 112594
+        },
+        {
+          "file": ".next/static/chunks/vendors-8cbd2506-793b9560595c5503.js",
+          "size": 80084
+        },
+        {
+          "file": ".next/static/chunks/vendors-89d5c698-f0931db1e1ebec9d.js",
+          "size": 68150
+        },
+        {
+          "file": ".next/static/chunks/admin-438c29e741b4d2dc.js",
+          "size": 67660
+        },
+        {
+          "file": ".next/static/chunks/vendors-0582c947-92fa2691d465b092.js",
+          "size": 60916
+        },
+        {
+          "file": ".next/static/css/796b59b2a351fb26.css",
+          "size": 60062
+        },
+        {
+          "file": ".next/static/chunks/vendors-362d063c-eac5b5668858b233.js",
+          "size": 55686
+        },
+        {
+          "file": ".next/static/chunks/vendors-aacc2dbb-83ae29743628c04f.js",
+          "size": 53291
+        }
+      ],
+      "fileTypes": {
+        ".js": {
+          "count": 91,
+          "size": 1218378
+        },
+        ".css": {
+          "count": 1,
+          "size": 60062
+        },
+        ".woff2": {
+          "count": 6,
+          "size": 115256
+        }
+      }
+    },
+    "server": {
+      "totalFiles": 264,
+      "totalSize": 5111772,
+      "largestFiles": [
+        {
+          "file": ".next/server/chunks/5937.js",
+          "size": 698887
+        },
+        {
+          "file": ".next/server/chunks/3008.js",
+          "size": 427207
+        },
+        {
+          "file": ".next/server/middleware.js.map",
+          "size": 370549
+        },
+        {
+          "file": ".next/server/app/api/member/export-data/route.js",
+          "size": 350634
+        },
+        {
+          "file": ".next/server/chunks/4985.js",
+          "size": 119176
+        },
+        {
+          "file": ".next/server/chunks/8905.js",
+          "size": 117663
+        },
+        {
+          "file": ".next/server/app/api/self-healing-ai/route.js",
+          "size": 108569
+        },
+        {
+          "file": ".next/server/middleware.js",
+          "size": 104372
+        },
+        {
+          "file": ".next/server/chunks/7877.js",
+          "size": 86016
+        },
+        {
+          "file": ".next/server/pages/_error.js",
+          "size": 71279
+        }
+      ],
+      "fileTypes": {
+        ".js": {
+          "count": 151,
+          "size": 4079135
+        },
+        ".json": {
+          "count": 71,
+          "size": 284350
+        },
+        ".html": {
+          "count": 14,
+          "size": 243492
+        },
+        ".meta": {
+          "count": 13,
+          "size": 2902
+        },
+        ".rsc": {
+          "count": 12,
+          "size": 99281
+        },
+        ".body": {
+          "count": 1,
+          "size": 25931
+        },
+        ".map": {
+          "count": 2,
+          "size": 376681
+        }
+      }
+    }
+  },
+  "recommendations": [
+    {
+      "priority": "MEDIUM",
+      "category": "Code Splitting",
+      "issue": "Found 5 admin routes that could be optimized",
+      "recommendation": "Implement lazy loading for admin dashboard components"
+    },
+    {
+      "priority": "HIGH",
+      "category": "JavaScript Bundle",
+      "issue": "Large JavaScript bundle size (1.2 MB)",
+      "recommendation": "Enable tree shaking, remove unused dependencies, implement code splitting"
+    },
+    {
+      "priority": "LOW",
+      "category": "Security Headers",
+      "issue": "Security headers implemented correctly",
+      "recommendation": "Consider optimizing CSP for better performance while maintaining security"
+    }
+  ],
+  "performance": {}
+}
