@@ -1,7 +1,9 @@
 'use client'
 
+export const dynamic = 'force-dynamic';
+
 import { useState, useEffect } from 'react'
-import { createBrowserClient } from '@supabase/ssr'
+import { createBrowserSupabase } from '@/lib/supabase-client'
 import { useRouter } from 'next/navigation'
 import Image from 'next/image'
 import { ShoppingCartIcon, HeartIcon, FunnelIcon, MagnifyingGlassIcon, StarIcon } from '@heroicons/react/24/outline'
@@ -67,7 +69,7 @@ const SORT_OPTIONS = [
 ]
 
 export default function CatalogPage() {
-  const supabase = createBrowserClient()
+  const supabase = createBrowserSupabase()
   const router = useRouter()
   
   const [products, setProducts] = useState<Product[]>([])

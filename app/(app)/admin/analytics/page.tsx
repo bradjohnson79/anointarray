@@ -1,7 +1,9 @@
 'use client'
 
+export const dynamic = 'force-dynamic';
+
 import { useState, useEffect } from 'react'
-import { createBrowserClient } from '@supabase/ssr'
+import { createBrowserSupabase } from '@/lib/supabase-client'
 import { useRouter } from 'next/navigation'
 import Link from 'next/link'
 import { 
@@ -83,7 +85,7 @@ interface TimeSeriesData {
 }
 
 export default function AdminAnalytics() {
-  const supabase = createBrowserClient()
+  const supabase = createBrowserSupabase()
   const router = useRouter()
   
   const [analytics, setAnalytics] = useState<AnalyticsData | null>(null)

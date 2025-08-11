@@ -1,7 +1,9 @@
 'use client'
 
+export const dynamic = 'force-dynamic';
+
 import { useState, useEffect, useRef } from 'react'
-import { createBrowserClient } from '@supabase/ssr'
+import { createBrowserSupabase } from '@/lib/supabase-client'
 import { useRouter } from 'next/navigation'
 import { 
   DocumentArrowUpIcon,
@@ -92,7 +94,7 @@ const COMPLEXITY_LEVELS = [
 ]
 
 export default function GeneratorPage() {
-  const supabase = createBrowserClient()
+  const supabase = createBrowserSupabase()
   const router = useRouter()
   const fileInputRef = useRef<HTMLInputElement>(null)
   

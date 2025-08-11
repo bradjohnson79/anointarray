@@ -7,6 +7,8 @@
     "test:watch": "jest --runInBand --verbose --watch",
     "test:api": "jest api-integration-tests.js --runInBand --verbose",
     "test:e2e": "jest playwright-integration-tests.js --runInBand --verbose",
+    "test:tax-management": "node tax-management-e2e-tests.js",
+    "test:tax-management-jest": "jest tax-management-e2e-tests.js --runInBand --verbose --timeout=300000",
     "test:performance": "jest performance-integration-tests.js --runInBand --verbose --timeout=300000",
     "test:smoke": "jest --runInBand --verbose --testNamePattern='smoke'",
     "test:critical": "jest --runInBand --verbose --testNamePattern='(authentication|payment|generation)'",

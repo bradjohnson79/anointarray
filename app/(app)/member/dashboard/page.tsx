@@ -1,7 +1,9 @@
 'use client'
 
+export const dynamic = 'force-dynamic';
+
 import { useState, useEffect } from 'react'
-import { createBrowserClient } from '@supabase/ssr'
+import { createBrowserSupabase } from '@/lib/supabase-client'
 import { useRouter } from 'next/navigation'
 import Link from 'next/link'
 import { 
@@ -46,7 +48,7 @@ interface RecentArray {
 }
 
 export default function MemberDashboard() {
-  const supabase = createBrowserClient()
+  const supabase = createBrowserSupabase()
   const router = useRouter()
   
   const [user, setUser] = useState<any>(null)

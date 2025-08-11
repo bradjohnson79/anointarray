@@ -1,7 +1,9 @@
 'use client'
 
+export const dynamic = 'force-dynamic';
+
 import { useState, useEffect } from 'react'
-import { createBrowserClient } from '@supabase/ssr'
+import { createBrowserSupabase } from '@/lib/supabase-client'
 import { useRouter } from 'next/navigation'
 import Link from 'next/link'
 import { 
@@ -60,7 +62,7 @@ const USER_ROLES = [
 ]
 
 export default function AdminUsers() {
-  const supabase = createBrowserClient()
+  const supabase = createBrowserSupabase()
   const router = useRouter()
   
   const [users, setUsers] = useState<User[]>([])

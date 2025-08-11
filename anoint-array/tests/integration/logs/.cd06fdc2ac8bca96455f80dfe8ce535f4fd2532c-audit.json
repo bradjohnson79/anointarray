@@ -1,0 +1,15 @@
+{
+    "keep": {
+        "days": true,
+        "amount": 14
+    },
+    "auditLog": "/Users/bradjohnson/Documents/anoint-array/WEBSITE/anoint-array/tests/integration/logs/.cd06fdc2ac8bca96455f80dfe8ce535f4fd2532c-audit.json",
+    "files": [
+        {
+            "date": 1754944672566,
+            "name": "/Users/bradjohnson/Documents/anoint-array/WEBSITE/anoint-array/tests/integration/logs/mcp-puppeteer-2025-08-11.log",
+            "hash": "04ca04f59613f99de704dafe1f1da0575b6714ee1deb3e11a2465c4332c9f955"
+        }
+    ],
+    "hashType": "sha256"
+}

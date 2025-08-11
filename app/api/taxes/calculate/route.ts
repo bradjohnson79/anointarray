@@ -1,5 +1,5 @@
 import { NextRequest, NextResponse } from 'next/server'
-import { supabase } from '@/lib/supabase'
+import { getServerSupabase } from '@/lib/supabase-server'
 
 interface TaxCalculationRequest {
   amount: number
@@ -47,6 +47,7 @@ export async function POST(request: NextRequest) {
     }
 
     // Get tax rate for the province
+    const supabase = getServerSupabase()
     const { data: taxRate, error: taxError } = await supabase
       .from('tax_rates')
       .select('*')

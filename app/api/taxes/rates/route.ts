@@ -1,5 +1,5 @@
 import { NextRequest, NextResponse } from 'next/server'
-import { supabase } from '@/lib/supabase'
+import { getServerSupabase } from '@/lib/supabase-server'
 
 // GET /api/taxes/rates - Get all tax rates
 export async function GET(request: NextRequest) {
@@ -8,6 +8,7 @@ export async function GET(request: NextRequest) {
     const is_active = searchParams.get('is_active')
     const province_code = searchParams.get('province_code')
 
+    const supabase = getServerSupabase()
     let query = supabase
       .from('tax_rates')
       .select('*')
@@ -75,6 +76,7 @@ export async function PUT(request: NextRequest) {
     // Update timestamp
     body.updated_at = new Date().toISOString()
 
+    const supabase = getServerSupabase()
     const { data, error } = await supabase
       .from('tax_rates')
       .update(body)

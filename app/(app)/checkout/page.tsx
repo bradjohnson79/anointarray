@@ -1,7 +1,9 @@
 'use client'
 
+export const dynamic = 'force-dynamic';
+
 import { useState, useEffect } from 'react'
-import { createBrowserClient } from '@supabase/ssr'
+import { createBrowserSupabase } from '@/lib/supabase-client'
 import { useRouter } from 'next/navigation'
 import Image from 'next/image'
 import { 
@@ -79,7 +81,7 @@ const CRYPTO_CURRENCIES = [
 ]
 
 export default function CheckoutPage() {
-  const supabase = createBrowserClient()
+  const supabase = createBrowserSupabase()
   const router = useRouter()
   
   const [checkoutData, setCheckoutData] = useState<CheckoutData | null>(null)
