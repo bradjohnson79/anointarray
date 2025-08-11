@@ -93,20 +93,23 @@ export default function RootLayout({
                 });
               }
               
-              // Network status detection
-              function updateNetworkStatus() {
-                if (navigator.onLine) {
-                  document.documentElement.classList.remove('offline');
-                  document.documentElement.classList.add('online');
-                } else {
-                  document.documentElement.classList.remove('online');
-                  document.documentElement.classList.add('offline');
+              // Network status detection - delayed to avoid hydration mismatch
+              // Wait for hydration to complete before updating network status
+              setTimeout(function() {
+                function updateNetworkStatus() {
+                  if (navigator.onLine) {
+                    document.documentElement.classList.remove('offline');
+                    document.documentElement.classList.add('online');
+                  } else {
+                    document.documentElement.classList.remove('online');
+                    document.documentElement.classList.add('offline');
+                  }
                 }
-              }
-              
-              window.addEventListener('online', updateNetworkStatus);
-              window.addEventListener('offline', updateNetworkStatus);
-              updateNetworkStatus();
+                
+                window.addEventListener('online', updateNetworkStatus);
+                window.addEventListener('offline', updateNetworkStatus);
+                updateNetworkStatus();
+              }, 0);
             `,
           }}
         />

@@ -17,7 +17,8 @@
     "mcp:dev": "./mcp/scripts/dev.sh",
     "mcp:dev:stop": "./mcp/scripts/stop-dev.sh",
     "mcp:dev:status": "./mcp/scripts/status-dev.sh",
-    "mcp:health": "./mcp/scripts/health-check.sh"
+    "mcp:health": "./mcp/scripts/health-check.sh",
+    "verify:profiles": "tsx scripts/verify-profiles.ts"
   },
   "dependencies": {
     "@anthropic-ai/sdk": "^0.57.0",

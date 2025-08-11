@@ -3,6 +3,21 @@ interface AuroraBackgroundProps {
   className?: string
 }
 
+// Deterministic particle positions to prevent hydration mismatches
+const particlePositions = [
+  { top: 10, left: 15 }, { top: 25, left: 80 }, { top: 45, left: 30 },
+  { top: 60, left: 70 }, { top: 75, left: 20 }, { top: 85, left: 90 },
+  { top: 35, left: 55 }, { top: 50, left: 10 }, { top: 15, left: 65 },
+  { top: 90, left: 45 }, { top: 20, left: 35 }, { top: 65, left: 85 },
+  { top: 40, left: 75 }, { top: 80, left: 25 }, { top: 30, left: 95 }
+];
+
+// Deterministic animation durations to prevent hydration mismatches
+const animationDurations = [
+  2.1, 3.2, 2.8, 4.1, 3.5, 2.3, 4.5, 2.9, 3.8, 2.6,
+  4.2, 3.1, 2.7, 3.9, 4.8
+];
+
 export default function AuroraBackground({ variant = 'default', className = '' }: AuroraBackgroundProps) {
   const intensity = variant === 'subtle' ? 0.4 : variant === 'intense' ? 1.0 : variant === 'home' ? 0.8 : 0.6
 
@@ -80,17 +95,17 @@ export default function AuroraBackground({ variant = 'default', className = '' }
           }}
         />
         
-        {/* Animated particles with glow */}
+        {/* Animated particles with glow - Using deterministic positions */}
         {Array.from({ length: 15 }).map((_, i) => (
           <div
             key={i}
             className="absolute w-3 h-3 rounded-full animate-pulse"
             style={{
               background: i % 3 === 0 ? 'rgba(139, 92, 246, 0.8)' : i % 3 === 1 ? 'rgba(6, 182, 212, 0.8)' : 'rgba(236, 72, 153, 0.8)',
-              top: `${Math.random() * 100}%`,
-              left: `${Math.random() * 100}%`,
+              top: `${particlePositions[i].top}%`,
+              left: `${particlePositions[i].left}%`,
               animationDelay: `${i * 0.3}s`,
-              animationDuration: `${2 + Math.random() * 3}s`,
+              animationDuration: `${animationDurations[i]}s`,
               boxShadow: i % 3 === 0 ? '0 0 15px rgba(139, 92, 246, 1)' : i % 3 === 1 ? '0 0 15px rgba(6, 182, 212, 1)' : '0 0 15px rgba(236, 72, 153, 1)'
             }}
           />

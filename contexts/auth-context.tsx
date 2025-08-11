@@ -134,7 +134,7 @@ export function AuthProvider({ children }: AuthProviderProps) {
           if (pErr && pErr.code === 'PGRST116') {
             if (DEBUG) console.log('[AuthProvider] user_profiles not found, trying profiles view')
             const profilesResult = await supabase
-              .from('profiles')
+              .from('user_profiles')
               .select('*')
               .eq('id', sessionUser.id)
               .single()
