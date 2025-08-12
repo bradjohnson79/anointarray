@@ -18,7 +18,7 @@ export async function POST(request: NextRequest) {
 
     // Verify payment based on session ID format
     let paymentVerified = false
-    let paymentDetails: any = null
+    let paymentDetails: unknown = null
 
     if (sessionId.startsWith('cs_')) {
       // Stripe session
@@ -63,7 +63,7 @@ export async function POST(request: NextRequest) {
       currency: 'USD'
     })
 
-  } catch (error: any) {
+  } catch (error: unknown) {
     console.error('Payment verification error:', error)
     return NextResponse.json({
       success: false,

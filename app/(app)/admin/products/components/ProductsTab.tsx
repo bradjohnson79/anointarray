@@ -33,7 +33,7 @@ interface Product {
   inventory_quantity: number
   track_inventory: boolean
   weight_grams?: number
-  metadata?: any
+  metadata?: unknown
   created_at: string
   updated_at: string
   product_variants?: ProductVariant[]

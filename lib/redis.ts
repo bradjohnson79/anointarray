@@ -25,7 +25,7 @@ export class AuthCache {
   private static readonly ADMIN_LIST_KEY = 'admin_users'
 
   // Cache user profile data
-  static async cacheUserProfile(userId: string, profile: any): Promise<void> {
+  static async cacheUserProfile(userId: string, profile: unknown): Promise<void> {
     if (!redis) return
     
     try {
@@ -64,7 +64,7 @@ export class AuthCache {
   }
 
   // Cache session data
-  static async cacheSession(sessionId: string, sessionData: any): Promise<void> {
+  static async cacheSession(sessionId: string, sessionData: unknown): Promise<void> {
     if (!redis) return
     
     try {

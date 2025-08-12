@@ -78,7 +78,7 @@ export class CacheService {
   }
 
   // Generic set function with TTL support
-  static async set(key: string, value: any, ttl?: number): Promise<boolean> {
+  static async set(key: string, value: unknown, ttl?: number): Promise<boolean> {
     if (!cacheConfig.enabled || !this.redis) {
       return false
     }

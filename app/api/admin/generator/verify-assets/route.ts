@@ -1,5 +1,4 @@
 import { NextResponse } from 'next/server'
-import { promises as fs } from 'fs'
 import * as fsSync from 'fs'
 import path from 'path'
 import csv from 'csv-parser'
@@ -156,13 +155,13 @@ async function verifyTemplateAssets(): Promise<AssetVerificationResult['template
 
 async function parseCSVFile(filePath: string): Promise<any[]> {
   return new Promise((resolve, reject) => {
-    const results: any[] = []
+    const results: unknown[] = []
     
     fsSync.createReadStream(filePath)
       .pipe(csv())
-      .on('data', (data: any) => results.push(data))
+      .on('data', (data: unknown) => results.push(data))
       .on('end', () => resolve(results))
-      .on('error', (error: any) => reject(error))
+      .on('error', (error: unknown) => reject(error))
   })
 }
 

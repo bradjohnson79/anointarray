@@ -639,7 +639,7 @@ export default function GeneratorCanvas({
         <div>
           <div className="text-sm font-semibold text-gray-700">Ring 3 (Affirmation)</div>
           <div className="text-xs text-gray-600">
-            &quot;{data.ring3.text}&quot; ({data.ring3.language})
+            "{data.ring3.text}" ({data.ring3.language})
           </div>
         </div>
       </div>

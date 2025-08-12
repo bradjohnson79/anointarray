@@ -1,8 +1,7 @@
-import { NextRequest, NextResponse } from 'next/server'
-import { promises as fs } from 'fs'
+import { NextResponse } from 'next/server'
 import path from 'path'
 import { findOrCreateGlyphsDirectory } from '@/lib/path-utils'
-import { secureAdminRoute, type AuthenticatedRequest } from '@/lib/auth-middleware'
+import { secureAdminRoute } from '@/lib/auth-middleware'
 
 async function handlePOST(request: AuthenticatedRequest) {
   try {
@@ -112,7 +111,7 @@ async function handlePOST(request: AuthenticatedRequest) {
       filePath: csvPath
     })
 
-  } catch (error: any) {
+  } catch (error: unknown) {
     console.error('CSV upload failed:', error)
     console.error('Error stack:', error.stack)
     console.error('Error details:', {

@@ -77,7 +77,7 @@ export async function POST() {
       rawResponse: response
     })
 
-  } catch (error: any) {
+  } catch (error: unknown) {
     console.error('Claude test failed:', error)
     
     let errorMessage = 'Unknown error'

@@ -188,7 +188,7 @@ export function withRateLimit(
  */
 export function withValidation<T>(
   handler: (req: AuthenticatedRequest, validatedData: T) => Promise<NextResponse>,
-  validator: (data: any) => T | null
+  validator: (data: unknown) => T | null
 ) {
   return async (request: AuthenticatedRequest) => {
     try {

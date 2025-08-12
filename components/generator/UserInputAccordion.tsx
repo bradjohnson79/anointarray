@@ -3,7 +3,6 @@
 import { useState, useEffect } from 'react'
 import { Button } from '@/components/ui/button'
 import { Alert, AlertDescription } from '@/components/ui/alert'
-import { Badge } from '@/components/ui/badge'
 import { 
   User, 
   Calendar, 
@@ -182,7 +181,7 @@ export default function UserInputAccordion({ onSubmit }: UserInputAccordionProps
     return () => clearTimeout(timer)
   }, [locationSearch])
 
-  const updateField = (field: string, value: any) => {
+  const updateField = (field: string, value: unknown) => {
     setFormData(prev => {
       const keys = field.split('.')
       if (keys.length === 1) {

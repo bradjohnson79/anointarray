@@ -1,8 +1,8 @@
 'use client'
 
 import { useState, useRef, useEffect } from 'react'
-import { MessageCircle, X, Send, Bot, Zap, Shield, Heart, AlertTriangle } from 'lucide-react'
-import { SelfHealingAI, ErrorReport } from '@/lib/selfHealingAI'
+import { MessageCircle, X, Send, Bot, Zap, Shield, Heart } from 'lucide-react'
+import { SelfHealingAI } from '@/lib/selfHealingAI'
 
 interface Message {
   id: string

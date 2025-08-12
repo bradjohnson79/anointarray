@@ -238,7 +238,7 @@ export async function POST(request: NextRequest) {
       links: order.links
     })
 
-  } catch (error: any) {
+  } catch (error: unknown) {
     console.error('PayPal order creation failed:', error)
     return NextResponse.json({
       success: false,
@@ -297,7 +297,7 @@ export async function PUT(request: NextRequest) {
       captureResult
     })
 
-  } catch (error: any) {
+  } catch (error: unknown) {
     console.error('PayPal order capture failed:', error)
     return NextResponse.json({
       success: false,
@@ -326,7 +326,7 @@ export async function GET(request: NextRequest) {
       order: orderDetails
     })
 
-  } catch (error: any) {
+  } catch (error: unknown) {
     console.error('PayPal order details request failed:', error)
     return NextResponse.json({
       success: false,

@@ -11,14 +11,28 @@ import {
   EyeIcon,
   PencilIcon,
   FunnelIcon,
-  MagnifyingGlassIcon,
-  CheckCircleIcon,
-  ExclamationTriangleIcon,
-  ClockIcon,
-  XCircleIcon,
-  TruckIcon,
-  CurrencyDollarIcon
+  MagnifyingGlassIcon
 } from '@heroicons/react/24/outline'
+
+interface Address {
+  name: string
+  address_line_1: string
+  address_line_2?: string
+  city: string
+  state: string
+  postal_code: string
+  country: string
+}
+
+interface OrderItem {
+  id: string
+  product_id: string
+  variant_id?: string
+  name: string
+  price: number
+  quantity: number
+  total: number
+}
 
 interface Order {
   id: string
@@ -34,9 +48,9 @@ interface Order {
   financial_status: 'pending' | 'paid' | 'failed' | 'refunded' | 'partially_refunded'
   created_at: string
   updated_at: string
-  shipping_address: any
-  billing_address: any
-  items_data: any[]
+  shipping_address: Address
+  billing_address: Address
+  items_data: OrderItem[]
   payment_method: string
   coupon_code?: string
   discount_amount?: number
@@ -85,11 +99,11 @@ export default function AdminOrders() {
 
   useEffect(() => {
     checkAdminAccess()
-  }, [])
+  }, [checkAdminAccess])
 
   useEffect(() => {
     filterOrders()
-  }, [orders, searchQuery, statusFilter, financialFilter, dateRange])
+  }, [orders, searchQuery, statusFilter, financialFilter, dateRange, filterOrders])
 
   const checkAdminAccess = async () => {
     const { data: { session } } = await supabase.auth.getSession()
@@ -190,7 +204,12 @@ export default function AdminOrders() {
   const updateOrderStatus = async (orderId: string, newStatus: string) => {
     setUpdating(orderId)
     try {
-      const updateData: any = { 
+      const updateData: { 
+        status: string;
+        updated_at: string;
+        shipped_at?: string;
+        delivered_at?: string;
+      } = { 
         status: newStatus,
         updated_at: new Date().toISOString()
       }
@@ -261,23 +280,6 @@ export default function AdminOrders() {
     }
   }
 
-  const getStatusIcon = (status: string) => {
-    switch (status) {
-      case 'pending':
-        return <ClockIcon className="h-4 w-4" />
-      case 'processing':
-        return <CurrencyDollarIcon className="h-4 w-4" />
-      case 'shipped':
-        return <TruckIcon className="h-4 w-4" />
-      case 'delivered':
-        return <CheckCircleIcon className="h-4 w-4" />
-      case 'cancelled':
-      case 'failed':
-        return <XCircleIcon className="h-4 w-4" />
-      default:
-        return <ExclamationTriangleIcon className="h-4 w-4" />
-    }
-  }
 
   const getStatusConfig = (status: string, type: 'order' | 'financial') => {
     const configs = type === 'order' ? ORDER_STATUSES : FINANCIAL_STATUSES

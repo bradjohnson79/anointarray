@@ -6,7 +6,7 @@ interface PaymentGatewayStatus {
   nowpayments: boolean
 }
 
-async function testStripe(): Promise<{ success: boolean; message?: string; details?: any }> {
+async function testStripe(): Promise<{ success: boolean; message?: string; details?: unknown }> {
   try {
     if (!process.env.STRIPE_SECRET_KEY) {
       return { 
@@ -61,7 +61,7 @@ async function testStripe(): Promise<{ success: boolean; message?: string; detai
   }
 }
 
-async function testPayPal(): Promise<{ success: boolean; message?: string; details?: any }> {
+async function testPayPal(): Promise<{ success: boolean; message?: string; details?: unknown }> {
   try {
     if (!process.env.PAYPAL_CLIENT_ID) {
       return { 
@@ -125,7 +125,7 @@ async function testPayPal(): Promise<{ success: boolean; message?: string; detai
   }
 }
 
-async function testNowPayments(): Promise<{ success: boolean; message?: string; details?: any }> {
+async function testNowPayments(): Promise<{ success: boolean; message?: string; details?: unknown }> {
   try {
     if (!process.env.NOWPAYMENTS_API_KEY) {
       return { 

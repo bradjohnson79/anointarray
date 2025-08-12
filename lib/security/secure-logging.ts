@@ -9,7 +9,7 @@ export class SecureLogger {
   /**
    * Log info messages with constant format string
    */
-  static info(message: string, data?: any): void {
+  static info(message: string, data?: unknown): void {
     if (data) {
       console.log('[INFO]', message, JSON.stringify(data))
     } else {
@@ -20,7 +20,7 @@ export class SecureLogger {
   /**
    * Log error messages with constant format string
    */
-  static error(message: string, error?: any): void {
+  static error(message: string, error?: unknown): void {
     if (error) {
       console.error('[ERROR]', message, error instanceof Error ? error.message : JSON.stringify(error))
     } else {
@@ -31,7 +31,7 @@ export class SecureLogger {
   /**
    * Log warning messages with constant format string
    */
-  static warn(message: string, data?: any): void {
+  static warn(message: string, data?: unknown): void {
     if (data) {
       console.warn('[WARN]', message, JSON.stringify(data))
     } else {
@@ -42,7 +42,7 @@ export class SecureLogger {
   /**
    * Log debug messages with constant format string (only in development)
    */
-  static debug(message: string, data?: any): void {
+  static debug(message: string, data?: unknown): void {
     if (process.env.NODE_ENV === 'development') {
       if (data) {
         console.debug('[DEBUG]', message, JSON.stringify(data))
@@ -71,7 +71,7 @@ export class SecureLogger {
   /**
    * Log payment-related events safely
    */
-  static paymentEvent(event: string, orderId: string, data: any = null): void {
+  static paymentEvent(event: string, orderId: string, data: unknown = null): void {
     const safeOrderId = this.sanitizeForLog(orderId)
     const safeEvent = this.sanitizeForLog(event)
     
@@ -81,7 +81,7 @@ export class SecureLogger {
   /**
    * Log webhook events safely
    */
-  static webhookEvent(provider: string, eventType: string, eventId: string, data: any = null): void {
+  static webhookEvent(provider: string, eventType: string, eventId: string, data: unknown = null): void {
     const safeProvider = this.sanitizeForLog(provider)
     const safeEventType = this.sanitizeForLog(eventType)
     const safeEventId = this.sanitizeForLog(eventId)
@@ -92,7 +92,7 @@ export class SecureLogger {
   /**
    * Log shipping events safely
    */
-  static shippingEvent(event: string, trackingNumber: string, data: any = null): void {
+  static shippingEvent(event: string, trackingNumber: string, data: unknown = null): void {
     const safeEvent = this.sanitizeForLog(event)
     const safeTrackingNumber = this.sanitizeForLog(trackingNumber)
     

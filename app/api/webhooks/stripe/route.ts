@@ -27,7 +27,7 @@ interface OrderUpdateData {
   customerEmail?: string
   paymentMethodTypes: string[]
   receiptUrl?: string
-  charges?: any[]
+  charges?: unknown[]
 }
 
 // Mock order database - in production this would be a real database
@@ -125,7 +125,7 @@ async function triggerFulfillmentWorkflow(orderId: string, customerEmail?: strin
     }
 
     // 2. Create shipping labels for physical products
-    const physicalProducts = mockOrders[orderId]?.items?.filter((item: any) => item.productType === 'physical')
+    const physicalProducts = mockOrders[orderId]?.items?.filter((item: unknown) => item.productType === 'physical')
     
     if (physicalProducts && physicalProducts.length > 0) {
       const shippingLabelResponse = await fetch(`${process.env.NEXT_PUBLIC_BASE_URL}/api/shipping/labels`, {

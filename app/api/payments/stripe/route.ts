@@ -247,7 +247,7 @@ export async function POST(request: NextRequest) {
       })
     }
 
-  } catch (error: any) {
+  } catch (error: unknown) {
     console.error('Stripe payment creation failed:', error)
     
     // Handle specific Stripe errors
@@ -322,7 +322,7 @@ export async function PUT(request: NextRequest) {
       paymentIntent
     })
 
-  } catch (error: any) {
+  } catch (error: unknown) {
     console.error('Stripe payment confirmation failed:', error)
     return NextResponse.json({
       success: false,
@@ -348,7 +348,7 @@ export async function GET(request: NextRequest) {
     const paymentDetails = await getPaymentDetails(sessionId || undefined, paymentIntentId || undefined)
 
     // Extract relevant information
-    const result: any = {
+    const result: unknown = {
       success: true,
       type: paymentDetails.type,
       data: paymentDetails.data
@@ -379,7 +379,7 @@ export async function GET(request: NextRequest) {
 
     return NextResponse.json(result)
 
-  } catch (error: any) {
+  } catch (error: unknown) {
     console.error('Stripe payment details request failed:', error)
     return NextResponse.json({
       success: false,

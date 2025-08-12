@@ -1,6 +1,5 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { fourthwallClient } from '@/lib/fourthwall'
-import { calculateTotalProfit, calculateTotalPrice, STAFF_PICKS } from '@/lib/merchandise'
 
 export async function POST(request: NextRequest) {
   try {

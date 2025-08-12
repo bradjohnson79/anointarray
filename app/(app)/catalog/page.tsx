@@ -7,7 +7,6 @@ import { createBrowserSupabase } from '@/lib/supabase-client'
 import { useRouter } from 'next/navigation'
 import Image from 'next/image'
 import { ShoppingCartIcon, HeartIcon, FunnelIcon, MagnifyingGlassIcon, StarIcon } from '@heroicons/react/24/outline'
-import { HeartIcon as HeartSolidIcon, StarIcon as StarSolidIcon } from '@heroicons/react/24/solid'
 
 interface Product {
   id: string
@@ -23,7 +22,7 @@ interface Product {
   inventory_quantity: number
   track_inventory: boolean
   weight_grams?: number
-  metadata?: any
+  metadata?: unknown
   created_at: string
   variants?: ProductVariant[]
 }

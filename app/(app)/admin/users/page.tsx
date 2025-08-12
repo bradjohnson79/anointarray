@@ -36,7 +36,7 @@ interface UserProfile {
   role: 'customer' | 'vip' | 'admin'
   phone?: string
   avatar_url?: string
-  metadata?: any
+  metadata?: unknown
   created_at: string
   updated_at: string
   last_login?: string

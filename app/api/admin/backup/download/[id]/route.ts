@@ -1,6 +1,5 @@
 import { NextResponse } from 'next/server'
-import { existsSync, statSync } from 'fs'
-import { promises as fs } from 'fs'
+import { existsSync } from 'fs'
 import { validateBackupId, safeBackupPath } from '../../../../../../lib/security/path-utils'
 
 export async function GET(

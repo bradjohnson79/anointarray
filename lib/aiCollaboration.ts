@@ -5,16 +5,16 @@ export interface CollaborationTask {
   id: string
   initiator: 'oracle' | 'claude'
   type: 'scan_request' | 'repair_dispatch' | 'status_update' | 'completion_report'
-  payload: any
+  payload: unknown
   status: 'pending' | 'processing' | 'completed' | 'failed'
   timestamp: string
-  response?: any
+  response?: unknown
 }
 
 export interface RepairHandoff {
   taskId: string
   fromOracle: {
-    errorReport: any
+    errorReport: unknown
     dispatchPrompt: string
     priority: 'low' | 'medium' | 'high' | 'critical'
     constraints: string[]
@@ -35,7 +35,7 @@ export class AICollaboration {
   private static handoffs: Map<string, RepairHandoff> = new Map()
 
   // Oracle initiates repair handoff to Claude
-  static async initiateRepairHandoff(errorReport: any, dispatchPrompt: string): Promise<RepairHandoff> {
+  static async initiateRepairHandoff(errorReport: unknown, dispatchPrompt: string): Promise<RepairHandoff> {
     const taskId = `repair_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`
     
     const handoff: RepairHandoff = {
@@ -127,7 +127,7 @@ export class AICollaboration {
   static async createCollaborationMessage(
     initiator: 'oracle' | 'claude',
     type: CollaborationTask['type'],
-    payload: any
+    payload: unknown
   ): Promise<CollaborationTask> {
     const taskId = `collab_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`
     

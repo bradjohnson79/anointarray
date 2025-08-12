@@ -99,7 +99,7 @@ export default function FileUploadComponent({ onImageUpload, onError }: FileUplo
       img.src = objectUrl
 
       // Cleanup object URL after processing
-      img.onload = (originalOnload => function(this: HTMLImageElement, ...args: any[]) {
+      img.onload = (originalOnload => function(this: HTMLImageElement, ...args: unknown[]) {
         URL.revokeObjectURL(objectUrl)
         return originalOnload?.apply(this, args)
       })(img.onload)

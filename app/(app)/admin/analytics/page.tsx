@@ -7,14 +7,11 @@ import { createBrowserSupabase } from '@/lib/supabase-client'
 import { useRouter } from 'next/navigation'
 import Link from 'next/link'
 import { 
-  ChartBarIcon,
   CurrencyDollarIcon,
   ShoppingBagIcon,
   UserGroupIcon,
   ArrowTrendingUpIcon,
   ArrowTrendingDownIcon,
-  CalendarIcon,
-  EyeIcon,
   SparklesIcon
 } from '@heroicons/react/24/outline'
 
@@ -95,13 +92,13 @@ export default function AdminAnalytics() {
 
   useEffect(() => {
     checkAdminAccess()
-  }, [])
+  }, [checkAdminAccess])
 
   useEffect(() => {
     if (analytics) {
       fetchTimeSeries()
     }
-  }, [timeRange])
+  }, [timeRange, analytics, fetchTimeSeries])
 
   const checkAdminAccess = async () => {
     const { data: { session } } = await supabase.auth.getSession()
@@ -373,7 +370,7 @@ export default function AdminAnalytics() {
           <div className="flex items-center space-x-3">
             <select
               value={timeRange}
-              onChange={(e) => setTimeRange(e.target.value as any)}
+              onChange={(e) => setTimeRange(e.target.value as '7d' | '30d' | '90d' | '1y')}
               className="bg-gray-800 border border-gray-600 rounded-lg px-3 py-2 text-white focus:border-purple-500 focus:outline-none"
             >
               <option value="7d">Last 7 days</option>

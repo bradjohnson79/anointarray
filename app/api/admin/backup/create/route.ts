@@ -1,8 +1,7 @@
 import { NextResponse } from 'next/server'
 import { existsSync, mkdirSync, readdirSync, statSync } from 'fs'
 import { join } from 'path'
-import { promises as fs } from 'fs'
-import { secureAdminRoute, type AuthenticatedRequest } from '@/lib/auth-middleware'
+import { secureAdminRoute } from '@/lib/auth-middleware'
 
 interface BackupOptions {
   type: 'full' | 'database' | 'files' | 'config'
@@ -95,7 +94,7 @@ async function handlePOST(request: AuthenticatedRequest) {
 }
 
 async function createBackupData(type: string, includeSensitive: boolean, creator: string) {
-  const backupData: any = {
+  const backupData: unknown = {
     metadata: {
       id: `backup_${Date.now()}`,
       type,

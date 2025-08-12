@@ -132,7 +132,7 @@ export interface Order {
   total_amount: number
   
   // Tax breakdown
-  tax_breakdown: any
+  tax_breakdown: unknown
   
   // Order status
   status: 'pending' | 'processing' | 'shipped' | 'delivered' | 'cancelled' | 'refunded'
@@ -177,7 +177,7 @@ export interface OrderItem {
   total_price: number
   
   // Product snapshot
-  product_snapshot: any
+  product_snapshot: unknown
   
   // Fulfillment
   fulfilled_quantity: number
@@ -391,7 +391,7 @@ export const ProductsAPI = {
   },
 
   // Search products
-  async search(query: string, filters?: any): Promise<Product[]> {
+  async search(query: string, filters?: unknown): Promise<Product[]> {
     return this.getAll({ ...filters, search: query })
   }
 }

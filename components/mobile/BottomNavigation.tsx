@@ -144,7 +144,7 @@ export default function BottomNavigation() {
     const updateCartCount = () => {
       try {
         const cart = JSON.parse(localStorage.getItem('cart') || '[]')
-        const totalItems = cart.reduce((sum: number, item: any) => sum + (item.quantity || 1), 0)
+        const totalItems = cart.reduce((sum: number, item: unknown) => sum + (item.quantity || 1), 0)
         setCartCount(totalItems)
       } catch {
         setCartCount(0)

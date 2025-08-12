@@ -27,7 +27,7 @@ const ADMIN_EMAILS = ['info@anoint.me', 'breanne@aetherx.co']
 const isAdminEmail = (email: string) => ADMIN_EMAILS.includes(email.toLowerCase().trim())
 
 // Transform Supabase user to our user type
-const transformUser = (supabaseUser: any, profile: any): AuthenticatedUser => {
+const transformUser = (supabaseUser: unknown, profile: unknown): AuthenticatedUser => {
   // Check for admin using either 'role' field or 'is_admin' field (for compatibility)
   const isAdmin = profile?.role === 'admin' || profile?.is_admin === true || isAdminEmail(supabaseUser.email || '')
   

@@ -3,8 +3,8 @@
 // Claude Sonnet 3.7: Fixer (via shared folder system)
 
 // Import with error handling using dynamic imports
-let supabase: any = null
-let AICollaboration: any = null
+let supabase: unknown = null
+let AICollaboration: unknown = null
 
 // Initialize optional dependencies
 const initializeOptionalDeps = async () => {
@@ -429,6 +429,6 @@ export interface SharedFolderUpdate {
   errorId: string
   component: 'scanner' | 'fixer'
   status: string
-  data: any
+  data: unknown
   timestamp: string
 }

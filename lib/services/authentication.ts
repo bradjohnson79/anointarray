@@ -15,7 +15,7 @@ import { handleSupabaseAuthError, logError, createError, ERROR_CODES } from '@/l
 import { AuthCache } from '@/lib/cache/auth-cache'
 
 // Import centralized admin configuration
-import { isAdminEmail, ADMIN_CONFIG } from '@/lib/config/admin-config'
+import { isAdminEmail } from '@/lib/config/admin-config'
 
 // Initialize Supabase client with optimized configuration
 const supabase = createClient(
@@ -25,7 +25,7 @@ const supabase = createClient(
 )
 
 // Helper function to transform Supabase user to our user type (no profile table dependency)
-function transformSupabaseUser(supabaseUser: any): AuthenticatedUser {
+function transformSupabaseUser(supabaseUser: unknown): AuthenticatedUser {
   // Use email-based admin detection as fallback when profiles table unavailable
   const isAdmin = isAdminEmail(supabaseUser.email || '')
   
@@ -41,7 +41,7 @@ function transformSupabaseUser(supabaseUser: any): AuthenticatedUser {
 }
 
 // Helper function to transform database profile to our user type (when profiles table exists)
-function transformUserProfile(supabaseUser: any, profile: UserProfile): AuthenticatedUser {
+function transformUserProfile(supabaseUser: unknown, profile: UserProfile): AuthenticatedUser {
   // Use consistent admin detection logic
   const isAdmin = profile.is_admin === true || isAdminEmail(supabaseUser.email || '')
   
@@ -57,7 +57,7 @@ function transformUserProfile(supabaseUser: any, profile: UserProfile): Authenti
 }
 
 // Helper function to convert AppError to AuthenticationError
-function toAuthError(appError: any): AuthenticationError {
+function toAuthError(appError: unknown): AuthenticationError {
   return {
     code: appError.code || ERROR_CODES.SYSTEM_ERROR,
     message: appError.message || 'An unexpected error occurred',

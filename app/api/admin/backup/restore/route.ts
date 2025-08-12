@@ -1,7 +1,6 @@
 import { NextResponse } from 'next/server'
-import { existsSync, createWriteStream, createReadStream } from 'fs'
+import { existsSync } from 'fs'
 import { join } from 'path'
-import { promises as fs } from 'fs'
 import { sanitizeFilename, validateBackupId, safeBackupPath } from '../../../../../lib/security/path-utils'
 
 export async function POST(request: Request) {

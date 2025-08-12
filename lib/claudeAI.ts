@@ -6,7 +6,7 @@ import Anthropic from '@anthropic-ai/sdk'
 export interface RepairTask {
   id: string
   dispatchPrompt: string
-  errorReport: any
+  errorReport: unknown
   status: 'received' | 'analyzing' | 'repairing' | 'testing' | 'completed' | 'failed'
   analysis?: string
   repairPlan?: string
@@ -65,7 +65,7 @@ Remember: You are the precision surgical tool of the self-healing system. Your j
   `
 
   // Receive dispatch from Oracle and execute autonomous repair
-  static async executeRepair(dispatchPrompt: string, errorReport: any): Promise<RepairTask> {
+  static async executeRepair(dispatchPrompt: string, errorReport: unknown): Promise<RepairTask> {
     this.initialize()
 
     const taskId = `repair_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`
@@ -137,7 +137,7 @@ Provide technical analysis of this issue and identify the minimal fix required. 
   }
 
   // Create precise repair plan
-  private static async createRepairPlan(analysis: string, errorReport: any): Promise<string> {
+  private static async createRepairPlan(analysis: string, errorReport: unknown): Promise<string> {
     if (!this.anthropic) {
       return this.generateFallbackRepairPlan(analysis, errorReport)
     }
@@ -171,7 +171,7 @@ Provide specific steps for autonomous execution.`
   }
 
   // Execute autonomous repair (the actual fix)
-  private static async executeAutonomousRepair(repairPlan: string, errorReport: any): Promise<string> {
+  private static async executeAutonomousRepair(repairPlan: string, errorReport: unknown): Promise<string> {
     if (!this.anthropic) {
       return this.simulateRepairExecution(repairPlan, errorReport)
     }
@@ -253,7 +253,7 @@ Repair approach identified. Proceeding to planning phase.
     `.trim()
   }
 
-  private static generateFallbackRepairPlan(analysis: string, errorReport: any): string {
+  private static generateFallbackRepairPlan(analysis: string, errorReport: unknown): string {
     return `
 📋 REPAIR PLAN (Fallback Mode)
 
@@ -267,7 +267,7 @@ Maintenance constraints confirmed. Executing repair...
     `.trim()
   }
 
-  private static simulateRepairExecution(repairPlan: string, errorReport: any): string {
+  private static simulateRepairExecution(repairPlan: string, errorReport: unknown): string {
     return `
 🛠️ AUTONOMOUS REPAIR EXECUTED
 

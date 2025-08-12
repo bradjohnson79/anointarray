@@ -1,6 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server'
 import Anthropic from '@anthropic-ai/sdk'
-import { promises as fs, createReadStream } from 'fs'
+import { createReadStream } from 'fs'
 import path from 'path'
 import csv from 'csv-parser'
 import { findOrCreateGlyphsDirectory } from '@/lib/path-utils'
@@ -98,7 +98,7 @@ function sanitizeJsonString(jsonString: string): string {
 }
 
 // Attempt fallback JSON parsing with various repair strategies
-function attemptFallbackJsonParsing(response: string): any | null {
+function attemptFallbackJsonParsing(response: string): unknown | null {
   try {
     // Strategy 1: Find JSON and aggressively clean it
     const jsonMatch = response.match(/\{[\s\S]*\}/)
@@ -376,7 +376,7 @@ export async function POST(request: NextRequest) {
     }
 
     // Sanitize and parse JSON response
-    let aiResponse: any
+    let aiResponse: unknown
     try {
       console.log('Raw AI response length:', response.length)
       console.log('Raw AI response preview:', response.substring(0, 500) + '...')
@@ -431,7 +431,7 @@ export async function POST(request: NextRequest) {
     }
 
     // Calculate coordinates for each position
-    const processedRing1 = aiResponse.ring1.map((item: any) => {
+    const processedRing1 = aiResponse.ring1.map((item: unknown) => {
       const coords = calculatePosition(item.position, 360) // Ring 1 radius
       return {
         ...item,
@@ -441,7 +441,7 @@ export async function POST(request: NextRequest) {
       }
     })
 
-    const processedRing2 = aiResponse.ring2.map((item: any) => {
+    const processedRing2 = aiResponse.ring2.map((item: unknown) => {
       const coords = calculatePosition(item.position, 460) // Ring 2 radius
       return {
         ...item,
@@ -529,7 +529,7 @@ export async function POST(request: NextRequest) {
 
     return NextResponse.json(baseResponse)
 
-  } catch (error: any) {
+  } catch (error: unknown) {
     console.error('Generation failed:', error)
     
     return NextResponse.json({

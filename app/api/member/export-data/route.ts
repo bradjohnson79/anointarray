@@ -3,7 +3,6 @@ import { createWriteStream, readFileSync } from 'fs'
 import { join } from 'path'
 import { tmpdir } from 'os'
 import archiver from 'archiver'
-import { randomUUID } from 'crypto'
 
 // This would normally come from your auth middleware
 interface User {

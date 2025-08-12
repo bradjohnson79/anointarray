@@ -1,7 +1,7 @@
 // Secure path utilities to prevent path traversal attacks
 // Following OWASP recommendations for file handling security
 
-import { join, normalize, resolve } from 'path'
+import { join, resolve } from 'path'
 
 /**
  * Sanitizes a filename by removing dangerous characters and path separators

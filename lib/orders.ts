@@ -1,6 +1,6 @@
 // Order Management System with Full Lifecycle Support
 
-import { MockAuth, type User } from './auth'
+import { MockAuth } from './auth'
 
 export interface Order {
   id: string

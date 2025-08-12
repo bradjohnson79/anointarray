@@ -51,7 +51,7 @@ export async function POST(request: NextRequest) {
       currency
     })
 
-  } catch (error: any) {
+  } catch (error: unknown) {
     console.error('Payment creation failed:', error)
     return NextResponse.json({
       success: false,
@@ -160,7 +160,7 @@ async function createPayPalOrder(sealArrayId: string, amount: number): Promise<s
   }
 
   // Find approval URL
-  const approvalUrl = orderData.links?.find((link: any) => link.rel === 'approve')?.href
+  const approvalUrl = orderData.links?.find((link: unknown) => link.rel === 'approve')?.href
 
   if (!approvalUrl) {
     throw new Error('PayPal approval URL not found')

@@ -286,7 +286,7 @@ export async function POST(request: NextRequest) {
       })
     }
 
-  } catch (error: any) {
+  } catch (error: unknown) {
     console.error('NowPayments request failed:', error)
     return NextResponse.json({
       success: false,
@@ -344,7 +344,7 @@ export async function GET(request: NextRequest) {
       error: 'Missing required parameters. Use ?action=currencies, ?action=estimate, or ?paymentId=xxx'
     }, { status: 400 })
 
-  } catch (error: any) {
+  } catch (error: unknown) {
     console.error('NowPayments GET request failed:', error)
     return NextResponse.json({
       success: false,

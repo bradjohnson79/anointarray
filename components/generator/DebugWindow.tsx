@@ -21,12 +21,12 @@ import {
 interface DebugData {
   prompt: {
     fullText: string
-    userInput: any
+    userInput: unknown
     availableGlyphsCount: number
   }
   aiResponse: {
     raw: string
-    parsed: any
+    parsed: unknown
     model: string
     temperature: number
     maxTokens: number
@@ -44,9 +44,9 @@ interface DebugData {
     total: number
   }
   coordinateCalculations: {
-    ring1Sample: any
-    ring2Sample: any
-    ring3: any
+    ring1Sample: unknown
+    ring2Sample: unknown
+    ring3: unknown
   }
 }
 
@@ -144,7 +144,7 @@ export default function DebugWindow({ debugData, isGenerating }: DebugWindowProp
 
   if (!debugData) return null
 
-  const formatJson = (obj: any) => JSON.stringify(obj, null, 2)
+  const formatJson = (obj: unknown) => JSON.stringify(obj, null, 2)
   const formatTime = (ms: number) => `${ms}ms (${(ms / 1000).toFixed(2)}s)`
 
   return (

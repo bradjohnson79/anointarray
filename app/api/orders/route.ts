@@ -159,7 +159,7 @@ export async function POST(request: NextRequest) {
     }
 
     // Create order items
-    const orderItems = body.items.map((item: any) => ({
+    const orderItems = body.items.map((item: unknown) => ({
       order_id: order.id,
       product_id: item.product_id,
       variant_id: item.variant_id || null,

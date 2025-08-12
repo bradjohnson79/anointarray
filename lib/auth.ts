@@ -35,7 +35,7 @@ export interface AuthState {
 const ADMIN_EMAILS = ['info@anoint.me', 'breanne@aetherx.co']
 
 // Transform Supabase user to our User interface using database-driven roles
-function transformSupabaseUser(supabaseUser: SupabaseUser, profile?: any): User {
+function transformSupabaseUser(supabaseUser: SupabaseUser, profile?: unknown): User {
   const email = supabaseUser.email || ''
   
   // Check admin status from database profile or admin email list

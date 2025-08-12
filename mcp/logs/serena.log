@@ -1,0 +1,8 @@
+
+> serena-build-server@1.0.0 start
+> tsx index.ts
+
+[dotenv@17.2.1] injecting env (0) from .env.local -- tip: ⚙️  suppress all logs with { quiet: true }
+[dotenv@17.2.1] injecting env (0) from .env.mcp.local -- tip: 🔐 prevent committing .env to code: https://dotenvx.com/precommit
+[dotenv@17.2.1] injecting env (0) from .env.mcp -- tip: ⚙️  override existing env vars with { override: true }
+Serena Build Management MCP server running on stdio

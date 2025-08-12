@@ -1,0 +1,9 @@
+
+> vercel-deployment-server@1.0.0 start
+> tsx index.ts
+
+[dotenv@17.2.1] injecting env (5) from .env -- tip: 📡 auto-backup env with Radar: https://dotenvx.com/radar
+[dotenv@17.2.1] injecting env (0) from .env.local -- tip: 🛠️  run anywhere with `dotenvx run -- yourcommand`
+[dotenv@17.2.1] injecting env (0) from .env.mcp.local -- tip: 🔐 prevent building .env in docker: https://dotenvx.com/prebuild
+[dotenv@17.2.1] injecting env (0) from .env.mcp -- tip: 🔐 prevent building .env in docker: https://dotenvx.com/prebuild
+Vercel Deployment MCP server running on stdio

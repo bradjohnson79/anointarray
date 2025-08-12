@@ -7,7 +7,7 @@ import Link from 'next/link'
 import AuroraBackground from '@/components/AuroraBackground'
 import BottomNavigation from '@/components/mobile/BottomNavigation'
 import UserDropdown from '@/components/UserDropdown'
-import { Zap, Crown, Users, Shield, ArrowRight, Menu, X } from 'lucide-react'
+import { ArrowRight, Menu, X } from 'lucide-react'
 
 export default function Home() {
   const { user, signOut } = useAuth()

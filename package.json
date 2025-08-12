@@ -19,6 +19,13 @@
     "mcp:dev:status": "./mcp/scripts/status-dev.sh",
     "mcp:health": "./mcp/scripts/health-check.sh",
     "verify:profiles": "tsx scripts/verify-profiles.ts",
+    "ts:check": "tsc -p tsconfig.json --noEmit",
+    "check:critical-routes": "node scripts/guard-critical-routes.js",
+    "pre-deploy-check": "node scripts/pre-deployment-checks.js",
+    "deploy-safe": "npm run pre-deploy-check && npm run build && echo '🚀 Ready for deployment - all safety checks passed!'",
+    "deploy-netlify": "npm run deploy-safe && netlify deploy --prod",
+    "deploy-vercel": "npm run deploy-safe && vercel --prod",
+    "test": "echo 'No tests specified' && exit 0",
     "prepare": "husky"
   },
   "dependencies": {
@@ -57,6 +64,7 @@
     "autoprefixer": "^10.4.16",
     "eslint": "^9",
     "eslint-config-next": "15.4.5",
+    "glob": "^11.0.3",
     "husky": "^9.1.7",
     "postcss": "^8.4.31",
     "puppeteer": "^24.16.0",
